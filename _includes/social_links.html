@@ -1,0 +1,47 @@
+<div class="social-icons">
+  <div class="left">
+    {% if site.github_username %}
+      <a class="fa fa-github" href="https://github.com/{{ site.github_username }}" aria-label="Github"></a>
+    {% endif %}
+    {% if site.bitbucket_username %}
+      <a class="fa fa-bitbucket" href="https://bitbucket.org/{{ site.bitbucket_username }}" aria-label="Bitbucket"></a>
+    {% endif %}
+    {% if site.stackoverflow_id %}
+      <a class="fa fa-stack-overflow" href="https://stackoverflow.com/users/{{ site.stackoverflow_id }}" aria-label="StackOverflow"></a>
+    {% endif %}
+    <a class="fa fa-rss" href="{{ "/feed.xml" | prepend: site.baseurl }}" aria-label="RSS feed"></a>
+    {% if site.twitter_username %}
+      <a class="fa fa-twitter" href="https://twitter.com/{{ site.twitter_username }}" aria-label="Twitter"></a>
+    {% endif %}
+    {% if site.facebook_username %}
+      <a class="fa fa-facebook" href="https://facebook.com/{{ site.facebook_username }}" aria-label="Facebook"></a>
+    {% endif %}
+    {% if site.google_plus_id %}
+      <a class="fa fa-google-plus" href="https://plus.google.com/{{ site.google_plus_id }}/posts" aria-label="Google Plus"></a>
+    {% endif %}
+    {% if site.email %}
+      <a class="fa fa-envelope" href="mailto:{{ site.email }}" aria-label="e-Mail"></a>
+    {% endif %}
+    {% if site.linkedin_username %}
+      <a class="fa fa-linkedin" href="https://www.linkedin.com/in/{{ site.linkedin_username }}" aria-label="LinkedIn"></a>
+    {% endif %}
+    {% if site.angellist_username %}
+      <a class="fa fa-angellist" href="https://angel.co/{{ site.angellist_username }}"></a>
+    {% endif %}
+    {% if site.medium_id %}
+      <a class="fa fa-medium" href="https://medium.com/{{ site.medium_id }}" aria-label="Medium"></a>
+    {% endif %}
+  </div>
+  <div class="right">
+    {% if site.bitcoin_url %}
+      <a class="fa fa-bitcoin" href="{{ site.bitcoin_url }}"></a>
+    {% endif %}
+    {% if site.paypal_url %}
+      <a class="fa fa-paypal" href="{{ site.paypal_url }}" aria-label="PayPal"></a>
+    {% endif %}
+    {% if site.flattr_button %}
+      {{ site.flattr_button }}
+    {% endif %}
+  </div>
+</div>
+<div class="clearfix"></div>
