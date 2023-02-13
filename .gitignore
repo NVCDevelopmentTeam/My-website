@@ -1,23 +1,16 @@
-# ignore everything in the root except the "wp-content" directory.
-!wp-content/
+_site
+.sass-cache
+.DS_Store
 
-# ignore everything in the "wp-content" directory, except:
-# "mu-plugins", "plugins", "themes" directory
-wp-content/*
-!wp-content/mu-plugins/
-!wp-content/plugins/
-!wp-content/themes/
+# Ignore the config file that's used for gh-pages.
+_config.gh-pages.yml
 
-# ignore these plugins
-wp-content/plugins/hello.php
+### PhpStorm ###
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
-# ignore specific themes
-wp-content/themes/twenty*/
-
-# ignore node dependency directories
-node_modules/
-
-# ignore log files and databases
-*.log
-*.sql
-*.sqlite
+*.iml
+## Directory-based project format:
+.idea/
+## File-based project format:
+*.ipr
+*.iws
