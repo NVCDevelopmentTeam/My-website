@@ -1,10 +1,10 @@
 # Site settings
-title:       Parham Doustdar's Blog
+title:        Coding Nguyễn
 email:       me@parhamdoustdar.com
-author:      Parham Doustdar
+author:       Coding Nguyễn
 description: "The Life of a Completely Blind Programmer in the Netherlands"
 baseurl:     ""
-url:         "https://www.parhamdoustdar.com"
+url:         "https://codingnguyen.vercel.app"
 encoding: UTF-8
 
 # Google analytics
