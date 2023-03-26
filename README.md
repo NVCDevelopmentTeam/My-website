@@ -1,5 +1,38 @@
-  # Accessible-theme-for-visually-impaired-to-WordPress
-This is an accessible theme for visually impaired people who need to design websites using WordPress. It is open source so anyone can develop to contribute to the theme. In addition, it is optimized to be compatible with today's popular screen reading software such as jaws, nvda,... In this theme, there is a suitable contrast adjustment, can enlarge the font size, and responsiveness. wcag standard. Accessible by keyboard shortcuts,... there's a lot more in this theme. However, because the theme is coded at a basic level, the theme will not be complete, so I hope that visionary developers and visually impaired developers can contribute their code to make the theme more complete. The convenience of this theme is that the visually impaired do not need to install any external plugins. Therefore, it will be more optimized in the process of customizing the website for the visually impaired. I'm happy to work with all the blind and visionary programmers around the world to make it accessible to everyone without any barriers. Thank you for your interest.    
-      #WordPress theme for the blind
-      #Theme accessibility 
-      #Free and open source[accessibletheme.zip](https://github.com/NVCDevelopmentTeam/Accessible-theme-for-visually-impaired-to-WordPress/files/7947514/accessibletheme.zip)
+# create-svelte
+
+Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+
+## Creating a project
+
+If you're seeing this, you've probably already done this step. Congrats!
+
+```bash
+# create a new project in the current directory
+npm create svelte@latest
+
+# create a new project in my-app
+npm create svelte@latest my-app
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.

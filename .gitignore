@@ -1,16 +1,10 @@
-_site
-.sass-cache
 .DS_Store
-
-# Ignore the config file that's used for gh-pages.
-_config.gh-pages.yml
-
-### PhpStorm ###
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
-
-*.iml
-## Directory-based project format:
-.idea/
-## File-based project format:
-*.ipr
-*.iws
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
