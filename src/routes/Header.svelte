@@ -8,7 +8,7 @@
 <!-- Navbar -->
                  				<div class="site-logo">
 	<div class="corner">
-		<a href="https://kit.svelte.dev">
+		<a href="/">
 			<img src={logo} alt="Coding Nguyễn" />
 		</a>
 	</div>
@@ -40,9 +40,11 @@ type="button"
 data-bs-toggle="collapse"
  
 data-bs-target="#navmenu"
- 
+aria-label="Toggle navigation" 
+
 >
-<label> Toggle navigation </label>
+
+
 <span class="navbar-toggler-icon"></span>
  
 </button>

@@ -2,10 +2,10 @@
 	"name": "Coding Nguyễn",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview"
-	},
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+			},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
 		"@neoconfetti/svelte": "^1.0.0",
