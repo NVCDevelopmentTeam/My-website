@@ -1,6 +1,7 @@
 <script>
+import Comment from "$lib/components/Comment.svelte";
 		import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+	import welcome_fallback  from '$lib/images/svelte-welcome.png';
 	</script>
 <svelte:head>
 	      <title>Trang chủ - Coding Nguyễn</title>
@@ -22,7 +23,7 @@
 	<h2>
 		try editing <strong>src/routes/+page.svelte</strong>
 	</h2>
-
+<Comment />
 	</section>
 
 <style>
