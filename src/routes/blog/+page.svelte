@@ -1,33 +1,58 @@
 <script>
-    import PostCard from "/src/components/post-card.svelte";
-    export let posts;
+  import { name } from '$lib/data/info.js'
+  import ArrowLeftIcon from '$lib/components/ArrowLeftIcon.svelte'
+  import ArrowRightIcon from '$lib/components/ArrowRightIcon.svelte'
+  import PostsList from '$lib/components/PostsList.svelte'
 
-    export async function load({fetch}) {
-        const posts = await fetch("/index.json").then((r) => r.json())
+  /** @type {import('./$types').PageData} */
+  export let data
 
-        return {
-            props: {posts}
-        }
-    }
+  $: isFirstPage = data.page === 1
+  $: hasNextPage = data.posts[data.posts.length - 1]?.previous
 </script>
 
 <svelte:head>
-    <title>My Blog</title>
-    <meta name="description" content="This is my personal blog created with SvelteKit!">
+  <title>{name} | Posts</title>
 </svelte:head>
 
-    <h1>Posts</h1>
+<div class="flex flex-col flex-grow">
+  <header class="pt-4">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
+      Writing on tech, music, and whatever else I feel like
+    </h1>
+    <p class="mt-6">All of my written content collected in one place</p>
+  </header>
 
-    {#each posts as post}
-        <PostCard {...post}/>
-    {/each}
+  <div class="mt-16 sm:mt-20">
+    <PostsList posts={data.posts} />
+  </div>
+
+  <!-- pagination -->
+  <div class="flex items-center justify-between pt-16 pb-8">
+    {#if !isFirstPage}
+      <a href={`/posts/${data.page - 1}`} data-sveltekit-prefetch>
+        <ArrowLeftIcon class="w-4 h-4" />
+        Previous
+      </a>
+    {:else}
+      <div />
+    {/if}
+
+    {#if hasNextPage}
+      <a href={`/posts/${data.page + 1}`} data-sveltekit-prefetch
+        >Next
+        <ArrowRightIcon class="w-4 h-4" />
+      </a>
+    {/if}
+  </div>
+</div>
 
 <style>
- main {
-     padding: 4vw;
- }
+  a {
+    @apply flex items-center gap-2 font-medium text-zinc-700;
+  }
 
- :global(article) {
-     border-bottom: 1px solid lightgray;
- }
+  :global(.dark) a {
+    @apply text-zinc-300;
+  }
 </style>
