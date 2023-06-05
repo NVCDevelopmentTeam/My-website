@@ -49,7 +49,10 @@
           <a class="nav-link" href="/about" aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>about</a>
         </li>
         <li class="nav-menu">
-          <a class="nav-link" href="/posts" aria-current={($page.url.pathname.startsWith('/posts')) ? 'page' : undefined}>posts</a>
+          <a class="nav-link" href="/blog" aria-current={($page.url.pathname.startsWith('/blog')) ? 'page' : undefined}>blog</a>
+        </li>
+        <li class="nav-menu">
+          <a class="nav-link" href="/contact" aria-current={$page.url.pathname === '/contact' ? 'page' : undefined}>contact</a>
         </li>
       </ul>
     </div>
