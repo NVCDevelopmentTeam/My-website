@@ -4,7 +4,7 @@ import Comment from "$lib/components/Comment.svelte";
 	import welcome_fallback  from '$lib/images/svelte-welcome.png';
 	</script>
 <svelte:head>
-	      <title>Trang chủ - Coding Nguyễn</title>
+	      <title>Home - Coding Nguyen</title>
 	<meta name="description" content="My website" />
 </svelte:head>
 
