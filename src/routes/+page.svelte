@@ -1,6 +1,4 @@
 <script>
-import Comment from "$lib/components/Comment.svelte";
-import traffic from "$lib/components/traffic.svelte";
 		import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback  from '$lib/images/svelte-welcome.png';
 	</script>
@@ -24,8 +22,6 @@ import traffic from "$lib/components/traffic.svelte";
 	<h2>
 		try editing <strong>src/routes/+page.svelte</strong>
 	</h2>
-<Comment />
-<traffic />
 	</section>
 
 <style>

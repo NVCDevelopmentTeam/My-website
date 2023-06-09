@@ -14,7 +14,7 @@
   }
 </script>
 
-<header>
+<header id="top">
   <div class="site-logo">
     <div class="corner">
       <a href="/">
