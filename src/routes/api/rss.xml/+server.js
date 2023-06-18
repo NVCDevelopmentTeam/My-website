@@ -1,5 +1,5 @@
 // IMPORTANT: update all these property values in src/lib/config.js
-import { siteTitle, siteDescription, siteURL, siteLink } from '$lib/config'
+import { siteTitle, siteDescription, siteURL, siteLink } from '$lib/data/config'
 
 export const prerender = true
 
