@@ -1,5 +1,5 @@
 import { postsPerPage } from '$lib/data/config'
-import fetchPosts from '$lib/assets/js/fetchPosts'
+import fetchPosts from '$lib/data/fetchPosts'
 import { json } from '@sveltejs/kit'
 
 export const prerender = true
