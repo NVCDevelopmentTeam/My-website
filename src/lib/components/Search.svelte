@@ -1,60 +1,55 @@
 <script>
   import { writable } from 'svelte/store';
-  import { get } from 'svelte/store';
+  import { get } from '$app/stores';
   import hljs from 'highlight.js/lib/core';
   import javascript from 'highlight.js/lib/languages/javascript';
   import 'highlight.js/styles/github.css';
+  import { html } from 'svelte';
 
-  // import the search function
   import { search } from '$lib/data/search.js';
   
-  // register the appropriate language(s)
   hljs.registerLanguage('javascript', javascript);
 
-  // this store will keep track of the current search query
   export const searchQuery = writable('');
-
-  // this store will hold the search results
   export const searchResults = writable([]);
 
-  // update the store value whenever the search input value changes
   function handleChange(event) {
     searchQuery.set(event.target.value);
   }
 
-  // function to handle the form submission
   async function handleSubmit(event) {
     event.preventDefault();
     const query = get(searchQuery);
 
-    // call the `get` function to fetch the search results
-    const result = await get({ query: { q: query } });
-
-    // update the search results store
-    searchResults.set(result.body);
-
-    // reset the search query after submission
-    searchQuery.set('');
+    try {
+      const result = await get(`https://jsonplaceholder.typicode.com/posts?q=${query}`);
+      searchResults.set(result);
+      searchQuery.set('');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  // function to handle voice search
   function handleVoiceSearch() {
-    const recognition = new window.webkitSpeechRecognition();
+    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
+      const recognition = new window.webkitSpeechRecognition();
 
-    recognition.lang = 'en-US';
+      recognition.lang = 'en-US';
 
-    recognition.onresult = function(event) {
-      const transcript = event.results[0][0].transcript;
-      searchQuery.set(transcript);
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        searchQuery.set(transcript);
+        handleSubmit(event);
+      }
+
+      recognition.start();
     }
-
-    recognition.start();
   }
 </script>
 
 <div class="search">
   <form on:submit={handleSubmit}>
-    <input type="text" name="search" class="search" id="search" aria-label="search" on:change={handleChange} bind:value={$searchQuery}>
+    <input type="text" name="search" class="search" id="search" aria-label="search" on:input={handleChange} bind:value={$searchQuery}>
     <button type="button" class="voice-search" title="Search by voice" aria-label="Search by voice" on:click={handleVoiceSearch}>
       <i class="fa fa-microphone"></i>
     </button>
@@ -69,7 +64,7 @@
             <h3><a href={result.url}>{result.title}</a></h3>
             <pre>
               <code class="javascript" data-dynamic>
-                ${html`${result.code.replaceAll('>', '&gt;').replaceAll('<', '&lt;')}`}
+                {$html`${result.code.replaceAll('>', '&gt;').replaceAll('<', '&lt;')}`}
               </code>
             </pre>
             <p>{result.description}</p>
