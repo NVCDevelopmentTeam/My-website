@@ -2,7 +2,6 @@
   import { page } from '$app/stores';
   import logo from '$lib/images/logo.png';
   import github from '$lib/images/github.svg';
-  import Search from '$lib/components/Search.svelte';
   import classnames from 'classnames';
 
   const cx = classnames.bind();
@@ -67,7 +66,7 @@
         <img src={github} alt="GitHub" />
       </a>
     </div>
-    <Search />
+
   </nav>
 </header>
 
