@@ -7,10 +7,10 @@
   const cx = classnames.bind();
 
   let isMenuCollapsed = true;
+  let navbar;
 
   function toggleMenu() {
     isMenuCollapsed = !isMenuCollapsed;
-    const navbar = document.getElementById('navbarNav');
     if (isMenuCollapsed) {
       navbar.classList.add('collapsed'); // Add the class "collapsed" to hide the menu
     } else {
@@ -42,10 +42,15 @@
     <svg viewBox="0 0 2 3" aria-hidden="true">
       <path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
     </svg>
-    <button class="navbar-toggler" type="button" on:click={toggleMenu} aria-label="Toggle navigation">
+    <button 
+      class="navbar-toggler"
+      type="button"
+      aria-label="Toggle navigation" 
+      on:click={toggleMenu}
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="{cx('collapse', 'navbar-collapse', { collapsed: isMenuCollapsed })}" id="navbarNav">
+    <div class="collapse navbar-collapse" id="navbarNav" ref:navbar>
       <ul class="navbar-nav ms-auto">
         <li class="nav-menu">
           <a class="nav-link" href="/" aria-current={$page.url.pathname === '/' ? 'page' : undefined}>home</a>
