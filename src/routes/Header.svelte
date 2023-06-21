@@ -11,6 +11,12 @@
 
   function toggleMenu() {
     isMenuCollapsed = !isMenuCollapsed;
+    const navbar = document.getElementById('navbarNav');
+    if (isMenuCollapsed) {
+      navbar.classList.add('collapsed'); // Add the class "collapsed" to hide the menu
+    } else {
+      navbar.classList.remove('collapsed'); // Remove the class "collapsed" to show the menu
+    }
   }
 </script>
 
@@ -61,8 +67,8 @@
         <img src={github} alt="GitHub" />
       </a>
     </div>
+    <Search />
   </nav>
-<Search />
 </header>
 
 <style>

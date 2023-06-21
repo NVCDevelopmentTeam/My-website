@@ -22,9 +22,11 @@
     const query = get(searchQuery);
 
     try {
-      const result = await get(`https://jsonplaceholder.typicode.com/posts?q=${query}`);
-      searchResults.set(result);
-      searchQuery.set('');
+      const response = await fetch(`https://jsonplaceholder.typicode.com/posts?q=${query}`);
+      const results = await response.json();
+      
+      searchResults.set(results);
+      document.getElementById('search').value = '';
     } catch (error) {
       console.error(error);
     }
