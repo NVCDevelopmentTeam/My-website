@@ -4,8 +4,8 @@
   import hljs from 'highlight.js/lib/core';
   import javascript from 'highlight.js/lib/languages/javascript';
   import 'highlight.js/styles/github.css';
-  import { html } from 'svelte';
-
+  import { html } from 'svelte/internal';
+  
   import { search } from '$lib/data/search.js';
   
   hljs.registerLanguage('javascript', javascript);
