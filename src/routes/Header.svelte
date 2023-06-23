@@ -55,38 +55,39 @@
             aria-current={
               $page.url.pathname === '/' ? 'page' : undefined
             }
-          >
-            <a href="/">Home</a>
+           >
+            <a accesskey="h" href="/">Home</a>
           </li>
           <li
             aria-current={
               $page.url.pathname === '/about' ? 'page' : undefined
             }
           >
-            <a href="/about">About</a>
+            <a accesskey=a href="/about">About</a>
           </li>
           <li
             aria-current={
               $page.url.pathname.startsWith('/blog') ? 'page' : undefined
             }
           >
-            <a href="/blog">blog</a>
+            <a accesskey=b href="/blog">blog</a>
           </li>
           <li
             aria-current={
               $page.url.pathname === '/contact' ? 'page' : undefined
             }
           >
-            <a href="/contact">contact</a>
+            <a accesskey=c href="/contact">contact</a>
           </li>
         </ul>
       </div>
+  </nav>
       <div class="corner">
         <a href="https://github.com/sveltejs/kit">
           <img src={github} alt="GitHub" />
         </a>
       </div>
-  </nav>
+
 </header>
 
 <style>
@@ -164,15 +165,39 @@
   .navbar-toggler span {
     display: none;
   }
-
-  .navbar-toggler[aria-expanded="true"] svg.vert {
-    display: none;
+  .collapsible {
+    border-bottom: 1px solid var(--gray-light, #eee);
+  }
+  button {
+    background-color: var(--background, #fff);
+    color: var(--gray-darkest, #282828);
+    display: flex;
+		justify-content: space-between;
+    width: 100%;
+		border: none;
+		margin: 0;
+		padding: 1em 0.5em;
+  }
+  button[aria-expanded="true"] {
+    border-bottom: 1px solid var(--gray-light, #eee);
   }
 
-  .navbar-toggler[aria-expanded='true'] svg.horz {
-    display: block;
-  }
+    button[aria-expanded="true"] .vert {
+        display: none;
+    }
 
+    button:focus svg{
+        outline: 2px solid;
+    }
+
+    button [aria-expanded="true"] rect {
+        fill: currentColor;
+    }
+
+    svg {
+        height: 0.7em;
+				width: 0.7em;
+    }
   .vert {
     width: 2em;
     height: 3em;
