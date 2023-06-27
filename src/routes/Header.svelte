@@ -3,10 +3,8 @@
   import logo from '$lib/images/logo.png';
   import github from '$lib/images/github.svg';
 
-  // based on suggestions from:
-  // Inclusive Components by Heydon Pickering https://inclusive-components.design/collapsible-sections/
   export let navMenu;
-  let expanded =false;
+  let expanded = false;
 </script>
 
 <header id="top">
@@ -50,44 +48,43 @@
       </svg>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive" hidden={!expanded}>
-        <ul id="main-menu" class="navbar-nav ml-auto">
-          <li
-            aria-current={
-              $page.url.pathname === '/' ? 'page' : undefined
-            }
-           >
-            <a accesskey="h" href="/">Home</a>
-          </li>
-          <li
-            aria-current={
-              $page.url.pathname === '/about' ? 'page' : undefined
-            }
-          >
-            <a accesskey=a href="/about">About</a>
-          </li>
-          <li
-            aria-current={
-              $page.url.pathname.startsWith('/blog') ? 'page' : undefined
-            }
-          >
-            <a accesskey=b href="/blog">blog</a>
-          </li>
-          <li
-            aria-current={
-              $page.url.pathname === '/contact' ? 'page' : undefined
-            }
-          >
-            <a accesskey=c href="/contact">contact</a>
-          </li>
-        </ul>
-      </div>
+      <ul id="main-menu" class="navbar-nav ml-auto">
+        <li
+          aria-current={
+            $page.url.pathname === '/' ? 'page' : undefined
+          }
+        >
+          <a id="home" accesskey="h" href="/">Home</a>
+        </li>
+        <li
+          aria-current={
+            $page.url.pathname === '/about' ? 'page' : undefined
+          }
+        >
+          <a id="about" accesskey="a" href="/about">About</a>
+        </li>
+        <li
+          aria-current={
+            $page.url.pathname.startsWith('/blog') ? 'page' : undefined
+          }
+        >
+          <a id="blog" accesskey="b" href="/blog">blog</a>
+        </li>
+        <li
+          aria-current={
+            $page.url.pathname === '/contact' ? 'page' : undefined
+          }
+        >
+          <a id="contact" accesskey="c" href="/contact">contact</a>
+        </li>
+      </ul>
+    </div>
   </nav>
-      <div class="corner">
-        <a href="https://github.com/sveltejs/kit">
-          <img src={github} alt="GitHub" />
-        </a>
-      </div>
-
+  <div class="corner">
+    <a href="https://github.com/sveltejs/kit">
+      <img src={github} alt="GitHub" />
+    </a>
+  </div>
 </header>
 
 <style>
@@ -165,9 +162,11 @@
   .navbar-toggler span {
     display: none;
   }
+  
   .collapsible {
     border-bottom: 1px solid var(--gray-light, #eee);
   }
+  
   button {
     background-color: var(--background, #fff);
     color: var(--gray-darkest, #282828);
@@ -178,26 +177,28 @@
 		margin: 0;
 		padding: 1em 0.5em;
   }
+  
   button[aria-expanded="true"] {
     border-bottom: 1px solid var(--gray-light, #eee);
   }
 
-    button[aria-expanded="true"] .vert {
-        display: none;
-    }
+  button[aria-expanded="true"] .vert {
+    display: none;
+  }
 
-    button:focus svg{
-        outline: 2px solid;
-    }
+  button:focus svg {
+    outline: 2px solid;
+  }
 
-    button [aria-expanded="true"] rect {
-        fill: currentColor;
-    }
+  button [aria-expanded="true"] rect {
+    fill: currentColor;
+  }
 
-    svg {
-        height: 0.7em;
-				width: 0.7em;
-    }
+  svg {
+    height: 0.7em;
+		width: 0.7em;
+  }
+  
   .vert {
     width: 2em;
     height: 3em;
