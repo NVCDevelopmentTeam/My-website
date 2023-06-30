@@ -1,7 +1,10 @@
 <script>
   import { page } from '$app/stores';
+  import { browser } from '$app/environment'
   import logo from '$lib/images/logo.png';
   import github from '$lib/images/github.svg';
+  import Search from '$lib/components/Search.svelte';
+  import Accessibility from '$lib/components/Accessibility.svelte';
 
   export let navMenu;
   let expanded = false;
@@ -80,11 +83,14 @@
       </ul>
     </div>
   </nav>
+<Search />
+<Accessibility />
   <div class="corner">
     <a href="https://github.com/sveltejs/kit">
       <img src={github} alt="GitHub" />
     </a>
   </div>
+
 </header>
 
 <style>
