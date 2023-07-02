@@ -84,7 +84,7 @@
     </div>
   </nav>
 <Search />
-<Accessibility />
+<accessibility />
   <div class="corner">
     <a href="https://github.com/sveltejs/kit">
       <img src={github} alt="GitHub" />
@@ -232,3 +232,4 @@
     left: 0;
   }
 </style>
+
