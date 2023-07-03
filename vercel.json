@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "src/hooks/**/*.js", "use": "@sveltejs/adapter-vercel" },
+    { "src": "src/routes/**/*.svelte", "use": "@sveltejs/adapter-vercel" }
+  ],
+  "routes": [
+    { "src": "/(.*).json", "dest": "/api/$1.json" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "env": {
+    "MY_API_KEY": "YOUR_API_KEY",
+    "ANOTHER_ENV_VARIABLE": "ANOTHER_VALUE"
+  },
+  "public": {
+    "MY_PUBLIC_KEY": "YOUR_PUBLIC_KEY",
+    "ANOTHER_PUBLIC_VARIABLE": "ANOTHER_PUBLIC_VALUE"
+  },
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "vercel-node@1",
+      "memory": 128
+    }
+  }
+}
