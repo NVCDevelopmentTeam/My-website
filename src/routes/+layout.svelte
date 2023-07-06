@@ -6,7 +6,6 @@
 	</script>
 
 		<Header />
-
   <main id="main">
 
 		<slot />

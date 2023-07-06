@@ -2,11 +2,12 @@
   import { page } from '$app/stores';
   import { browser } from '$app/environment'
   import logo from '$lib/images/logo.png';
-  import github from '$lib/images/github.svg';
   import Search from '$lib/components/Search.svelte';
   import Accessibility from '$lib/components/Accessibility.svelte';
 
-  export let navMenu;
+// based on suggestions from:
+    // Inclusive Components by Heydon Pickering https://inclusive-components.design/collapsible-sections/
+      export let navMenu;
   let expanded = false;
 </script>
 
@@ -41,14 +42,12 @@
       aria-controls="navbarResponsive"
       aria-expanded={expanded}
       aria-label="Toggle navigation"
-      on:click={() => (expanded = !expanded)}
-    >
-      {navMenu}
-      <span class="navbar-toggler-icon"></span>
+      on:click={() => expanded = !expanded}>          {navMenu}
       <svg viewBox="0 0 20 20" fill="none">
         <path class="vert" d="M10 1V19" stroke="black" stroke-width="2" />
         <path d="M1 10L19 10" stroke="black" stroke-width="2" />
       </svg>
+      <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive" hidden={!expanded}>
       <ul id="main-menu" class="navbar-nav ml-auto">
@@ -57,39 +56,39 @@
             $page.url.pathname === '/' ? 'page' : undefined
           }
         >
-          <a id="home" accesskey="h" href="/">Home</a>
+          <a accesskey="h" href="/">Home</a>
         </li>
         <li
           aria-current={
             $page.url.pathname === '/about' ? 'page' : undefined
           }
         >
-          <a id="about" accesskey="a" href="/about">About</a>
+          <a accesskey="a" href="/about">About</a>
         </li>
         <li
           aria-current={
             $page.url.pathname.startsWith('/blog') ? 'page' : undefined
           }
         >
-          <a id="blog" accesskey="b" href="/blog">blog</a>
+          <a accesskey="b" href="/blog">blog</a>
         </li>
         <li
           aria-current={
             $page.url.pathname === '/contact' ? 'page' : undefined
           }
         >
-          <a id="contact" accesskey="c" href="/contact">contact</a>
+          <a accesskey="c" href="/contact">contact</a>
         </li>
       </ul>
+		<svg viewBox="0 0 2 3" aria-hidden="true">
+			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
+		</svg>
     </div>
   </nav>
+<div class='search-accessibility'>
+<Accessibility />
 <Search />
-<accessibility />
-  <div class="corner">
-    <a href="https://github.com/sveltejs/kit">
-      <img src={github} alt="GitHub" />
-    </a>
-  </div>
+</div>
 
 </header>
 

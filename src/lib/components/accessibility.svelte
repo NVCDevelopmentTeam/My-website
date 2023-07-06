@@ -1,10 +1,7 @@
 <script>
-  import MoonIcon from 'heroicons-svelte/solid/MoonIcon.svelte';
-  import SunIcon from 'heroicons-svelte/solid/SunIcon.svelte';
-
   import { onMount } from 'svelte';
 
-  let isDarkMode = browser ? Boolean(document.documentElement.classList.contains('dark')) : true;
+  let isDarkMode = false; // Updated default value
   let fontSize = 16;
   let contrast = 'default';
   let color = 'default';
@@ -47,6 +44,14 @@
       fontSize = parseInt(storedFontSize, 10);
       document.documentElement.style.fontSize = `${fontSize}px`;
     }
+
+    const storedIsDarkMode = localStorage.getItem('isDarkMode');
+    if (storedIsDarkMode) {
+      isDarkMode = storedIsDarkMode === 'true';
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+      }
+    }
   });
 </script>
 
@@ -58,14 +63,14 @@
     localStorage.setItem('isDarkMode', isDarkMode.toString());
     disableTransitionsTemporarily();
     if (isDarkMode) {
-      document.querySelector('html').classList.add('dark');
+      document.documentElement.classList.add('dark');
     } else {
-      document.querySelector('html').classList.remove('dark');
+      document.documentElement.classList.remove('dark');
     }
   }}
 >
-        <MoonIcon class="hidden text-zinc-500 dark:block" />
-        <SunIcon class="block text-zinc-400 dark:hidden" />
+  <span class="hidden text-zinc-500 dark:block">🌒</span>
+  <span class="block text-zinc-400 dark:hidden">☀️</span>
 </button>
 
 <button type="button" on:click={increaseFontSize}>Increase Font Size</button>
