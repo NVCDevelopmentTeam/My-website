@@ -86,8 +86,8 @@
     </div>
   </nav>
 <div class='search-accessibility'>
-<Accessibility />
 <Search />
+<Accessibility />
 </div>
 
 </header>
