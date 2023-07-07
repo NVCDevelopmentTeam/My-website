@@ -1,5 +1,7 @@
 import fetchPosts from '$lib/data/fetchPosts'
 
+// TODO: this should be a `load` function
+/*
 export async function get() {
   // Perform some server-side logic here
   const data = await fetchDataFromDatabase();
@@ -22,3 +24,4 @@ async function fetchDataFromDatabase() {
     }, 1000);
   });
 }
+*/

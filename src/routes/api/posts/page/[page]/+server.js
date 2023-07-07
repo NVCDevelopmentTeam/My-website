@@ -2,7 +2,8 @@ import { postsPerPage } from '$lib/data/config'
 import fetchPosts from '$lib/data/fetchPosts'
 import { json } from '@sveltejs/kit'
 
-export const prerender = true
+// TODO: causes error
+// export const prerender = true
 
 export const GET = async ({ params }) => {
   const { page } = params || 1

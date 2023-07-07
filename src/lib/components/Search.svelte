@@ -1,10 +1,9 @@
 <script>
   import { writable } from 'svelte/store';
-  import { get } from '$app/stores';
+  import { get } from 'svelte/store'
   import hljs from 'highlight.js/lib/core';
   import javascript from 'highlight.js/lib/languages/javascript';
   import 'highlight.js/styles/github.css';
-  import { html } from 'svelte/internal';
   
   import { search } from '$lib/data/search.js';
   
@@ -66,7 +65,7 @@
             <h3><a href={result.url}>{result.title}</a></h3>
             <pre>
               <code class="javascript" data-dynamic>
-                {$html`${result.code.replaceAll('>', '&gt;').replaceAll('<', '&lt;')}`}
+                {@html result.code.replaceAll('>', '&gt;').replaceAll('<', '&lt;')}
               </code>
             </pre>
             <p>{result.description}</p>

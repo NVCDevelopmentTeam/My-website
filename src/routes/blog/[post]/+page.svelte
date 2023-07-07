@@ -1,6 +1,6 @@
 <!-- This file renders each individual blog post for reading. Be sure to update the svelte:head below -->
 <script>
-	import Like and share from '$lib/components/Like and share.svelte';
+	import LikeAndShare from '$lib/components/LikeAndShare.svelte';
 	import Comment from '$lib/components/Comment.svelte';
 export let data
 
