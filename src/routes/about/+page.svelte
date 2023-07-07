@@ -19,8 +19,9 @@
 		the devtools network panel and reloading.
 	</p>
 
-	<p>
+	
+	<!-- <p>
 		The <a href="/sverdle">Sverdle</a> page illustrates SvelteKit's data loading and form handling. Try
 		using it with JavaScript disabled!
-	</p>
+	</p> -->
 </div>
