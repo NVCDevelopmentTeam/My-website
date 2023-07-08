@@ -11,7 +11,7 @@
 
 <main>
   <h1>Sorry</h1>
-  <p>The page you visited does not exist.<br>Please try again later or <a href="/" accesskey="u">go back to the home page</a>.</p>
+  <p>The page you visited does not exist.<br>Please try again later or <a accesskey+"u" href="/">go back to the home page</a>.</p>
 </main>
 
 <style>

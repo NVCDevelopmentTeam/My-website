@@ -57,6 +57,7 @@
 
 <button
   type="button"
+aria-label  ="dark mode"
   class="w-5 h-5 sm:h-8 sm:w-8 sm:p-1"
   on:click={() => {
     isDarkMode = !isDarkMode;
@@ -69,8 +70,8 @@
     }
   }}
 >
-  <span class="hidden text-zinc-500 dark:block">🌒</span>
-  <span class="block text-zinc-400 dark:hidden">☀️</span>
+  <span class="hidden text-zinc-500 dark:block"></span>
+  <span class="block text-zinc-400 dark:hidden"></span>
 </button>
 
 <button type="button" on:click={increaseFontSize}>Increase Font Size</button>
@@ -80,11 +81,5 @@
 <button type="button" on:click={changeColor}>Change Color</button>
 
 <style>
-  .transition-none {
-    transition: none !important;
-  }
 
-  .high-contrast {
-    filter: contrast(125%);
-  }
 </style>

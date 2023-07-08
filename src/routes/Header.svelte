@@ -51,10 +51,10 @@
     <div class="collapse navbar-collapse" id="navbarResponsive" hidden={!expanded}>
       <ul id="main-menu" class="navbar-nav ml-auto">
         <li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-          <a accesskey="h" href="/">Home</a>
+          <a Accesskey="H" href="/">Home</a>
         </li>
         <li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
-          <a accesskey="a" href="/about">About</a>
+          <a Accesskey="a" href="/about">About</a>
         </li>
         <li aria-current={$page.url.pathname.startsWith('/blog') ? 'page' : undefined}>
           <a accesskey="b" href="/blog">blog</a>
@@ -73,5 +73,92 @@
     <Accessibility />
   </div>
 </header>
+<style>
+	header {
+		display: flex;
+		justify-content: space-between;
+	}
 
-<style> #top { display: flex; align-items: center; background-color: #fff; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); padding: 1rem; position: fixed; top: 0; left: 0; right: 0; z-index: 999; } .site-logo { display: flex; align-items: center; } .corner { margin-right: 1rem; } .corner a { display: block; } .nav-item { display: flex; align-items: center; list-style: none; margin: 0; padding: 0; } .nav-item li { margin-right: 0.5rem; } .nav-item li:last-child { margin-right: 0; } .skip { position: absolute; left: -9999px; } .navbar { display: flex; align-items: center; justify-content: space-between; background-color: #343a40; padding: 0.75rem 1.5rem; } .navbar svg { width: 1.5rem; height: 2.25rem; fill: #fff; margin-right: 1rem; } .navbar-toggler { border: none; background: none; cursor: pointer; outline: none; display: flex; align-items: center; } .navbar-toggler svg.vert { stroke: #fff; stroke-width: 2; } .navbar-toggler svg.vert path { stroke: #000; } .navbar-toggler .navbar-toggler-icon { width: 1.25rem; height: 1.25rem; background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%23fff"%3E%3Cpath stroke="%23000" stroke-width="4" stroke-linecap="round" d="M2.5 7.5h15M2.5 12.5h15"%3E%3C/path%3E%3C/svg%3E'); background-repeat: no-repeat; background-size: contain; } .collapse { display: flex; flex-direction: column; align-items: center; background-color: #343a40; padding: 1rem; transition: height 0.3s ease-out; height: 0; overflow: hidden; } #navbarResponsive[hidden] { height: auto !important; } #main-menu { display: flex; align-items: center; list-style: none; margin: 0; padding: 0; margin-top: 1rem; } #main-menu li { margin-bottom: 0.75rem; } #main-menu li:last-child { margin-bottom: 0; } #main-menu a { color: #fff; text-decoration: none; font-size: 1.2rem; transition: opacity 0.3s ease; } #main-menu a:hover { opacity: 0.8; } .search-accessibility { display: flex; align-items: center; margin-left: 1.5rem; } </style>
+	.corner {
+		width: 3em;
+		height: 3em;
+	}
+
+	.corner a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+	}
+
+	.corner img {
+		width: 2em;
+		height: 2em;
+		object-fit: contain;
+	}
+
+	nav {
+		display: flex;
+		justify-content: center;
+		--background: rgba(255, 255, 255, 0.7);
+	}
+
+	svg {
+		width: 2em;
+		height: 3em;
+		display: block;
+	}
+
+	path {
+		fill: var(--background);
+	}
+
+	ul {
+		position: relative;
+		padding: 0;
+		margin: 0;
+		height: 3em;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		list-style: none;
+		background: var(--background);
+		background-size: contain;
+	}
+
+	li {
+		position: relative;
+		height: 100%;
+	}
+
+	li[aria-current='page']::before {
+		--size: 6px;
+		content: '';
+		width: 0;
+		height: 0;
+		position: absolute;
+		top: 0;
+		left: calc(50% - var(--size));
+		border: var(--size) solid transparent;
+		border-top: var(--size) solid var(--color-theme-1);
+	}
+
+	nav a {
+		display: flex;
+		height: 100%;
+		align-items: center;
+		padding: 0 0.5rem;
+		color: var(--color-text);
+		font-weight: 700;
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		text-decoration: none;
+		transition: color 0.2s linear;
+	}
+
+	a:hover {
+		color: var(--color-theme-1);
+	}
+</style>
