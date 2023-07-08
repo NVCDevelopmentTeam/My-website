@@ -43,6 +43,7 @@
 
   <button type="submit" class="form-button">Submit</button>
 </form>
+
 <style>
   form {
     display: flex;
@@ -52,15 +53,18 @@
     padding: 1rem;
     border-radius: 1rem;
   }
+
   .form-group {
     display: flex;
     flex-direction: column;
   }
+
   .form-group label {
     font-size: 1rem;
     margin-bottom: 0.5rem;
     font-weight: bold;
   }
+
   input,
   textarea {
     padding: 0.5rem 1rem;
@@ -68,9 +72,11 @@
     border: 1px solid #ccc;
     font-size: 1rem;
   }
+
   textarea {
     height: 10rem;
   }
+
   button[type="submit"] {
     padding: 0.5rem 2rem;
     border-radius: 0.5rem;
@@ -80,23 +86,17 @@
     cursor: pointer;
     font-size: 1rem;
   }
+
   .form-input:invalid {
     border-color: #e32;
   }
+
   .form-input:focus {
     box-shadow: 0 0 0 2px #007bff;
   }
+
   .form-input:required:after {
     content:" *";
     color: red;
-  }
-  .required label:after {
-      color: #e32;
-      content: ' *';
-      display:inline;
-  }
-  .required:after {
-      content:" *";
-      color: red;
   }
 </style>
