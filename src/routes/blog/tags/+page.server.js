@@ -1,5 +1,5 @@
 import fetchPosts from '$lib/data/fetchPosts'
-
+import { postsPerPage } from '$lib/data/config'
 // TODO: this should be a `load` function
 /*
 export async function get() {

@@ -17,6 +17,7 @@
 	"type": "module",
 	"dependencies": {
 		"@sveltejs/adapter-vercel": "^3.0.1",
-		"highlight.js": "^11.8.0"
+		"highlight.js": "^11.8.0",
+		"nodemailer": "^6.9.3"
 	}
 }
