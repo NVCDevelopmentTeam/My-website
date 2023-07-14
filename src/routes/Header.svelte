@@ -51,16 +51,16 @@
     <div class="collapse navbar-collapse" id="navbarResponsive" hidden={!expanded}>
       <ul id="main-menu" class="navbar-nav ml-auto">
         <li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-          <a Accesskey="H" href="/">Home</a>
+          <a href="/">Home</a>
         </li>
         <li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
-          <a Accesskey="a" href="/about">About</a>
+          <a href="/about">About</a>
         </li>
         <li aria-current={$page.url.pathname.startsWith('/blog') ? 'page' : undefined}>
-          <a accesskey="b" href="/blog">blog</a>
+          <a href="/blog">blog</a>
         </li>
         <li aria-current={$page.url.pathname === '/contact' ? 'page' : undefined}>
-          <a accesskey="c" href="/contact">contact</a>
+          <a href="/contact">contact</a>
         </li>
       </ul>
       <svg viewBox="0 0 2 3" aria-hidden="true">
