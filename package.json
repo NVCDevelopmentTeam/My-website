@@ -7,8 +7,6 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
-    "lint": "prettier --ignore-path .gitignore --check -- plugin-search-dir=. . && eslint --ignore-path .gitignore .",
-    "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
@@ -24,7 +22,15 @@
 	"type": "module",
 	"dependencies": {
 		"@sveltejs/adapter-vercel": "^3.0.2",
+		"eslint": "^8.45.0",
+		"eslint-config-prettier": "^8.8.0",
 		"highlight.js": "^11.8.0",
-		"nodemailer": "^6.9.3"
+		"mdsvex": "^0.11.0",
+		"nodemailer": "^6.9.3",
+		"prettier": "^3.0.0",
+		"rehype-autolink-headings": "^6.1.1",
+		"rehype-slug": "^5.1.0",
+		"sass": "^1.63.6",
+		"svelte-preprocess": "^5.0.4"
 	}
 }
