@@ -68,6 +68,6 @@ const { PostContent } = data
 				{/each}
 			</ul>
 		</aside>
+<Comment comment={data.comment} />
 	{/if}
 </article> 
-<Comment comment={data.comment} />
