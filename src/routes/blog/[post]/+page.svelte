@@ -9,9 +9,11 @@ const {
 	excerpt,
 	date,
 	updated,
+	author,
 	coverImage,
 	coverWidth,
 	coverHeight,
+	tags,
 	categories 
 } = data.meta
 const { PostContent } = data
@@ -51,13 +53,12 @@ const { PostContent } = data
 		<b>Published:</b> {date}
 		<br>
 		<b>Updated:</b> {updated}
+		<br>
+	<p>Posted by</p> {author}
 	</div>
-<LikeAndShare />
-	<svelte:component this={PostContent} />
-
 	{#if categories}
-		<aside class="post-footer">
-			<h2>Posted in: </h2>
+		<aside class="post-header">
+			<p>Posted in: </p>
 			<ul>
 				{#each categories as category}
 					<li>
@@ -68,6 +69,22 @@ const { PostContent } = data
 				{/each}
 			</ul>
 		</aside>
-<Comment comment={data.comment} />
+	<LikeAndShare />
+	<svelte:component this={PostContent} />
+
+	{#if tags}
+		<aside class="post-footer">
+			<p>Tags: </p>
+			<ul>
+				{#each tags as tag}
+					<li>
+						<a href="/blog/tag/{tag}/">
+							{ tag }
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</aside>
+<Comment Comment={data.Comment} />
 	{/if}
 </article> 
