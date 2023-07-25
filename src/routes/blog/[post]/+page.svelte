@@ -70,4 +70,4 @@ const { PostContent } = data
 		</aside>
 	{/if}
 </article> 
-<Comment />
+<Comment comment={data.comment} />
