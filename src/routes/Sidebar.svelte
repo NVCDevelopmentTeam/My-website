@@ -1,27 +1,11 @@
 <script>
-  let links = [
-    { text: 'Home', slug: '/' },
-    { text: 'About', slug: '/about' },
-    { text: 'Blog', slug: '/blog' },
-    { text: 'Contact', slug: '/contact' }
-	  ];
-
-  function handleClick(link) {
-    console.log('Clicked on', link.text, link.slug);
-  }
+import LatestPosts from "$lib/components/LatestPosts.svelte";
+import SocialLinks from "$lib/components/SocialLinks.svelte";
 </script>
 
 <sidebar>
-  <ul>
-    {#each links as link}
-      <li>
-        <a href={link.slug} on:click={(e) => {
-          e.preventDefault();
-          handleClick(link);
-        }}>{link.text}</a>
-      </li>
-    {/each}
-  </ul>
+  <LatestPosts />
+<SocialLinks />
 </sidebar>
 
 <style>
