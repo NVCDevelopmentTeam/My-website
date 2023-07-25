@@ -52,7 +52,7 @@ const { PostContent } = data
 		<br>
 		<b>Updated:</b> {updated}
 	</div>
-<Like and share />
+<LikeAndShare />
 	<svelte:component this={PostContent} />
 
 	{#if categories}
