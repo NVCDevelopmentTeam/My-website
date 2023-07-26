@@ -1,40 +1,40 @@
-<!-- This file renders each individual blog post for reading. Be sure to update the svelte:head below -->
 <script>
+  import { head } from 'svelte/internal';
 	import LikeAndShare from '$lib/components/LikeAndShare.svelte';
 	import Comment from '$lib/components/Comment.svelte';
-export let data
 
-const {
-	title,
-	excerpt,
-	date,
-	updated,
-	author,
-	coverImage,
-	coverWidth,
-	coverHeight,
-	tags,
-	categories 
-} = data.meta
-const { PostContent } = data
+	export let data;
+
+	const {
+		title,
+		excerpt,
+		date,
+		updated,
+		author,
+		coverImage,
+		coverWidth,
+		coverHeight,
+		tags,
+		categories 
+	} = data.meta;
+
+	const { PostContent } = data;
 </script>
-
 
 <svelte:head>
 	<!-- Be sure to add your image files and un-comment the lines below -->
 	<title>{title}</title>
-	<meta data-key="description" name="description" content="{excerpt}">
+	<meta name="description" content="{excerpt}" />
 	<meta property="og:type" content="article" />
-	<meta property="og:title" content={title} />
-	<meta name="twitter:title" content={title} />
-	<meta property="og:description" content={excerpt} />
-	<meta name="twitter:description" content={excerpt} />
+	<meta property="og:title" content="{title}" />
+	<meta name="twitter:title" content="{title}" />
+	<meta property="og:description" content="{excerpt}" />
+	<meta name="twitter:description" content="{excerpt}" />
 	<!-- <meta property="og:image" content="https://yourdomain.com/image_path" /> -->
-	<meta property="og:image:width" content={coverWidth} />
-	<meta property="og:image:height" content={coverHeight} />
+	<meta property="og:image:width" content="{coverWidth}" />
+	<meta property="og:image:height" content="{coverHeight}" />
 	<!-- <meta name="twitter:image" content="https://yourdomain.com/image_path" /> -->
 </svelte:head>
-
 
 <article class="post">
 	<!-- You might want to add an alt frontmatter attribute. If not, leaving alt blank here works, too. -->
@@ -43,19 +43,20 @@ const { PostContent } = data
 		src="{coverImage}"
 		alt=""
 		style="aspect-ratio: {coverWidth} / {coverHeight};"
-		width={coverWidth}
-		height={coverHeight}
+		width="{coverWidth}"
+		height="{coverHeight}"
 	/>
 
-	<h1>{ title }</h1>
+	<h1>{title}</h1>
 	
 	<div class="meta">
 		<b>Published:</b> {date}
 		<br>
 		<b>Updated:</b> {updated}
 		<br>
-	<p>Posted by</p> {author}
+		<p>Posted by {author}</p>
 	</div>
+
 	{#if categories}
 		<aside class="post-header">
 			<p>Posted in: </p>
@@ -63,14 +64,17 @@ const { PostContent } = data
 				{#each categories as category}
 					<li>
 						<a href="/blog/category/{category}/">
-							{ category }
+							{category}
 						</a>
 					</li>
 				{/each}
 			</ul>
 		</aside>
+	{/if}
+
 	<LikeAndShare />
-	<svelte:component this={PostContent} />
+
+	<PostContent />
 
 	{#if tags}
 		<aside class="post-footer">
@@ -78,13 +82,14 @@ const { PostContent } = data
 			<ul>
 				{#each tags as tag}
 					<li>
-						<a href="/blog/tag/{tag}/">
-							{ tag }
+						<a href="/blog/tags/{tag}/">
+							{tag}
 						</a>
 					</li>
 				{/each}
 			</ul>
 		</aside>
-<Comment Comment={data.Comment} />
 	{/if}
-</article> 
+
+	<Comment Comment={data.Comment} />
+</article>
