@@ -1,42 +1,17 @@
 import { postsPerPage } from '/config';
-
-export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '' } = {}) => {
-  const postPaths = Object.keys(import.meta.glob('/src/lib/posts/*.md'));
+// in fetchPosts.js
   const posts = await Promise.all(
-    postPaths.map(async (path) => {
-      const resolver = import.meta.globEager(path);
-      const { metadata } = await resolver();
-      const slug = path.split('/').pop().slice(0, -3);
-      return { ...metadata, slug };
-    })
+    // added "as: 'raw'" as an option
+    Object.entries(import.meta.glob('/src/lib/posts/*.md', { as: 'raw' })).map(
+      async ([path, resolver]) => {
+        console.log(path);
+        // get the raw content of the file
+        const raw = await resolver();
+        // convert the markdown and extract metadata
+        const { metadata } = parseMD(raw);  
+        console.log(metadata);
+        const slug = path.split('/').pop().slice(0, -3);
+        return { ...metadata, slug };
+      }
+    )
   );
-
-  let sortedPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  if (category) {
-    sortedPosts = sortedPosts.filter((post) => post.categories.includes(category));
-  }
-
-  if (offset) {
-    sortedPosts = sortedPosts.slice(offset);
-  }
-
-  if (limit && limit < sortedPosts.length && limit !== -1) {
-    sortedPosts = sortedPosts.slice(0, limit);
-  }
-
-  sortedPosts = sortedPosts.map((post) => ({
-    title: post.title,
-    slug: post.slug,
-    excerpt: post.excerpt,
-    coverImage: post.coverImage,
-    coverWidth: post.coverWidth,
-    coverHeight: post.coverHeight,
-    date: post.date,
-    categories: post.categories,
-  }));
-
-  return {
-    posts: sortedPosts,
-  };
-};
