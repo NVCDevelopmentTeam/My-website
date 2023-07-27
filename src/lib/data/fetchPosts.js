@@ -1,43 +1,42 @@
-import { postsPerPage } from '/config'
+import { postsPerPage } from '/config';
 
-const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '' } = {}) => {
+export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '' } = {}) => {
+  const postPaths = Object.keys(import.meta.glob('/src/lib/posts/*.md'));
+  const posts = await Promise.all(
+    postPaths.map(async (path) => {
+      const resolver = import.meta.globEager(path);
+      const { metadata } = await resolver();
+      const slug = path.split('/').pop().slice(0, -3);
+      return { ...metadata, slug };
+    })
+  );
 
-	const posts = await Promise.all(
-		Object.entries(import.meta.glob('/src/lib/posts/*.md')).map(async ([path, resolver]) => {
-			const { metadata } = await resolver()
-			const slug = path.split('/').pop().slice(0, -3)
-			return { ...metadata, slug }
-		})
-	)
+  let sortedPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-	let sortedPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date))
-	
-	if (category) {
-    sortedPosts = sortedPosts.filter(post => post.categories.includes(category))
-	}
-  
-	if (offset) {
-		sortedPosts = sortedPosts.slice(offset)
-	}
-	
-	if (limit && limit < sortedPosts.length && limit != -1) {
-		sortedPosts = sortedPosts.slice(0, limit)
-	}
+  if (category) {
+    sortedPosts = sortedPosts.filter((post) => post.categories.includes(category));
+  }
 
-	sortedPosts = sortedPosts.map(post => ({
-		title: post.title,
-		slug: post.slug,
-		excerpt: post.excerpt,
-		coverImage: post.coverImage,
-		coverWidth: post.coverWidth, 
-		coverHeight: post.coverHeight,
-		date: post.date,
-		categories: post.categories,
-	}))
+  if (offset) {
+    sortedPosts = sortedPosts.slice(offset);
+  }
 
-	return {
-		posts: sortedPosts
-	}
-}
+  if (limit && limit < sortedPosts.length && limit !== -1) {
+    sortedPosts = sortedPosts.slice(0, limit);
+  }
 
-export default fetchPosts
+  sortedPosts = sortedPosts.map((post) => ({
+    title: post.title,
+    slug: post.slug,
+    excerpt: post.excerpt,
+    coverImage: post.coverImage,
+    coverWidth: post.coverWidth,
+    coverHeight: post.coverHeight,
+    date: post.date,
+    categories: post.categories,
+  }));
+
+  return {
+    posts: sortedPosts,
+  };
+};
