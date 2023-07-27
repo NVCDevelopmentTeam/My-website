@@ -1,15 +1,15 @@
 import nodemailer from "nodemailer";
 
-export const post = async (req) => {
+export async function post(request) {
   // Retrieve data from POST request body
-  const { name, email, message } = req.body;
+  const { name, email, message } = request.body;
 
   // Create transporter with your email service provider configuration
   const transporter = nodemailer.createTransport({
     service: "Gmail", // e.g. 'Gmail'
     auth: {
-      user: process.env.EMAIL_ADDRESS,
-      pass: process.env.EMAIL_PASSWORD,
+      user: import.meta.env.VITE_EMAIL_ADDRESS,
+      pass: import.meta.env.VITE_EMAIL_PASSWORD,
     },
   });
 
@@ -34,4 +34,4 @@ export const post = async (req) => {
       body: error.message,
     };
   }
-};
+}
