@@ -1,4 +1,4 @@
-import { postsPerPage } from '$lib/config'
+import { postsPerPage } from '$lib/data/config'
 
 const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '' } = {}) => {
 
