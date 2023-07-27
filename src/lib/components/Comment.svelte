@@ -1,5 +1,5 @@
 <script>
-Export comment from "$lib/data/comment.js";
+import Comment from "$lib/data/Comment";
   import {
     Menu,
     MenuButton,
