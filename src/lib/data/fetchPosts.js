@@ -1,12 +1,12 @@
-import { postsPerPage } from '/config';
-import { parseMD } from './parseMD';
+import { postsPerPage } from '$lib/config';
+import { parseMD } from '$lib/posts/parseMD';
 
 export async function fetchPosts() {
-  const postPaths = Object.keys(import.meta.globEager('/src/lib/posts/*.md'));
+  const postPaths = Object.keys(import.meta.globEager('../posts/*.md'));
 
   const posts = await Promise.all(
     postPaths.map(async (path) => {
-      const raw = (await import(path)).default;
+      const raw = (await import(`../../posts/${path}`)).default;
       const metadata = parseMD(raw);
       const slug = path.split('/').pop().slice(0, -3);
       return { ...metadata, slug };
