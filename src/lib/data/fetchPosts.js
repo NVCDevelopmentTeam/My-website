@@ -1,4 +1,4 @@
-import { postsPerPage } from './config';
+import { postsPerPage } from '/config';
 import { parseMD } from '$lib/posts/parseMD';
 
 export async function fetchPosts() {
