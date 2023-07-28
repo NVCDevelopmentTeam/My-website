@@ -6,7 +6,7 @@ export async function fetchPosts() {
 
   const posts = await Promise.all(
     postPaths.map(async (path) => {
-      const raw = import.meta.globEager(path).default;
+      const raw = (await import(path)).default;
       const metadata = parseMD(raw);
       const slug = path.split('/').pop().slice(0, -3);
       return { ...metadata, slug };
