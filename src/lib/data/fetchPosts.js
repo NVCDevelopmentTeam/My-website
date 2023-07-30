@@ -1,4 +1,4 @@
-import { postsPerPage } from '$lib/config';
+import { postsPerPage } from '/config';
 import { parseMD } from '$lib/posts/parseMD';
 import md from 'rollup-plugin-md';
 
