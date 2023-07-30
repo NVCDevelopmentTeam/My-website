@@ -1,16 +1,8 @@
 {
-  "buildCommand": "NPm run  build"
-}
-{
-  "cleanUrls": true
-}
-{
-  "devCommand": "Npm run dev"
-}
-{
-  "framework": "Sveltekit"
-}
-{
+  "buildCommand": "npm run build",
+  "cleanUrls": true,
+  "devCommand": "npm run dev",
+  "framework": "sveltekit",
   "functions": {
     "api/test.js": {
       "memory": 3008,
@@ -19,27 +11,17 @@
     "api/*.js": {
       "memory": 3008,
       "maxDuration": 30
-    }
-  }
-}
-{
-  "functions": {
+    },
     "pages/blog/[hello].tsx": {
       "memory": 1024
     },
     "src/pages/isr/**/*": {
       "maxDuration": 10
-    }
-  }
-}
-{
-  "functions": {
+    },
     "api/test.php": {
       "runtime": "vercel-php@0.5.2"
     }
-  }
-}
-{
+  },
   "headers": [
     {
       "source": "/service-worker.js",
@@ -82,31 +64,27 @@
         }
       ]
     }
-  ]
-}
-{
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./"
-}
-{
-  "installCommand": "npm install"
-}
-{
-  "outputDirectory": "build"
-}
-{
-  "public": true
-}
-{
-  "redirects": [{ "source": "/me", "destination": "/profile.html" }]
-}
-{
+  ],
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
+  "installCommand": "npm install",
+  "outputDirectory": "build",
+  "public": true,
   "redirects": [
-    { "source": "/user", "destination": "/api/user", "permanent": false }
+    {
+      "source": "/me",
+      "destination": "/profile.html"
+    },
+    {
+      "source": "/user",
+      "destination": "/api/user",
+      "permanent": false
+    }
+  ],
+  "regions": ["sfo1"],
+  "rewrites": [
+    {
+      "source": "/about",
+      "destination": "/about-our-company.html"
+    }
   ]
-}
-{
-  "regions": ["sfo1"]
-}
-{
-  "rewrites": [{ "source": "/about", "destination": "/about-our-company.html" }]
 }
