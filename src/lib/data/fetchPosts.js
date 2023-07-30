@@ -1,5 +1,6 @@
 import { postsPerPage } from '$lib/config';
 import { parseMD } from '$lib/posts/parseMD';
+import md from 'rollup-plugin-md';
 
 export async function fetchPosts() {
   const postPaths = Object.keys(import.meta.globEager('$lib/posts/*.md'));
