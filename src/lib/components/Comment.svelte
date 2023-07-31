@@ -198,12 +198,13 @@
     {/if}
   {/if}
 </div>
- /* Global styles */
-  body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    padding: 20px;
-  }
+<style>
+/* Global styles */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  padding: 20px;
+}
 
   /* Comment section styles */
   .comment {
