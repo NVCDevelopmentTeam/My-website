@@ -2,7 +2,7 @@
   // Import any necessary dependencies
   import { onMount } from "svelte";
   import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/svelte";
-
+import { Menu } from '@svelteuidev/core';
   // Declare any reactive variables
   let email = "";
   let author = "";
