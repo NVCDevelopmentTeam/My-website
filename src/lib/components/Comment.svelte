@@ -95,10 +95,6 @@
   }
 </script>
 
-<style>
-  /* Define your CSS styles here */
-</style>
-
 <div class="comment">
   <form on:submit={handleSubmit}>
     <h2>Write a comment</h2>
