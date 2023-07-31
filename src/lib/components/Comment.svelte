@@ -198,6 +198,7 @@
     {/if}
   {/if}
 </div>
+
 <style>
 /* Global styles */
 body {
