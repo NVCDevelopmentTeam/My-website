@@ -1,4 +1,4 @@
-import statsService from '../../services/statsService.js';
+import statsService from "$lib/data/statsService.js';
 
 export async function get() {
   const { visitsToday, totalVisits, totalVisitors, totalCountries } = await statsService.getStats();

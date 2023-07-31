@@ -1,6 +1,6 @@
 <script>
   import { useState } from "svelte";
-  import { post } from "$lib/api";
+  import { post } from "$lib/data/subscribe";
 
   let email = "";
   let successMessage = "";
