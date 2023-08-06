@@ -132,27 +132,27 @@
           <li class="comment-item">
             <div class="comment-header">
               <p>{comment.author} - {comment.date}</p>
-              {#if !comment.pinned}
-                <Menu>
-                  <MenuButton>More</MenuButton>
-                  <MenuItems>
-                    <MenuItem let:active>
-                      <a on:click={() => handleReply(comment)}>Reply</a>
-                    </MenuItem>
-                    <MenuItem let:active>
-                      <a on:click={() => handlePin(comment)}>Pin</a>
-                    </MenuItem>
-                    <MenuItem let:active>
-                      <a on:click={() => handleReport(comment)}>Report</a>
-                    </MenuItem>
-                    <MenuItem let:active>
-                      <a on:click={() => handleDelete(comment)}>Delete</a>
-                    </MenuItem>
-                  </MenuItems>
-                </Menu>
-              {else}
-                <a on:click={() => handleUnpin(comment)}>Unpin</a>
-              {/if}
+ {#if !comment.pinned}
+   <Menu>
+     <MenuButton>More</MenuButton>
+     <MenuItems>
+       <MenuItem let:active>
+         <a on:click={() => handleReply(comment)}>Reply</a>
+       </MenuItem>
+       <MenuItem let:active>
+         <a on:click={() => handlePin(comment)}>Pin</a>
+       </MenuItem>
+       <MenuItem let:active>
+         <a on:click={() => handleReport(comment)}>Report</a>
+       </MenuItem>
+       <MenuItem let:active>
+         <a on:click={() => handleDelete(comment)}>Delete</a>
+       </MenuItem>
+     </MenuItems>
+   </Menu>
+ {else}
+   <a on:click={() => handleUnpin(comment)}>Unpin</a>
+ {/if}
             </div>
             <div class="comment-content">
               <p>{comment.content}</p>
