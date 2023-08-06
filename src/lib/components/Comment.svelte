@@ -2,7 +2,7 @@
   // Import any necessary dependencies
   import { onMount } from "svelte";
   import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/svelte";
-import { Menu } from '@svelteuidev/core';
+
   // Declare any reactive variables
   let email = "";
   let author = "";
@@ -59,8 +59,6 @@ import { Menu } from '@svelteuidev/core';
     content = "";
   }
 
-  // Other functions (handleLike, handleDislike, handlePin, handleUnpin, handleReport, handleDelete, handleReply, handlePageChange) remain unchanged.
-
   // Define any lifecycle hooks
   onMount(() => {
     // Do something when the component is mounted
@@ -85,8 +83,8 @@ import { Menu } from '@svelteuidev/core';
   }
 
   // Create reactive variables to get paginated comments and total pages
-  let paginatedComments = getPaginatedComments();
-  let totalPages = getTotalPages();
+  let paginatedComments;
+  let totalPages;
 
   // Reactive statement to keep the paginated comments and total pages updated
   $: {
@@ -111,18 +109,16 @@ import { Menu } from '@svelteuidev/core';
 
   {#if comments.length > 0}
     <h2>Comments:</h2>
-
     {#if comments.length > 0}
       <p>
         <strong>Comments:</strong> {comments.length}
       </p>
-
       <!-- Pagination -->
       {#if totalPages > 1}
         <div class="pagination">
           {#each Array(totalPages) as _, i}
             <button
-              class={currentPage === i + 1 ? "active" : ""}
+              class:selected={currentPage === i + 1}
               on:click={() => (currentPage = i + 1)}
             >
               {i + 1}
@@ -135,7 +131,7 @@ import { Menu } from '@svelteuidev/core';
         {#each paginatedComments as comment}
           <li class="comment-item">
             <div class="comment-header">
-              <p>{comment.author} - {comment.date.toLocaleString()}</p>
+              <p>{comment.author} - {comment.date}</p>
               {#if !comment.pinned}
                 <Menu>
                   <MenuButton>More</MenuButton>
@@ -154,7 +150,7 @@ import { Menu } from '@svelteuidev/core';
                     </MenuItem>
                   </MenuItems>
                 </Menu>
-              {:else}
+              {else}
                 <a on:click={() => handleUnpin(comment)}>Unpin</a>
               {/if}
             </div>
@@ -177,7 +173,7 @@ import { Menu } from '@svelteuidev/core';
                 {#each comment.replies as reply}
                   <li class="comment-item reply">
                     <div class="comment-header">
-                      <p>{reply.author} - {reply.date.toLocaleString()}</p>
+                      <p>{reply.author} - {reply.date}</p>
                     </div>
                     <div class="comment-content">
                       <p>{reply.content}</p>
@@ -196,12 +192,12 @@ import { Menu } from '@svelteuidev/core';
 </div>
 
 <style>
-/* Global styles */
-body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-  padding: 20px;
-}
+  /* Global styles */
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+  }
 
   /* Comment section styles */
   .comment {
