@@ -1,6 +1,7 @@
 <script>
   // Import any necessary dependencies
   import { onMount } from "svelte";
+	import { Divider, Menu, Text } from '@svelteuidev/core';
   import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/svelte";
 
   // Declare any reactive variables
