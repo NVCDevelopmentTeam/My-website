@@ -88,7 +88,7 @@
         <MenuButton>More</MenuButton>
         <MenuItems>
             <MenuItem let:active>
-                <button  on:click={() => handleReply(comment)}>Reply</button>
+                <button on:click={() => handleReply(comment)}>Reply</button>
             </MenuItem>
             <MenuItem let:active>
                 <button on:click={() => handlePin(comment)}>Pin</button>
@@ -101,8 +101,6 @@
             </MenuItem>
         </MenuItems>
     </Menu>
-{else}
-    <button on:click={() => handleUnpin(comment)}>Unpin</button>
 {/if}
             </div>
             <div class="comment-content">
