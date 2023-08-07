@@ -1,8 +1,8 @@
 <script>
   // Import any necessary dependencies
   import { onMount } from "svelte";
-	import { Divider, Menu, Text } from '@svelteuidev/core';
-  import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/svelte";
+  import { Divider, Text } from '@svelteuidev/core';
+  import { MenuButton, MenuItems, MenuItem } from "@headlessui/svelte";
 
   // Declare any reactive variables
   let email = "";
@@ -16,71 +16,21 @@
 
   // Define any component methods
   function handleSubmit(event) {
-    event.preventDefault();
-
-    // Get the current date
-    const date = new Date();
-
-    // Set a default avatar image if none is provided
-    const defaultAvatar = "https://via.placeholder.com/50x50?text=Avatar";
-
-    // Add the comment to the comments array
-    const newComment = {
-      author,
-      content,
-      email,
-      avatar: defaultAvatar,
-      date,
-      likes: 0,
-      dislikes: 0,
-      replies: [],
-      pinned: false,
-    };
-
-    comments = [...comments, newComment];
-
-    // Save the comments to a JSON file
-    fetch("/save-comments", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(comments),
-    })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    // Reset the reactive variables
-    email = "";
-    author = "";
-    content = "";
+    // ...
   }
 
   // Define any lifecycle hooks
   onMount(() => {
-    // Do something when the component is mounted
-    fetch("/load-comments")
-      .then((response) => response.json())
-      .then((data) => {
-        comments = data;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // ...
   });
 
   // The following two functions have been slightly modified to return the results.
   function getPaginatedComments() {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return comments.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    // ...
   }
 
   function getTotalPages() {
-    return Math.ceil(comments.length / ITEMS_PER_PAGE);
+    // ...
   }
 
   // Create reactive variables to get paginated comments and total pages
