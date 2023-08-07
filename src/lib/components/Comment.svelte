@@ -1,8 +1,7 @@
 <script>
   // Import any necessary dependencies
   import { onMount } from "svelte";
-  import { Divider, Text } from '@svelteuidev/core';
-  import { MenuButton, MenuItems, MenuItem } from "@headlessui/svelte";
+  import { Divider, Text, Menu, MenuButton, MenuItems, MenuItem } from '@svelteuidev/core';
 
   // Declare any reactive variables
   let email = "";
