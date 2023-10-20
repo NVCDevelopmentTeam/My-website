@@ -41,6 +41,31 @@
     paginatedComments = getPaginatedComments();
     totalPages = getTotalPages();
   }
+
+  // Define event handlers for comment actions
+  function handleReply(comment) {
+    // ...
+  }
+
+  function handlePin(comment) {
+    // ...
+  }
+
+  function handleReport(comment) {
+    // ...
+  }
+
+  function handleDelete(comment) {
+    // ...
+  }
+
+  function handleLike(comment) {
+    // ...
+  }
+
+  function handleDislike(comment) {
+    // ...
+  }
 </script>
 
 <div class="comment">
@@ -59,83 +84,81 @@
 
   {#if comments.length > 0}
     <h2>Comments:</h2>
-    {#if comments.length > 0}
-      <p>
-        <strong>Comments:</strong> {comments.length}
-      </p>
-      <!-- Pagination -->
-      {#if totalPages > 1}
-        <div class="pagination">
-          {#each Array(totalPages) as _, i}
-            <button
-              class:selected={currentPage === i + 1}
-              on:click={() => (currentPage = i + 1)}
-            >
-              {i + 1}
-            </button>
-          {/each}
-        </div>
-      {/if}
-
-      <ul>
-        {#each paginatedComments as comment}
-          <li class="comment-item">
-            <div class="comment-header">
-              <p>{comment.author} - {comment.date}</p>
-{#if !comment.pinned}
-    <Menu>
-        <MenuButton>More</MenuButton>
-        <MenuItems>
-            <MenuItem let:active>
-                <button on:click={() => handleReply(comment)}>Reply</button>
-            </MenuItem>
-            <MenuItem let:active>
-                <button on:click={() => handlePin(comment)}>Pin</button>
-            </MenuItem>
-            <MenuItem let:active>
-                <button on:click={() => handleReport(comment)}>Report</button>
-            </MenuItem>
-            <MenuItem let:active>
-                <button on:click={() => handleDelete(comment)}>Delete</button>
-            </MenuItem>
-        </MenuItems>
-    </Menu>
-{/if}
-            </div>
-            <div class="comment-content">
-              <p>{comment.content}</p>
-              <div class="comment-actions">
-                <button on:click={() => handleLike(comment)}>Like</button>
-                <span>{comment.likes}</span>
-                <button on:click={() => handleDislike(comment)}>Dislike</button>
-                <span>{comment.dislikes}</span>
-                {#if comment.replies.length > 0}
-                  <button on:click={() => (comment.showReplies = !comment.showReplies)}>
-                    {comment.showReplies ? "Hide Replies" : "Show Replies"} ({comment.replies.length})
-                  </button>
-                {/if}
-              </div>
-            </div>
-            {#if comment.replies.length > 0 && comment.showReplies}
-              <ul>
-                {#each comment.replies as reply}
-                  <li class="comment-item reply">
-                    <div class="comment-header">
-                      <p>{reply.author} - {reply.date}</p>
-                    </div>
-                    <div class="comment-content">
-                      <p>{reply.content}</p>
-                    </div>
-                  </li>
-                {/each}
-              </ul>
-            {/if}
-          </li>
+    <p>
+      <strong>Comments:</strong> {comments.length}
+    </p>
+    <!-- Pagination -->
+    {#if totalPages > 1}
+      <div class="pagination">
+        {#each Array(totalPages) as _, i}
+          <button
+            class:selected={currentPage === i + 1}
+            on:click={() => (currentPage = i + 1)}
+          >
+            {i + 1}
+          </button>
         {/each}
-      </ul>
-    {:else}
-      <p>No comments yet.</p>
+      </div>
     {/if}
+
+    <ul>
+      {#each paginatedComments as comment}
+        <li class="comment-item">
+          <div class="comment-header">
+            <p>{comment.author} - {comment.date}</p>
+            {#if !comment.pinned}
+              <Menu>
+                <MenuButton>More</MenuButton>
+                <MenuItems>
+                  <MenuItem let:active>
+                    <button on:click={() => handleReply(comment)}>Reply</button>
+                  </MenuItem>
+                  <MenuItem let:active>
+                    <button on:click={() => handlePin(comment)}>Pin</button>
+                  </MenuItem>
+                  <MenuItem let:active>
+                    <button on:click={() => handleReport(comment)}>Report</button>
+                  </MenuItem>
+                  <MenuItem let:active>
+                    <button on:click={() => handleDelete(comment)}>Delete</button>
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
+            {/if}
+          </div>
+          <div class="comment-content">
+            <p>{comment.content}</p>
+            <div class="comment-actions">
+              <button on:click={() => handleLike(comment)}>Like</button>
+              <span>{comment.likes}</span>
+              <button on:click={() => handleDislike(comment)}>Dislike</button>
+              <span>{comment.dislikes}</span>
+              {#if comment.replies.length > 0}
+                <button on:click={() => (comment.showReplies = !comment.showReplies)}>
+                  {comment.showReplies ? "Hide Replies" : "Show Replies"} ({comment.replies.length})
+                </button>
+              {/if}
+            </div>
+          </div>
+          {#if comment.replies.length > 0 && comment.showReplies}
+            <ul>
+              {#each comment.replies as reply}
+                <li class="comment-item reply">
+                  <div class="comment-header">
+                    <p>{reply.author} - {reply.date}</p>
+                  </div>
+                  <div class="comment-content">
+                    <p>{reply.content}</p>
+                  </div>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </li>
+      {/each}
+    </ul>
+  {:else}
+    <p>No comments yet.</p>
   {/if}
 </div>
 
