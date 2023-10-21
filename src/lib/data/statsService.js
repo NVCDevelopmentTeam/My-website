@@ -1,5 +1,5 @@
-import database from './Database.js';
-import analyticsService from './AnalyticsService.js';
+import database from '$lib/data/Database';
+import analyticsService from '$lib/data/AnalyticsService';
 
 async function getStats() {
   const visitsToday = await analyticsService.getVisitsToday();
