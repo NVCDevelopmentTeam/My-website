@@ -1,7 +1,7 @@
 <script>
   // Import any necessary dependencies
   import { onMount } from "svelte";
-  import { Divider, Text, Menu, MenuButton, MenuItems, MenuItem } from '@svelteuidev/core';
+  import { Divider, Text, Menu, MenuButton, MenuItems, MenuItem } from "svelte";
 
   // Declare any reactive variables
   let email = "";
@@ -178,104 +178,5 @@
   .comment h2 {
     font-size: 18px;
     margin-bottom: 10px;
-  }
-
-  .comment form {
-    margin-bottom: 20px;
-  }
-
-  .comment label {
-    display: block;
-    margin-bottom: 10px;
-  }
-
-  .comment input[type="text"],
-  .comment textarea {
-    width: 100%;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  .comment button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 8px 15px;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .comment button:hover {
-    background-color: #0056b3;
-  }
-
-  /* Comment list styles */
-  .comment ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .comment-item {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  .comment-item.reply {
-    margin-top: 10px;
-    margin-left: 20px;
-    border-color: #ddd;
-  }
-
-  .comment-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-
-  .comment-actions {
-    margin-top: 10px;
-  }
-
-  .comment-actions button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 5px 10px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 5px;
-  }
-
-  .comment-actions span {
-    margin-left: 5px;
-  }
-
-  /* Pagination styles */
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-
-  .pagination button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 5px 10px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 5px;
-  }
-
-  .pagination button.active {
-    background-color: #0056b3;
   }
 </style>
