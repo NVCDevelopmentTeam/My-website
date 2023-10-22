@@ -2,6 +2,12 @@
 import Database from '$lib/data/Database';
 import AnalyticsService from '$lib/data/AnalyticsService';
 
+// Create an instance of the Database class
+const database = new Database();
+
+// Create an instance of the AnalyticsService class
+const analytics = new AnalyticsService(database);
+
 // Define an async function to get the stats
 export async function getStats() {
   // Use a try-catch block to handle errors
