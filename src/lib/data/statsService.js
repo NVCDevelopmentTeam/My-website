@@ -1,5 +1,5 @@
 import database from '$lib/data/database';
-import analyticsService from '$lib/data/analyticsService';
+import analytics from '$lib/data/analytics';
 
 export async function getStats() {
   try {
