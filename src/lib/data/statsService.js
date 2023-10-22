@@ -1,6 +1,6 @@
 // Import modules from the lib folder
 import database from '$lib/data/database'
-import analytics from '$lib/data/analytics'
+import analytics from '$lib/data/analytics';
 
 // Define an async function to get the stats
 export async function getStats() {
