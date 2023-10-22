@@ -1,4 +1,3 @@
-// src/database.js
 import { writable } from 'svelte/store';
 
 // Initialize an empty array to act as your in-memory database

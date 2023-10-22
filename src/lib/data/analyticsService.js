@@ -1,5 +1,3 @@
-// src/analyticsService.js
-
 // Example implementation using Google Analytics
 
 // Replace 'YOUR_GA_TRACKING_ID' with your Google Analytics Tracking ID
