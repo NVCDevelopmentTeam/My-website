@@ -1,7 +1,7 @@
 <script>
   // Import any necessary dependencies
   import { onMount } from "svelte";
-import Comment from "$lib/data/comment';
+import Comment from '$lib/data/Comment';
   import { Divider, Text, Menu, MenuButton, MenuItems, MenuItem } from "svelte";
 
   // Declare any reactive variables
