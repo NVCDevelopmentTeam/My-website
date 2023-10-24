@@ -13,10 +13,12 @@ export async function getStats() {
   // Use a try-catch block to handle errors
   try {
     // Await the results of the async functions
-    const visitsToday = await analytics.getVisitsToday();
-    const totalVisits = await database.getTotalVisits();
-    const totalVisitors = await database.getTotalVisitors();
-    const totalCountries = await database.getTotalCountries();
+    const [visitsToday, totalVisits, totalVisitors, totalCountries] = await Promise.all([
+      analytics.getVisitsToday(),
+      database.getTotalVisits(),
+      database.getTotalVisitors(),
+      database.getTotalCountries()
+    ]);
 
     // Return an object with the stats
     return {
