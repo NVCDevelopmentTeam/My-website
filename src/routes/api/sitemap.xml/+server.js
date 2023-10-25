@@ -2,7 +2,7 @@
 // It's helpful for SEO but does require you to keep it updated to reflect the routes of your website.
 // It is OK to delete this file if you'd rather not bother with it.
 
-import { posts } from '$lib/data/posts'
+import { posts } from '$lib/data/fetchPosts'
 import { website } from '$lib/info'
 
 export const prerender = true
