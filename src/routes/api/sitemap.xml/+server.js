@@ -3,7 +3,7 @@
 // It is OK to delete this file if you'd rather not bother with it.
 
 import { posts } from '$lib/data/fetchPosts'
-import { website } from '$lib/info'
+import { website } from '$lib/data/info'
 
 export const prerender = true
 
