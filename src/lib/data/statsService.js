@@ -1,8 +1,8 @@
-import Database from '$lib/data/database';
+import database from '$lib/data/database';
 import AnalyticsService from '$lib/data/analyticsService';
 
 // Create an instance of the Database class
-const databaseInstance = new Database();
+const databaseInstance = database;
 
 // Create an instance of the AnalyticsService class
 const analytics = new AnalyticsService(databaseInstance);

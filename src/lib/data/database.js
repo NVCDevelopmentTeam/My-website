@@ -4,4 +4,7 @@ import { writable } from 'svelte/store';
 const initialData = [];
 
 // Create a writable store to manage your database data
-export const database = writable(initialData);
+const database = writable(initialData);
+
+// Export the database as the default export
+export default database;
