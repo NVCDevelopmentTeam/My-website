@@ -1,12 +1,12 @@
 // Import modules from the lib folder
-import database from '$lib/data/database'
-import AnalyticsService from '$lib/data/AnalyticsService'
+import Database from '$lib/data/database';
+import AnalyticsService from '$lib/data/AnalyticsService';
 
-// Create an instance of the database class
-const database = new database();
+// Create an instance of the Database class
+const databaseInstance = new Database();
 
 // Create an instance of the AnalyticsService class
-const analytics = new AnalyticsService(database);
+const analytics = new AnalyticsService(databaseInstance);
 
 // Define an async function to get the stats
 export async function getStats() {
@@ -15,9 +15,9 @@ export async function getStats() {
     // Await the results of the async functions
     const [visitsToday, totalVisits, totalVisitors, totalCountries] = await Promise.all([
       analytics.getVisitsToday(),
-      database.getTotalVisits(),
-      database.getTotalVisitors(),
-      database.getTotalCountries()
+      databaseInstance.getTotalVisits(),
+      databaseInstance.getTotalVisitors(),
+      databaseInstance.getTotalCountries()
     ]);
 
     // Return an object with the stats
