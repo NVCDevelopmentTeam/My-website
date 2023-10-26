@@ -1,5 +1,5 @@
 <script>
-  import { linkedin, instagram, twitter, github } from '$lib/data/info'
+  import { linkedin, instagram, twitter, github } from '$lib/data/config'
 </script>
 
 {#if twitter}

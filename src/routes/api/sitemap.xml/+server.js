@@ -2,13 +2,13 @@
 // It's helpful for SEO but does require you to keep it updated to reflect the routes of your website.
 // It is OK to delete this file if you'd rather not bother with it.
 
-import { posts } from '$lib/data/fetchPosts'
-import { website } from '$lib/data/config'
+import { posts } from '$lib/data/fetchPosts';
+import { website } from '$lib/data/config' // <-- Corrected import path
 
-export const prerender = true
+export const prerender = true;
 
 // make sure this matches your post route
-const getPostUrl = (slug) => `${website}/post/${slug}`
+const getPostUrl = (slug) => `${website.url}/post/${slug}`; // <-- Updated to use the "url" property
 
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
@@ -32,7 +32,7 @@ export async function GET({ setHeaders }) {
       xmlns:xhtml="http://www.w3.org/1999/xhtml"
     >
       <url>
-        <loc>${website}</loc>
+        <loc>${website.url}</loc>
         <priority>1.0</priority>
       </url>
 
@@ -52,7 +52,7 @@ export async function GET({ setHeaders }) {
           </url>`
         )
         .join('')}
-    </urlset>`
+    </urlset>`;
 
-  return new Response(xml)
+  return new Response(xml);
 }

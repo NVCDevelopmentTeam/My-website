@@ -33,3 +33,12 @@ export const navItems = [
     route: '/contact'
   }
 ];
+
+// Add the "website" variable export
+export const website = {
+  title: siteTitle,
+  description: siteDescription,
+  url: siteURL,
+  link: siteLink,
+  author: siteAuthor
+};
