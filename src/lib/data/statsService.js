@@ -1,6 +1,6 @@
 // Import modules from the lib folder
 import Database from '$lib/data/database';
-import AnalyticsService from '$lib/data/AnalyticsService';
+import analyticsService from '$lib/data/analyticsService';
 
 // Create an instance of the Database class
 const databaseInstance = new Database();
