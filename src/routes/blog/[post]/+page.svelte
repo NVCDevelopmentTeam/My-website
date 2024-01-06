@@ -49,14 +49,6 @@
 
 	<h1>{title}</h1>
 	
-	<div class="meta">
-		<b>Published:</b> {date}
-		<br>
-		<b>Updated:</b> {updated}
-		<br>
-		<b>Posted by:</b> {author}
-	</div>
-
 	{#if categories}
 		<aside class="post-header">
 			<b>Posted in: </b>
@@ -71,6 +63,13 @@
 			</ul>
 		</aside>
 	{/if}
+	<div class="meta">
+		<b>Posted by:</b> {author}
+		<br>
+		<b>Published:</b> {date}
+		<br>
+		<b>Updated:</b> {updated}
+	</div>
 
 	<LikeAndShare />
 
