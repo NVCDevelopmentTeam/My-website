@@ -1,26 +1,43 @@
-// import mdsvex and adapter from the respective packages
-import {mdsvex} from 'mdsvex';
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-auto'
+import { mdsvex } from 'mdsvex'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import rehypeSlug from 'rehype-slug'
 
-// create a configuration object for sveltekit
+/** @type {import('@sveltejs/kit').Config} */
 const config = {
-// specify file extensions to be used by sveltekit and mdsvex
-extensions: ['.svelte', '.md', '.svx'],
+	// Ensures both .svelte and .md files are treated as components (can be imported and used anywhere, or used as pages)
+	extensions: ['.svelte', '.md'],
 
-// add mdsvex to sveltekit preprocessing
-preprocess: [
-mdsvex ({
-// specify file extensions to be used by mdsvex
-extensions: ['.md', '.svx'],
-})
-],
+	preprocess: [
+		mdsvex({
+			// The default mdsvex extension is .svx; this overrides that.
+			extensions: ['.md'],
 
-// configure adapter for sveltekit
-kit: {
-// use automatic adapters to match your environment
-adapter: adapter()
-}
+			// Adds IDs to headings, and anchor links to those IDs. Note: must stay in this order to work.
+			rehypePlugins: [
+				rehypeSlug,
+				rehypeAutolinkHeadings,
+			],
+		}),
+	],
+
+	kit: {
+		adapter: adapter(),
+    prerender: {
+      entries: [
+        '*',
+        '/api/posts/page/*',
+        '/blog/category/*/page/',
+        '/blog/category/*/page/*',
+        '/blog/category/page/',
+        '/blog/category/page/*',
+        '/blog/page/',
+        '/blog/page/*',
+        '/blog/tags/',
+        '/blog/tags/*',
+      ]
+    }
+	}
 };
 
-// export configuration object
 export default config;
