@@ -1,26 +1,40 @@
-<script> 
-import { onMount } from 'svelte'; 
-import { fetch } from '@sveltejs/kit';
-let posts = [];
-onMount(async () => { const response = await fetch('/api/latest-posts'); 
-posts = await response.json(); }); 
+<script>
+  // Import the necessary stores
+  import { page } from '$app/stores'; // To determine the current page
+  import fetchPosts from '$lib/data/fetchPosts'; // Replace with actual data
+
+  // Get a list of recently posted articles (for example: 5 recent articles)
+  const recentPosts = posts.slice(0, 5); // Change the number of posts as desired
 </script>
-<div class=“latest-posts”> <h2>Latest posts</h2>
-{#if posts.length > 0} {#each posts as post} <div class=“latest-post”> <p class=“latest-post-title”>{post.title}</p> </div> {/each} {:else} <p>No posts found.</p> {/if} </div>
+
+<ul class="recent-posts">
+  {#each recentPosts as post}
+    <li>
+      <a href={`/posts/${post.slug}`} class:active={$page.url.pathname === `/posts/${post.slug}`}>
+        {post.title}
+      </a>
+    </li>
+  {/each}
+</ul>
+
 <style>
-  .latest-posts {
-    /* add your styles for the .latest-posts container here */
+  /* CSS for post list */
+  .recent-posts {
+    list-style: none;
+    padding: 0;
   }
-  
-  .latest-posts h2 {
-    /* add your styles for the .latest-posts heading here */
+
+  .recent-posts li {
+    margin-bottom: 1rem;
   }
-  
-  .latest-post {
-    /* add your styles for each .latest-post div here */
+
+  .recent-posts a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
   }
-  
-  .latest-post-title {
-    /* add your styles for the .latest-post-title paragraph here */
+
+  .recent-posts a.active {
+    background-color: rgba(0, 0, 0, 0.1); /* Change background color when post is selected */
   }
 </style>
