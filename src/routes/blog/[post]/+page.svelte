@@ -14,8 +14,8 @@
 		coverImage,
 		coverWidth,
 		coverHeight,
-		tags,
-		categories 
+		categories, 
+		tags
 	} = data.meta;
 
 	const { PostContent } = data;
@@ -54,12 +54,12 @@
 		<br>
 		<b>Updated:</b> {updated}
 		<br>
-		<p>Posted by {author}</p>
+		<b>Posted by:</b> {author}
 	</div>
 
 	{#if categories}
 		<aside class="post-header">
-			<p>Posted in: </p>
+			<b>Posted in: </b>
 			<ul>
 				{#each categories as category}
 					<li>

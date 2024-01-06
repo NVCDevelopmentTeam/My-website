@@ -1,15 +1,13 @@
-import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
-import md from 'rollup-plugin-md';
+import { sveltekit } from '@sveltejs/kit/vite'
 
-export default defineConfig({
-	plugins: [
-		sveltekit(),
-		md({
-			output: 'html', // or 'svelte'
-			preprocess: [
-				// add your preprocessors here
-			]
-		})
-	]
-});
+/** @type {import('vite').UserConfig} */
+const config = {
+	plugins: [sveltekit()],
+	server: {
+		fs: {
+			allow: ['.']
+		}
+	}
+};
+
+export default config
