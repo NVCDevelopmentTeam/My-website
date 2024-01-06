@@ -1,13 +1,26 @@
+// import mdsvex and adapter from the respective packages
+import {mdsvex} from 'mdsvex';
 import adapter from '@sveltejs/adapter-auto';
 
-/** @type {import('@sveltejs/kit').Config} */
+// create a configuration object for sveltekit
 const config = {
-	kit: {
-		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
-		// If your environment is not supported or you settled on a specific environment, switch out the adapter.
-		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
-		adapter: adapter()
-	}
+// specify file extensions to be used by sveltekit and mdsvex
+extensions: ['.svelte', '.md', '.svx'],
+
+// add mdsvex to sveltekit preprocessing
+preprocess: [
+mdsvex ({
+// specify file extensions to be used by mdsvex
+extensions: ['.md', '.svx'],
+})
+],
+
+// configure adapter for sveltekit
+kit: {
+// use automatic adapters to match your environment
+adapter: adapter()
+}
 };
 
+// export configuration object
 export default config;
