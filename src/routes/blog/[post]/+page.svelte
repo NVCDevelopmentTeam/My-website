@@ -136,4 +136,4 @@
 .post-footer ul li:last-child {
   margin-right: 0;
 }
-</sstyle>
+</style>
