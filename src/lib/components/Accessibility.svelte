@@ -47,7 +47,7 @@
   });
 </script>
 
-<button type="button" aria-label="Toggle dark mode" on:click={toggleDarkMode}>
+<button type="button" aria-label="Toggle dark mode"         role="switch"         aria-checked={isDarkMode} on:click={toggleDarkMode}>
   Toggle Dark Mode
 </button>
 
