@@ -1,11 +1,11 @@
-import database from '$lib/data/database';
-import analyticsService from '$lib/data/analyticsService';
+import Database from '$lib/data/database';
+import AnalyticsService from '$lib/data/analyticsService';
 
 // Create an instance of the Database class
-const databaseInstance = new database();
+const databaseInstance = new Database();
 
-// Create an instance of the analyticsService class
-const analytics = new analyticsService(databaseInstance);
+// Create an instance of the AnalyticsService class
+const analytics = new AnalyticsService(databaseInstance);
 
 export async function getStats() {
   try {
