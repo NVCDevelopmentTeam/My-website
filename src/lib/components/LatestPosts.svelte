@@ -1,7 +1,7 @@
 <script>
   // Import the necessary stores
   import { page } from '$app/stores'; // To determine the current page
-  import fetchPosts from '$lib/data/fetchPosts'; // Replace with actual data
+import { posts } from '$lib/data/fetchPosts';  // Replace with actual data
 
   // Get a list of recently posted articles (for example: 5 recent articles)
   const recentPosts = posts.slice(0, 5); // Change the number of posts as desired

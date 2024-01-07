@@ -1,0 +1,26 @@
+/* Import TailwindCSS base, components and utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define some custom classes for buttons */
+.btn {
+  @apply font-bold py-2 px-4 rounded;
+}
+
+.btn-blue {
+  @apply bg-blue-500 text-white;
+}
+
+.btn-blue:hover {
+  @apply bg-blue-700;
+}
+
+/* Use CSS custom properties to control the background color of boxes */
+.box {
+  width: 5em;
+  height: 5em;
+  border-radius: 0.5em;
+  margin: 0 0 1em 0;
+  background-color: var(--color, #ddd);
+}

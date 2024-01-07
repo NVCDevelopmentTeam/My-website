@@ -3,22 +3,26 @@
 // It is OK to delete this file if you'd rather not bother with it.
 
 import { posts } from '$lib/data/fetchPosts';
-import { website } from '$lib/data/config' // <-- Corrected import path
+import { website } from '$lib/data/config';
 
+// export the sitemap.xml file name
 export const prerender = true;
+export const filename = 'sitemap.xml';
 
 // make sure this matches your post route
-const getPostUrl = (slug) => `${website.url}/post/${slug}`; // <-- Updated to use the "url" property
+const getPostUrl = (slug) => `${website.url}/post/${slug}`;
 
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
  */
 export async function GET({ setHeaders }) {
+  // set the headers for xml content type and cache control
   setHeaders({
     'Cache-Control': `max-age=0, s-max-age=600`,
     'Content-Type': 'application/xml'
-  })
+  });
 
+  // generate the xml string for the sitemap
   const xml = `<?xml version="1.0" encoding="UTF-8" ?>
     <urlset
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -54,5 +58,6 @@ export async function GET({ setHeaders }) {
         .join('')}
     </urlset>`;
 
+  // return the xml response
   return new Response(xml);
 }
