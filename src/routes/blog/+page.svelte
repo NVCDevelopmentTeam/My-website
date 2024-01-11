@@ -86,18 +86,6 @@
     padding-top: 1rem;
   }
 
-  .mt-6 {
-    margin-top: 1.5rem;
-  }
-
-  .mt-16 {
-    margin-top: 4rem;
-  }
-
-  .mt-20 {
-    margin-top: 5rem;
-  }
-
   .mt-8 {
     margin-top: 2rem;
   }
@@ -108,10 +96,6 @@
 
   .pb-4 {
     padding-bottom: 1rem;
-  }
-
-  .pb-8 {
-    padding-bottom: 2rem;
   }
 
   .text-4xl {
@@ -152,14 +136,6 @@
 
   .h-4 {
     height: 1rem;
-  }
-
-  .text-zinc-700 {
-    color: #a0aec0;
-  }
-
-  .text-zinc-300 {
-    color: #e2e8f0;
   }
 
   a {
