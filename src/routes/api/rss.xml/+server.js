@@ -1,8 +1,6 @@
-// src/routes/api/sitemap.xml/server.js
 import { siteTitle, siteDescription, siteURL, siteLink } from '$lib/data/config'
 
-export function get () {
-  // Do dynamc fetching or computing here
+export async function get() {
   const data = await Promise.all(
     Object.entries(import.meta.glob('$lib/posts/*.md')).map(async ([path, page]) => {
       const { metadata } = await page()
@@ -10,9 +8,8 @@ export function get () {
       return { ...metadata, slug }
     })
   )
-  .then(posts => {
-    return posts.sort((a, b) => new Date(b.date) - new Date(a.date))
-  })
+
+  const posts = data.sort((a, b) => new Date(b.date) - new Date(a.date))
 
   return {
     body: {
