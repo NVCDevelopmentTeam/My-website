@@ -1,41 +1,42 @@
 <script>
   let darkMode = false;
-  let fontSize = 16;
-  let color = 'default';
-  let contrast = 'default';
 
-  function toggleDarkMode() {
+  function toggle() {
     darkMode = !darkMode;
-    // Add logic to toggle dark mode on the website
-  }
-
-  function increaseFontSize() {
-    fontSize += 2;
-    // Add logic to increase font size on the website
-  }
-
-  function reduceFontSize() {
-    fontSize -= 2;
-    // Add logic to reduce font size on the website
-  }
-
-  function changeColor(newColor) {
-    color = newColor;
-    // Add logic to change the color scheme on the website
-  }
-
-  function changeContrast(newContrast) {
-    contrast = newContrast;
-    // Add logic to change the contrast on the website
+    window.document.body.classList.toggle('dark');
   }
 </script>
 
-<button on:click={toggleDarkMode}>Toggle Dark Mode</button>
-<button on:click={increaseFontSize}>Increase Font Size</button>
-<button on:click={reduceFontSize}>Reduce Font Size</button>
-<button on:click={() => changeColor('blue')}>Change Color to Blue</button>
-<button on:click={() => changeContrast('high')}>Change Contrast to High</button>
+<button class="dark mode" type="button"
+  data-toggle="darkMode"
+  data-target="darkMode"
+  aria-controls="darkMode"
+  aria-pressed={darkMode}
+  aria-checked={darkMode}
+  aria-label="Dark mode"
+  on:click={toggle}>
+  <svg viewBox="0 0 20 20" fill="none">
+    <path class="vert" d="M10 1V19" stroke="black" stroke-width="2" />
+    <path d="M1 10L19 10" stroke="black" stroke-width="2" />
+  </svg>
+  <span class="navbar-toggler-icon"></span>
+  {#if darkMode }
+    Go light
+  {:else}
+    Go dark
+  {/if}
+</button>
 
 <style>
-  /* Add CSS styles for dark mode, font size, color, and contrast */
+  button {
+    background: var(--bg-color);
+    border: 2px solid var(--text-color);
+    border-radius: 5px;
+    color: var(--text-color);
+    padding: 10px 15px;
+  }
+
+  button:active {
+    background: inherit;
+  }
 </style>

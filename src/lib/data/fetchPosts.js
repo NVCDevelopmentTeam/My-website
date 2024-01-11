@@ -41,4 +41,3 @@ const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '' } = 
 }
 
 export default fetchPosts
-export const posts = fetchPosts().then(data => data.posts);
