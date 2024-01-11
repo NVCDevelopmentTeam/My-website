@@ -3,7 +3,7 @@
 // It is OK to delete this file if you'd rather not bother with it.
 
 import { posts } from '$lib/data/fetchPosts';
-import { website } from '$lib/data/config';
+import { siteURL } from '$lib/data/config';
 
 // export the sitemap.xml file name
 export const prerender = true;
