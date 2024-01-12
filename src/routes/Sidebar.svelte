@@ -1,9 +1,15 @@
 <script>
+  import Search from '$lib/components/Search.svelte';
+  import Accessibility from '$lib/components/Accessibility.svelte';
   import LatestPosts from '$lib/components/LatestPosts.svelte';
   import SocialLinks from '$lib/components/SocialLinks.svelte';
 </script>
 
 <sidebar class="sidebar">
+  <div class="search-accessibility">
+    <Search />
+    <Accessibility />
+  </div>
   <div class="latest-posts">
     <LatestPosts />
   </div>

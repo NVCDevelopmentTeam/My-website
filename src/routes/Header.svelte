@@ -2,8 +2,6 @@
   import { page } from '$app/stores';
   import { browser } from '$app/environment'
   import logo from '$lib/images/logo.png';
-  import Search from '$lib/components/Search.svelte';
-  import Accessibility from '$lib/components/Accessibility.svelte';
 
   export let navMenu;
   let expanded = false;
@@ -68,10 +66,6 @@
       </svg>
     </div>
   </nav>
-  <div class="search-accessibility">
-    <Search />
-    <Accessibility />
-  </div>
 </header>
 <style>
 	header {
