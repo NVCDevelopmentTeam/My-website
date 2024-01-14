@@ -1,7 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { load } from '$app/navigation';
-  import fetchPosts from '$lib/data/fetchPosts';
+  import {postsPerPage} from '$lib/data/config';
   let posts = [];
   onMount(async () => {
     posts = await fetchPosts();
@@ -15,6 +14,8 @@
     const total = await totalRes.json();
     return { posts, total };
   });
+  }}
+}
 </script>
 <section class="mb-8 w-full">
   <h3 id="latest" class="mb-6 text-2xl font-bold tracking-tight text-black dark:text-white md:text-4xl">
