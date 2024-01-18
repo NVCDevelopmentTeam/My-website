@@ -5,7 +5,7 @@
   import javascript from 'highlight.js/lib/languages/javascript';
   import 'highlight.js/styles/github.css';
   
-  import { search } from '$lib/data/search.js';
+  import { search } from '$lib/data/search';
   
   hljs.registerLanguage('javascript', javascript);
 
