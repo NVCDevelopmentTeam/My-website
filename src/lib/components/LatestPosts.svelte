@@ -5,10 +5,9 @@
   let posts = [];
 
   onMount(async () => {
-    posts = await fetchPosts();
+    const response = await load();
+    posts = response.posts;
   });
-
-  export let data;
 
   export async function load({ fetch, session }) {
     const url = new URL(session.page.url);
@@ -17,11 +16,6 @@
     const totalRes = await fetch(`${url.origin}/api/posts/count`);
     const total = await totalRes.json();
     return { posts, total };
-  }
-
-  async function fetchPosts() {
-    // Implement your logic to fetch posts here
-    // and return the posts array
   }
 </script>
 
