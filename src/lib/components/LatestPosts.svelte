@@ -1,22 +1,30 @@
 <script>
   import { onMount } from 'svelte';
-  import {postsPerPage} from '$lib/data/config';
+  import { postsPerPage } from '$lib/data/config';
+
   let posts = [];
+
   onMount(async () => {
     posts = await fetchPosts();
   });
+
   export let data;
-  load(async ({ fetch, session }) => {
+
+  export async function load({ fetch, session }) {
     const url = new URL(session.page.url);
     const postRes = await fetch(`${url.origin}/api/posts.json`);
     const posts = await postRes.json();
     const totalRes = await fetch(`${url.origin}/api/posts/count`);
     const total = await totalRes.json();
     return { posts, total };
-  });
-  }}
-}
+  }
+
+  async function fetchPosts() {
+    // Implement your logic to fetch posts here
+    // and return the posts array
+  }
 </script>
+
 <section class="mb-8 w-full">
   <h3 id="latest" class="mb-6 text-2xl font-bold tracking-tight text-black dark:text-white md:text-4xl">
     Latest Posts
