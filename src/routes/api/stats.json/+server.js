@@ -1,8 +1,8 @@
-import statsService from '$lib/data/statsService';
+import { getStats } from '$lib/data/statsService';
 
 export async function get() {
   try {
-    const { visitsToday, totalVisits, totalVisitors, totalCountries } = await statsService.getStats();
+    const { visitsToday, totalVisits, totalVisitors, totalCountries } = await getStats();
 
     // Assuming the values need to be parsed to integers, otherwise remove this step
     return {
