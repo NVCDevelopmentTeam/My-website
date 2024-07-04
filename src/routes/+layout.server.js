@@ -25,7 +25,7 @@ export async function load({ params }) {
 
 // The loadDeploymentInfo function is declared with the data type imported from $types
 /** @type {import('./$types').LayoutServerLoad} */
-export function load({ params }) {
+export function loadDeploymentInfo({ params }) {
   return {
     // Returns current Git branch information
     deploymentGitBranch: VERCEL_COMMIT_REF,
