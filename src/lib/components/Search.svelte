@@ -1,12 +1,10 @@
 <script>
   import { writable } from 'svelte/store';
-  import { get } from 'svelte/store'
+  import { get } from 'svelte/store';
   import hljs from 'highlight.js/lib/core';
   import javascript from 'highlight.js/lib/languages/javascript';
   import 'highlight.js/styles/github.css';
-  
-  import { search } from '$lib/data/search';
-  
+
   hljs.registerLanguage('javascript', javascript);
 
   export const searchQuery = writable('');
@@ -23,7 +21,6 @@
     try {
       const response = await fetch(`https://jsonplaceholder.typicode.com/posts?q=${query}`);
       const results = await response.json();
-      
       searchResults.set(results);
       document.getElementById('search').value = '';
     } catch (error) {
@@ -34,14 +31,13 @@
   function handleVoiceSearch() {
     if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
       const recognition = new window.webkitSpeechRecognition();
-
       recognition.lang = 'en-US';
 
       recognition.onresult = function(event) {
         const transcript = event.results[0][0].transcript;
         searchQuery.set(transcript);
-        handleSubmit(event);
-      }
+        handleSubmit({ preventDefault: () => {} });
+      };
 
       recognition.start();
     }
@@ -65,7 +61,7 @@
             <h3><a href={result.url}>{result.title}</a></h3>
             <pre>
               <code class="javascript" data-dynamic>
-                {@html result.code.replaceAll('>', '&gt;').replaceAll('<', '&lt;')}
+                {@html result.code.replace(/>/g, '&gt;').replace(/</g, '&lt;')}
               </code>
             </pre>
             <p>{result.description}</p>
@@ -89,20 +85,7 @@
     flex: 1;
   }
 
-  .search button[type="submit"] {
-    margin-left: 8px;
-    padding: 8px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .search button[type="submit"]:hover {
-    background-color: #0062cc;
-  }
-
+  .search button[type="submit"],
   .search button.voice-search {
     margin-left: 8px;
     padding: 8px;
@@ -113,6 +96,7 @@
     cursor: pointer;
   }
 
+  .search button[type="submit"]:hover,
   .search button.voice-search:hover {
     background-color: #0062cc;
   }

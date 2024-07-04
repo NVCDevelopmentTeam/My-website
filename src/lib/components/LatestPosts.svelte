@@ -4,19 +4,27 @@
 
   let posts = [];
 
-  onMount(async () => {
-    const response = await load();
-    posts = response.posts;
-  });
+  // Hàm fetch dữ liệu từ API
+  async function fetchPosts() {
+    try {
+      const postRes = await fetch('/api/posts.json');
+      const posts = await postRes.json();
 
-  export async function load({ fetch, session }) {
-    const url = new URL(session.page.url);
-    const postRes = await fetch(`${url.origin}/api/posts.json`);
-    const posts = await postRes.json();
-    const totalRes = await fetch(`${url.origin}/api/posts/count`);
-    const total = await totalRes.json();
-    return { posts, total };
+      const totalRes = await fetch('/api/posts/count');
+      const total = await totalRes.json();
+
+      return { posts, total };
+    } catch (error) {
+      console.error('Failed to load posts:', error);
+      return { posts: [], total: 0 };
+    }
   }
+
+  // Sử dụng onMount để gọi hàm fetchPosts khi component được mount
+  onMount(async () => {
+    const response = await fetchPosts();
+    posts = response.posts.slice(0, postsPerPage);
+  });
 </script>
 
 <section class="mb-8 w-full">

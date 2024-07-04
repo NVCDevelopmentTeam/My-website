@@ -4,9 +4,9 @@ import { error } from '@sveltejs/kit'
 
 /* TODO: I disabled it because of errors */
 
-export const prerender = true;
+export const prerender = false;
 // Allows client side routing. Necessary for page transitions and link prefetching; change to false if you prefer ordinary routing without JS
-export const ssr = true
+export const ssr = true;
 
 export const load = async ({ url, fetch }) => {
 	try {
