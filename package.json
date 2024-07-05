@@ -21,6 +21,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@smui/button": "^7.0.0",
+		"@smui/list": "^7.0.0",
+		"@smui/menu": "^7.0.0",
 		"@sveltejs/adapter-vercel": "^5.1.0",
 		"highlight.js": "^11.9.0",
 		"mdsvex": "^0.11.0",

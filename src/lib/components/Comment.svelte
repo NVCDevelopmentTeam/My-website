@@ -1,72 +1,85 @@
 <script>
-  // Import any necessary dependencies
   import { onMount } from "svelte";
-import Comment from '$lib/data/Comment';
-  import { Divider, Text, Menu, MenuButton, MenuItems, MenuItem } from "svelte";
+  import { Button } from '@smui/button';
+  import { Menu, MenuItem, MenuSurface } from '@smui/menu';
 
-  // Declare any reactive variables
-  let email = "";
   let author = "";
   let content = "";
   let comments = [];
 
-  // Pagination
   const ITEMS_PER_PAGE = 5;
   let currentPage = 1;
 
-  // Define any component methods
-  function handleSubmit(event) {
-    // ...
+  // Fetch comments from the server or other data source
+  async function fetchComments() {
+    // Placeholder for fetching comments from a backend service
+    return [
+      // Thêm các đối tượng comment mẫu vào đây nếu cần
+    ];
   }
 
-  // Define any lifecycle hooks
-  onMount(() => {
-    // ...
-  });
+  function handleSubmit(event) {
+    event.preventDefault();
+    const newComment = {
+      author,
+      content,
+      date: new Date().toLocaleString(),
+      likes: 0,
+      dislikes: 0,
+      replies: [],
+      showReplies: false,
+      pinned: false
+    };
+    comments = [newComment, ...comments];
+    author = "";
+    content = "";
+  }
 
-  // The following two functions have been slightly modified to return the results.
   function getPaginatedComments() {
-    // ...
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    return comments.slice(start, end);
   }
 
   function getTotalPages() {
-    // ...
+    return Math.ceil(comments.length / ITEMS_PER_PAGE);
   }
 
-  // Create reactive variables to get paginated comments and total pages
   let paginatedComments;
   let totalPages;
 
-  // Reactive statement to keep the paginated comments and total pages updated
   $: {
     paginatedComments = getPaginatedComments();
     totalPages = getTotalPages();
   }
 
-  // Define event handlers for comment actions
   function handleReply(comment) {
-    // ...
+    // Handle reply to comment
   }
 
   function handlePin(comment) {
-    // ...
+    comment.pinned = !comment.pinned;
   }
 
   function handleReport(comment) {
-    // ...
+    // Handle report comment
   }
 
   function handleDelete(comment) {
-    // ...
+    comments = comments.filter(c => c !== comment);
   }
 
   function handleLike(comment) {
-    // ...
+    comment.likes += 1;
   }
 
   function handleDislike(comment) {
-    // ...
+    comment.dislikes += 1;
   }
+
+  onMount(async () => {
+    comments = await fetchComments();
+  });
 </script>
 
 <div class="comment">
@@ -78,7 +91,7 @@ import Comment from '$lib/data/Comment';
     </label>
     <label>
       Comment:
-      <textarea bind:value={content} required />
+      <textarea bind:value={content} required></textarea>
     </label>
     <button type="submit">Submit</button>
   </form>
@@ -109,21 +122,13 @@ import Comment from '$lib/data/Comment';
             <p>{comment.author} - {comment.date}</p>
             {#if !comment.pinned}
               <Menu>
-                <MenuButton>More</MenuButton>
-                <MenuItems>
-                  <MenuItem let:active>
-                    <button on:click={() => handleReply(comment)}>Reply</button>
-                  </MenuItem>
-                  <MenuItem let:active>
-                    <button on:click={() => handlePin(comment)}>Pin</button>
-                  </MenuItem>
-                  <MenuItem let:active>
-                    <button on:click={() => handleReport(comment)}>Report</button>
-                  </MenuItem>
-                  <MenuItem let:active>
-                    <button on:click={() => handleDelete(comment)}>Delete</button>
-                  </MenuItem>
-                </MenuItems>
+                <Button slot="anchor" variant="outlined">More</Button>
+                <MenuSurface>
+                  <MenuItem on:click={() => handleReply(comment)}>Reply</MenuItem>
+                  <MenuItem on:click={() => handlePin(comment)}>Pin</MenuItem>
+                  <MenuItem on:click={() => handleReport(comment)}>Report</MenuItem>
+                  <MenuItem on:click={() => handleDelete(comment)}>Delete</MenuItem>
+                </MenuSurface>
               </Menu>
             {/if}
           </div>
@@ -164,7 +169,6 @@ import Comment from '$lib/data/Comment';
 </div>
 
 <style>
-  /* Comment section styles */
   .comment {
     margin-top: 20px;
   }
@@ -172,5 +176,32 @@ import Comment from '$lib/data/Comment';
   .comment h2 {
     font-size: 18px;
     margin-bottom: 10px;
+  }
+
+  .pagination button[selected] {
+    font-weight: bold;
+  }
+
+  .comment-item {
+    margin-bottom: 15px;
+  }
+
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .comment-content {
+    margin-top: 5px;
+  }
+
+  .comment-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+  }
+
+  .reply {
+    margin-left: 20px;
   }
 </style>
