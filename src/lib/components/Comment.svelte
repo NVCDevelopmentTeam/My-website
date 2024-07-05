@@ -1,7 +1,9 @@
 <script>
   import { onMount } from "svelte";
   import { Button } from '@smui/button';
-  import { Menu, MenuItem, MenuSurface } from '@smui/menu';
+  import Menu from '@smui/menu/Menu.svelte';
+  import MenuItem from '@smui/menu/MenuItem.svelte';
+  import MenuSurface from '@smui/menu/MenuSurface.svelte';
 
   let author = "";
   let content = "";
@@ -10,11 +12,10 @@
   const ITEMS_PER_PAGE = 5;
   let currentPage = 1;
 
-  // Fetch comments from the server or other data source
   async function fetchComments() {
     // Placeholder for fetching comments from a backend service
     return [
-      // Thêm các đối tượng comment mẫu vào đây nếu cần
+      // Add sample comment objects here if needed
     ];
   }
 
@@ -90,7 +91,7 @@
       <input type="text" bind:value={author} required />
     </label>
     <label>
-      Comment:
+      Comments:
       <textarea bind:value={content} required></textarea>
     </label>
     <button type="submit">Submit</button>
