@@ -4,7 +4,7 @@
 
   let posts = [];
 
-  // Hàm fetch dữ liệu từ API
+  // Function to fetch data from API
   async function fetchPosts() {
     try {
       const postRes = await fetch('/api/posts.json');
@@ -20,7 +20,7 @@
     }
   }
 
-  // Sử dụng onMount để gọi hàm fetchPosts khi component được mount
+  // Use onMount to call the fetchPosts function when the component is mounted
   onMount(async () => {
     const response = await fetchPosts();
     posts = response.posts.slice(0, postsPerPage);
