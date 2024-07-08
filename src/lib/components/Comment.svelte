@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { Button } from '@smui/button';
-  import { Menu, MenuItem, MenuSurfaceAnchor } from '@smui/menu';
+  import { Menu, MenuItem, MenuSurface } from '@smui/menu';
 
   let author = "";
   let content = "";
@@ -120,7 +120,7 @@
           <div class="comment-header">
             <p>{comment.author} - {comment.date}</p>
             {#if !comment.pinned}
-              <MenuSurfaceAnchor>
+              <MenuSurface>
                 <Button slot="anchor" variant="outlined">More</Button>
                 <Menu>
                   <MenuItem on:click={() => handleReply(comment)}>Reply</MenuItem>
@@ -128,7 +128,7 @@
                   <MenuItem on:click={() => handleReport(comment)}>Report</MenuItem>
                   <MenuItem on:click={() => handleDelete(comment)}>Delete</MenuItem>
                 </Menu>
-              </MenuSurfaceAnchor>
+              </MenuSurface>
             {/if}
           </div>
           <div class="comment-content">
@@ -175,10 +175,6 @@
   .comment h2 {
     font-size: 18px;
     margin-bottom: 10px;
-  }
-
-  .pagination button[selected] {
-    font-weight: bold;
   }
 
   .comment-item {

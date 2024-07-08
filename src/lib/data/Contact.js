@@ -1,21 +1,23 @@
 import nodemailer from "nodemailer";
 
-export async function post(request) {
-  const { name, email, message } = request.body;
+export async function post({ request }) {
+  const { name, email, message } = await request.json();
 
   // Input validation
   if (!name || !email || !message) {
     return {
       status: 400,
-      body: "Invalid input data",
+      body: {
+        error: "Invalid input data"
+      }
     };
   }
 
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: import.meta.env.VITE_EMAIL_ADDRESS,
-      pass: import.meta.env.VITE_EMAIL_PASSWORD,
+      user: process.env.VITE_EMAIL_ADDRESS,
+      pass: process.env.VITE_EMAIL_PASSWORD,
     },
   });
 
@@ -30,13 +32,17 @@ export async function post(request) {
     await transporter.sendMail(mailOptions);
     return {
       status: 200,
-      body: "Message sent successfully!",
+      body: {
+        message: "Message sent successfully!"
+      }
     };
   } catch (error) {
     console.error('Error sending email:', error);
     return {
       status: 500,
-      body: error.message,
+      body: {
+        error: "Failed to send message. Please try again later."
+      }
     };
   }
 }
