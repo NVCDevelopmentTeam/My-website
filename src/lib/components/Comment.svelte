@@ -1,9 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { Button } from '@smui/button';
-  import Menu from '@smui/menu/Menu.svelte';
-  import MenuItem from '@smui/menu/MenuItem.svelte';
-  import MenuSurface from '@smui/menu/MenuSurface.svelte';
+  import { Menu, MenuItem, MenuSurfaceAnchor } from '@smui/menu';
 
   let author = "";
   let content = "";
@@ -91,7 +89,7 @@
       <input type="text" bind:value={author} required />
     </label>
     <label>
-      Comments:
+      Comment:
       <textarea bind:value={content} required></textarea>
     </label>
     <button type="submit">Submit</button>
@@ -100,7 +98,7 @@
   {#if comments.length > 0}
     <h2>Comments:</h2>
     <p>
-      <strong>Comments:</strong> {comments.length}
+      <strong>Total Comments:</strong> {comments.length}
     </p>
     <!-- Pagination -->
     {#if totalPages > 1}
@@ -122,15 +120,15 @@
           <div class="comment-header">
             <p>{comment.author} - {comment.date}</p>
             {#if !comment.pinned}
-              <Menu>
+              <MenuSurfaceAnchor>
                 <Button slot="anchor" variant="outlined">More</Button>
-                <MenuSurface>
+                <Menu>
                   <MenuItem on:click={() => handleReply(comment)}>Reply</MenuItem>
                   <MenuItem on:click={() => handlePin(comment)}>Pin</MenuItem>
                   <MenuItem on:click={() => handleReport(comment)}>Report</MenuItem>
                   <MenuItem on:click={() => handleDelete(comment)}>Delete</MenuItem>
-                </MenuSurface>
-              </Menu>
+                </Menu>
+              </MenuSurfaceAnchor>
             {/if}
           </div>
           <div class="comment-content">
