@@ -16,8 +16,8 @@ import traffic from '$lib/components/traffic.svelte';
   </div>
   <div class="social-links">
     <SocialLinks />
-<traffic />
   </div>
+<traffic />
 </sidebar>
 
 <style>
