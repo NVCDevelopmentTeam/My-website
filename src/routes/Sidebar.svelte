@@ -1,21 +1,21 @@
 <script>
-  import Search from '$lib/components/Search.svelte';
-  import Accessibility from '$lib/components/Accessibility.svelte';
-  import LatestPosts from '$lib/components/LatestPosts.svelte';
-  import SocialLinks from '$lib/components/SocialLinks.svelte';
+  import search from '$lib/components/search.svelte';
+  import accessibility from '$lib/components/accessibility.svelte';
+  import latestPosts from '$lib/components/latestPosts.svelte';
+  import socialLinks from '$lib/components/socialLinks.svelte';
 import traffic from '$lib/components/traffic.svelte';
 </script>
 
 <sidebar class="sidebar">
   <div class="search-accessibility">
-    <Search />
-    <Accessibility />
+    <search />
+    <accessibility />
   </div>
   <div class="latest-posts">
-    <LatestPosts />
+    <latestPosts />
   </div>
   <div class="social-links">
-    <SocialLinks />
+    <socialLinks />
   </div>
 <traffic />
 </sidebar>
