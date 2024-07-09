@@ -1,26 +1,29 @@
-import { getStats } from '$lib/data/statsService';
+import { getStats, updateStatsOnVisit } from '$lib/data/statsService';
 
-export async function get() {
+export async function GET() {
   try {
+    // Update stats on each visit
+    await updateStatsOnVisit();
+
+    // Get updated stats
     const { visitsToday, totalVisits, totalVisitors, totalCountries } = await getStats();
 
-    // Assuming the values need to be parsed to integers, otherwise remove this step
     return {
+      status: 200,
       body: {
-        visitsToday: parseInt(visitsToday, 10), // example of transforming the data
+        visitsToday: parseInt(visitsToday, 10),
         totalVisits: parseInt(totalVisits, 10),
         totalVisitors: parseInt(totalVisitors, 10),
-        totalCountries: parseInt(totalCountries, 10),
+        totalCountries: parseInt(totalCountries, 10)
       }
     };
   } catch (error) {
     console.error('Stats API error:', error);
 
-    // Send back a generic error message and a 500 status code
     return {
       status: 500,
       body: {
-        error: 'An error occurred while fetching the statistics.',
+        error: 'An error occurred while fetching or updating the statistics.'
       }
     };
   }

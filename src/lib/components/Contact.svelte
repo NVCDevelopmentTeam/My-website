@@ -1,5 +1,4 @@
 <script>
-import Contact from "$lib/data/Contact";
   let name = '';
   let email = '';
   let message = '';

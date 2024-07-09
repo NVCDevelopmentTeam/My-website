@@ -1,26 +1,15 @@
 <script>
   import { writable } from 'svelte/store';
   import { get } from 'svelte/store';
-  import hljs from 'highlight.js/lib/core';
-  import javascript from 'highlight.js/lib/languages/javascript';
-  import 'highlight.js/styles/github.css';
-
-  hljs.registerLanguage('javascript', javascript);
-
-  export const searchQuery = writable('');
-  export const searchResults = writable([]);
-
-  function handleChange(event) {
-    searchQuery.set(event.target.value);
-  }
+  import { search } from '$lib/data/searchHandlers'; // Import search function from handlers
+  import { searchQuery, searchResults } from '$lib/data/searchStore'; // Import stores
 
   async function handleSubmit(event) {
     event.preventDefault();
     const query = get(searchQuery);
 
     try {
-      const response = await fetch(`https://jsonplaceholder.typicode.com/posts?q=${query}`);
-      const results = await response.json();
+      const results = await search(query); // Call search function from handlers
       searchResults.set(results);
       document.getElementById('search').value = '';
     } catch (error) {
@@ -46,7 +35,7 @@
 
 <div class="search">
   <form on:submit={handleSubmit}>
-    <input type="text" name="search" class="search" id="search" aria-label="search" on:input={handleChange} bind:value={$searchQuery}>
+    <input type="text" name="search" class="search" id="search" aria-label="search" bind:value={$searchQuery}>
     <button type="button" class="voice-search" title="Search by voice" aria-label="Search by voice" on:click={handleVoiceSearch}>
       <i class="fa fa-microphone"></i>
     </button>
@@ -58,12 +47,7 @@
       <ul>
         {#each $searchResults as result}
           <li>
-            <h3><a href={result.url}>{result.title}</a></h3>
-            <pre>
-              <code class="javascript" data-dynamic>
-                {@html result.code.replace(/>/g, '&gt;').replace(/</g, '&lt;')}
-              </code>
-            </pre>
+            <h3><a href={result.slug}>{result.title}</a></h3>
             <p>{result.description}</p>
           </li>
         {/each}
@@ -77,14 +61,12 @@
     display: flex;
     align-items: center;
   }
-
   .search input[type="text"] {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     flex: 1;
   }
-
   .search button[type="submit"],
   .search button.voice-search {
     margin-left: 8px;
@@ -95,40 +77,11 @@
     border-radius: 4px;
     cursor: pointer;
   }
-
   .search button[type="submit"]:hover,
   .search button.voice-search:hover {
     background-color: #0062cc;
   }
-
   .fa {
     font-size: 16px;
-  }
-
-  .search-results {
-    margin-top: 16px;
-  }
-
-  .search-results ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .search-results li + li {
-    margin-top: 16px;
-  }
-
-  .search-results h3 {
-    margin-bottom: 8px;
-  }
-
-  .search-results code {
-    display: block;
-    overflow-x: auto;
-    background-color: #f7f7f7;
-    font-size: 14px;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
   }
 </style>

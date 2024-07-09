@@ -1,10 +1,30 @@
 import { writable } from 'svelte/store';
 
-// Initialize an empty array to act as your in-memory database
-const initialData = [];
+const initialData = {
+  visitsToday: 0,
+  totalVisits: 0,
+  totalVisitors: 0,
+  totalCountries: 0
+};
 
-// Create a writable store to manage your database data
-const database = writable(initialData);
+const { subscribe, set, update } = writable(initialData);
 
-// Export the database as the default export
-export default database;
+function getStats() {
+  let data;
+  subscribe(value => {
+    data = value;
+  })();
+  return data;
+}
+
+function updateStats(newStats) {
+  update(currentData => {
+    return { ...currentData, ...newStats };
+  });
+}
+
+export default {
+  subscribe,
+  getStats,
+  updateStats
+};
