@@ -3,7 +3,7 @@
   import Accessibility from '$lib/components/Accessibility.svelte';
   import LatestPosts from '$lib/components/LatestPosts.svelte';
   import SocialLinks from '$lib/components/SocialLinks.svelte';
-import Traffic from '$lib/components/Traffic.svelte';
+import traffic from '$lib/components/traffic.svelte';
 </script>
 
 <sidebar class="sidebar">
@@ -16,7 +16,7 @@ import Traffic from '$lib/components/Traffic.svelte';
   </div>
   <div class="social-links">
     <SocialLinks />
-<Traffic />
+<traffic />
   </div>
 </sidebar>
 
