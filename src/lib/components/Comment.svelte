@@ -1,23 +1,26 @@
 <script>
-  import { onMount } from "svelte";
-  import { Button } from '@smui/button';
-  import { Menu, MenuItem, MenuSurface } from '@smui/menu';
+  import { onMount } from 'svelte';
+  import { fetch as fetchComments } from '$lib/data/comment';
 
-  let author = "";
-  let content = "";
+  let author = '';
+  let content = '';
   let comments = [];
 
   const ITEMS_PER_PAGE = 5;
   let currentPage = 1;
 
-  async function fetchComments() {
-    // Placeholder for fetching comments from a backend service
-    return [
-      // Add sample comment objects here if needed
-    ];
+  async function fetchCommentsData() {
+    try {
+      const response = await fetch('/api/comment.json');
+      if (!response.ok) throw new Error('Failed to fetch comments');
+      const data = await response.json();
+      comments = data.items; // Assuming comments are in the 'items' field
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const newComment = {
       author,
@@ -29,9 +32,25 @@
       showReplies: false,
       pinned: false
     };
-    comments = [newComment, ...comments];
-    author = "";
-    content = "";
+
+    try {
+      const response = await fetch('/api/comment.json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newComment)
+      });
+
+      if (!response.ok) throw new Error('Failed to post comment');
+      
+      const data = await response.json();
+      comments = [data, ...comments];
+      author = '';
+      content = '';
+    } catch (error) {
+      console.error('Error posting comment:', error);
+    }
   }
 
   function getPaginatedComments() {
@@ -44,13 +63,8 @@
     return Math.ceil(comments.length / ITEMS_PER_PAGE);
   }
 
-  let paginatedComments;
-  let totalPages;
-
-  $: {
-    paginatedComments = getPaginatedComments();
-    totalPages = getTotalPages();
-  }
+  $: paginatedComments = getPaginatedComments();
+  $: totalPages = getTotalPages();
 
   function handleReply(comment) {
     // Handle reply to comment
@@ -77,7 +91,7 @@
   }
 
   onMount(async () => {
-    comments = await fetchComments();
+    await fetchCommentsData();
   });
 </script>
 
@@ -119,17 +133,15 @@
         <li class="comment-item">
           <div class="comment-header">
             <p>{comment.author} - {comment.date}</p>
-            {#if !comment.pinned}
-              <MenuSurface>
-                <Button slot="anchor" variant="outlined">More</Button>
-                <Menu>
-                  <MenuItem on:click={() => handleReply(comment)}>Reply</MenuItem>
-                  <MenuItem on:click={() => handlePin(comment)}>Pin</MenuItem>
-                  <MenuItem on:click={() => handleReport(comment)}>Report</MenuItem>
-                  <MenuItem on:click={() => handleDelete(comment)}>Delete</MenuItem>
-                </Menu>
-              </MenuSurface>
-            {/if}
+            <div class="menu-surface">
+              <button>More</button>
+              <div class="menu">
+                <button on:click={() => handleReply(comment)}>Reply</button>
+                <button on:click={() => handlePin(comment)}>Pin</button>
+                <button on:click={() => handleReport(comment)}>Report</button>
+                <button on:click={() => handleDelete(comment)}>Delete</button>
+              </div>
+            </div>
           </div>
           <div class="comment-content">
             <p>{comment.content}</p>
@@ -140,7 +152,7 @@
               <span>{comment.dislikes}</span>
               {#if comment.replies.length > 0}
                 <button on:click={() => (comment.showReplies = !comment.showReplies)}>
-                  {comment.showReplies ? "Hide Replies" : "Show Replies"} ({comment.replies.length})
+                  {comment.showReplies ? 'Hide Replies' : 'Show Replies'} ({comment.replies.length})
                 </button>
               {/if}
             </div>
@@ -198,5 +210,38 @@
 
   .reply {
     margin-left: 20px;
+  }
+
+  .pagination {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .pagination button {
+    padding: 5px 10px;
+  }
+
+  .pagination button.selected {
+    font-weight: bold;
+  }
+
+  .menu-surface {
+    position: relative;
+    display: inline-block;
+  }
+
+  .menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+
+  .menu-surface:hover .menu {
+    display: block;
   }
 </style>

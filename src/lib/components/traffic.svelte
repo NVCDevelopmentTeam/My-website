@@ -1,33 +1,33 @@
-<script context="module">
-  export async function load({ fetch }) {
-    const res = await fetch('/api/stats.json');
-    if (!res.ok) {
-      // Handle error
-      console.error('Failed to load statistics:', res.statusText);
-      return {
-        props: {
-          visitsToday: 0,
-          totalVisits: 0,
-          totalVisitors: 0,
-          totalCountries: 0
-        }
-      };
-    }
-    const data = await res.json();
-    console.log('Data from API:', data);
-    return {
-      props: data
-    };
-  }
-  export let visitsToday;
-  export let totalVisits;
-  export let totalVisitors;
-  export let totalCountries;
+<script>
+  import { onMount } from 'svelte';
 
-  $: console.log('Statistics:', { visitsToday, totalVisits, totalVisitors, totalCountries });
+  let visitsToday = 0;
+  let totalVisits = 0;
+  let totalVisitors = 0;
+  let totalCountries = 0;
+
+  async function loadStats() {
+    try {
+      const response = await fetch('/api/stats.json');
+      if (!response.ok) {
+        throw new Error('Failed to load statistics');
+      }
+      const data = await response.json();
+      visitsToday = data.visitsToday;
+      totalVisits = data.totalVisits;
+      totalVisitors = data.totalVisitors;
+      totalCountries = data.totalCountries;
+    } catch (error) {
+      console.error('Error loading statistics:', error);
+    }
+  }
+
+  onMount(() => {
+    loadStats();
+  });
 </script>
 
-<h2>Visitor statistics</h2>
+<h2>Visitor Statistics</h2>
 <ul>
   <li>Visits Today: {visitsToday}</li>
   <li>Total Visits: {totalVisits}</li>

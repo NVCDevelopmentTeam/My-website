@@ -1,27 +1,20 @@
 import database from '$lib/data/database';
 
-export async function getStats() {
+export async function incrementVisitorCount() {
   try {
-    const stats = database.getStats();
-    return stats || { visitsToday: 0, totalVisits: 0, totalVisitors: 0, totalCountries: 0 };
+    database.incrementVisitorCount();
   } catch (error) {
-    console.error('Error occurred while fetching stats:', error);
+    console.error('Error incrementing visitor count:', error);
     throw error;
   }
 }
 
-export async function updateStatsOnVisit() {
+export async function getStats() {
   try {
-    const currentStats = await getStats();
-    const updatedStats = {
-      visitsToday: currentStats.visitsToday + 1,
-      totalVisits: currentStats.totalVisits + 1,
-      totalVisitors: currentStats.totalVisitors + 1,
-      totalCountries: currentStats.totalCountries, // assume countries count remains unchanged on each visit
-    };
-    await database.updateStats(updatedStats);
+    const stats = database.getStats();
+    return { ...stats }; // Ensure it is a plain object
   } catch (error) {
-    console.error('Error occurred while updating stats on visit:', error);
+    console.error('Error fetching statistics:', error);
     throw error;
   }
 }

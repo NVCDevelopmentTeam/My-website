@@ -1,6 +1,6 @@
 import { siteTitle, siteDescription, siteURL, siteLink } from '$lib/data/config';
+import database from '$lib/data/database';
 
-// This function will create a JSON object from an array of items
 const generateFeed = (items) => {
   return {
     title: siteTitle,
@@ -17,23 +17,15 @@ const generateFeed = (items) => {
   };
 };
 
-// This function will return a Response object with content type 'application/json'
-export async function get() {
-  // You need to generate the feed JSON object
-  const items = []; // Replace this with your array of items
-  const feed = generateFeed(items);
+// GET /api/feed.json
+export async function GET() {
+  const comments = database.getComments();
+  const feed = generateFeed(comments);
 
-  // You need to convert the feed object into a JSON string
-  const body = JSON.stringify(feed);
-
-  // You need to set the content type to 'application/json'
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-
-  // You need to return a Response object with body and headers parameters
-  return {
-    body,
-    headers,
-  };
+  return new Response(JSON.stringify(feed), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
 }

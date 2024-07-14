@@ -1,30 +1,51 @@
-import { writable } from 'svelte/store';
-
-const initialData = {
+let stats = {
   visitsToday: 0,
   totalVisits: 0,
   totalVisitors: 0,
   totalCountries: 0
 };
 
-const { subscribe, set, update } = writable(initialData);
+let comments = [];
+
+function incrementVisitorCount() {
+  stats.visitsToday++;
+  stats.totalVisits++;
+  stats.totalVisitors++; // Adjust this logic as needed
+}
 
 function getStats() {
-  let data;
-  subscribe(value => {
-    data = value;
-  })();
-  return data;
+  return { ...stats }; // Ensure it is a plain object
 }
 
 function updateStats(newStats) {
-  update(currentData => {
-    return { ...currentData, ...newStats };
-  });
+  stats = { ...stats, ...newStats };
+}
+
+function getComments() {
+  return [...comments];
+}
+
+function addComment(newComment) {
+  comments.push(newComment);
+}
+
+function deleteComment(commentId) {
+  comments = comments.filter(comment => comment.id !== commentId);
+}
+
+function updateComment(commentId, updatedData) {
+  const commentIndex = comments.findIndex(comment => comment.id === commentId);
+  if (commentIndex !== -1) {
+    comments[commentIndex] = { ...comments[commentIndex], ...updatedData };
+  }
 }
 
 export default {
-  subscribe,
+  incrementVisitorCount,
   getStats,
-  updateStats
+  updateStats,
+  getComments,
+  addComment,
+  deleteComment,
+  updateComment
 };

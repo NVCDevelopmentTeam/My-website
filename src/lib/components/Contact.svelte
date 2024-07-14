@@ -1,23 +1,40 @@
 <script>
+  import { onMount } from 'svelte';
   let name = '';
   let email = '';
-  let message = '';
   let title = '';
+  let message = '';
+  let status = "";
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    status = 'Submitting...';
 
-    // Call the sendData function from contact.js to handle form submission
-    const success = await sendData({ name, email, message, title });
+    const formData = {
+      name,
+      email,
+      title,
+      message
+    };
 
-    if (success) {
-      // Do something if submission was successful (e.g. show a success message)
-      console.log('Form submitted successfully!');
+    const response = await fetch("/api/submit.json", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      console.log(result);
+      status = result.message || "Success";
     } else {
-      // Do something if submission failed (e.g. show an error message)
-      console.error('Form submission failed!');
+      status = result.message || "An error occurred while processing your request";
     }
-  }
+  };
 </script>
 
 <form on:submit={handleSubmit}>
@@ -42,6 +59,10 @@
   </div>
 
   <button type="submit" class="form-button">Submit</button>
+
+  {#if status}
+    <p>{status}</p>
+  {/if}
 </form>
 
 <style>
@@ -96,7 +117,7 @@
   }
 
   .form-input:required:after {
-    content:" *";
+    content: " *";
     color: red;
   }
 </style>
