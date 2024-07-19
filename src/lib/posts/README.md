@@ -1,15 +1,12 @@
 ---
 title: Tutorial
-slug: "/sample-post"
-draft: false
-description: tutorial
-date: 2023-03-02
-updated: 2024-01-03
-author: Coding Nguyen
-category: 
+categories: 
 - "code" 
 - "blog" 
 - "tutorial"
+date: 2023-03-02
+updated: 2024-01-03
+author: Coding Nguyen
 tags: 
 - "Code" 
 - "program"

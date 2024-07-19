@@ -1,30 +1,53 @@
 <script>
   import { onMount } from 'svelte';
+  import { writable } from 'svelte/store';
 
   let darkMode = false;
-  let fontSize = 10;
+  let fontSize = 16;
   let contrast = false;
   let colorFilters = false;
+  let menuOpen = writable(false);
 
   function toggleDarkMode() {
     darkMode = !darkMode;
     document.body.classList.toggle('dark', darkMode);
+    announceMode('Dark mode', darkMode);
   }
 
   function increaseFontSize() {
-    fontSize++;
+    fontSize += 2;
+    document.documentElement.style.fontSize = `${fontSize}px`;
+    announceFontSize();
   }
 
   function decreaseFontSize() {
-    fontSize--;
+    fontSize -= 2;
+    document.documentElement.style.fontSize = `${fontSize}px`;
+    announceFontSize();
   }
 
   function toggleContrast() {
     contrast = !contrast;
+    document.body.classList.toggle('high-contrast', contrast);
+    announceMode('High contrast mode', contrast);
   }
 
   function toggleColorFilters() {
     colorFilters = !colorFilters;
+    document.body.classList.toggle('color-filters', colorFilters);
+    announceMode('Color filters', colorFilters);
+  }
+
+  function announceFontSize() {
+    const announcer = document.getElementById('font-size-announcer');
+    announcer.innerText = `Font size is now ${fontSize}px`;
+    setTimeout(() => announcer.innerText = '', 1000);
+  }
+
+  function announceMode(mode, isEnabled) {
+    const announcer = document.getElementById('mode-announcer');
+    announcer.innerText = `${mode} is now ${isEnabled ? 'enabled' : 'disabled'}`;
+    setTimeout(() => announcer.innerText = '', 1000);
   }
 
   onMount(() => {
@@ -32,59 +55,87 @@
   });
 </script>
 
-<button class="dark-mode" type="button"
-  aria-controls="darkMode"
-  aria-label="Dark mode"
-  on:click={toggleDarkMode}>
-  <svg viewBox="0 0 20 20" fill="none">
-    <path class="vert" d="M10 1V19" stroke="black" stroke-width="2" />
-    <path d="M1 10L19 10" stroke="black" stroke-width="2" />
-  </svg>
-  <span class="navbar-toggler-icon"></span>
-  {#if darkMode}
-    Go light
-  {:else}
-    Go dark
-  {/if}
-</button>
+<nav aria-label="Accessibility menu" class="accessibility-menu">
+  <button
+    type="button"
+    aria-expanded={$menuOpen}
+    aria-controls="accessibility-options"
+    on:click={() => menuOpen.set(!$menuOpen)}>
+    {#if $menuOpen}
+      Close accessibility menu
+    {:else}
+      Open accessibility menu
+    {/if}
+  </button>
 
-<button on:click={increaseFontSize}>Increase font size</button>
-<button on:click={decreaseFontSize}>Decrease font size</button>
-<p style="font-size: {fontSize + 'px'}">Font size is: {fontSize}</p>
+  {#if $menuOpen}
+    <div id="accessibility-options" role="menu">
+      <a
+        href="#"
+        role="link"
+        aria-controls="darkMode"
+        aria-pressed={darkMode}
+        aria-label="Toggle dark mode"
+        on:click|preventDefault={toggleDarkMode}>
+        {#if darkMode}
+          Go light
+        {:else}
+          Go dark
+        {/if}
+      </a>
 
-<button class="contrast" type="button"
-  aria-controls="contrast"
-  aria-label="Contrast"
-  on:click={toggleContrast}
-  style="--bg-color: {contrast ? '#000' : '#fff'}; --text-color: {contrast ? '#fff' : '#000'};">
-  <svg viewBox="0 0 20 20" fill="none">
-    <path class="vert" d="M10 1V19" stroke="black" stroke-width="2" />
-    <path d="M1 10L19 10" stroke="black" stroke-width="2" />
-  </svg>
-  <span class="navbar-toggler-icon"></span>
-  {#if contrast}
-    High contrast
-  {:else}
-    Low contrast
-  {/if}
-</button>
+      <a
+        href="#"
+        role="link"
+        aria-controls="increaseFontSize"
+        aria-label="Increase font size"
+        on:click|preventDefault={increaseFontSize}>
+        Increase font size
+      </a>
 
-<button class="color-filters" type="button"
-  aria-controls="colorFilters"
-  aria-label="Color filters"
-  on:click={toggleColorFilters}
-  style="filter: {colorFilters ? 'invert(1)' : 'none'};">
-  <svg viewBox="0 0 20 20" fill="none">
-    <path class="vert" d="M10 1V19" stroke="black" stroke-width="2" />
-    <path d="M1 10L19 10" stroke="black" stroke-width="2" />
-  </svg>
-  <span class="navbar-toggler-icon"></span>
-  {#if colorFilters}
-    Default filters
-  {:else}
-    Change filters
+      <a
+        href="#"
+        role="link"
+        aria-controls="decreaseFontSize"
+        aria-label="Decrease font size"
+        on:click|preventDefault={decreaseFontSize}>
+        Decrease font size
+      </a>
+
+      <p style="font-size: {fontSize + 'px'}">Font size is: {fontSize}</p>
+      <div id="font-size-announcer" aria-live="assertive" style="position: absolute; left: -9999px;"></div>
+      <div id="mode-announcer" aria-live="assertive" style="position: absolute; left: -9999px;"></div>
+
+      <a
+        href="#"
+        role="link"
+        aria-controls="contrast"
+        aria-pressed={contrast}
+        aria-label="Toggle contrast"
+        on:click|preventDefault={toggleContrast}>
+        {#if contrast}
+          Low contrast
+        {:else}
+          High contrast
+        {/if}
+      </a>
+
+      <a
+        href="#"
+        role="link"
+        aria-controls="colorFilters"
+        aria-pressed={colorFilters}
+        aria-label="Toggle color filters"
+        on:click|preventDefault={toggleColorFilters}>
+        {#if colorFilters}
+          Default filters
+        {:else}
+          Change filters
+        {/if}
+      </a>
+    </div>
   {/if}
-</button>
+</nav>
 
 <style>
   :global(body.dark) {
@@ -92,26 +143,66 @@
     color: #fff;
   }
 
-  button {
-    background: var(--bg-color, #fff);
-    border: 2px solid var(--text-color, #000);
-    border-radius: 5px;
-    color: var(--text-color, #000);
-    padding: 10px 15px;
-    margin: 5px;
-    cursor: pointer;
+  :global(body.high-contrast) {
+    background: #000;
+    color: #fff;
   }
 
-  button:active {
+  :global(body.color-filters) {
+    filter: invert(1);
+  }
+
+  .accessibility-menu {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  .accessibility-menu > button {
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 5px;
+    color: #000;
+    padding: 10px 15px;
+    margin: 5px 0;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .accessibility-menu > button:active {
     background: inherit;
   }
 
-  .contrast {
-    --bg-color: #fff;
-    --text-color: #000;
+  #accessibility-options {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
   }
 
-  .color-filters {
-    filter: none;
+  #accessibility-options a {
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 5px;
+    color: #000;
+    padding: 10px 15px;
+    margin: 5px 0;
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  #accessibility-options a:active {
+    background: inherit;
+  }
+
+  #accessibility-options p {
+    margin: 5px 0;
+    font-size: 1em;
   }
 </style>

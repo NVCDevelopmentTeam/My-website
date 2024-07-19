@@ -91,7 +91,7 @@
     flex: 1;
     padding: 10px 15px;
     font-size: 16px;
-    border: 1px solid #ddd;
+    border: 1px solid #333;
     border-radius: 5px;
   }
 
@@ -117,7 +117,7 @@
   .search-result-item {
     margin-bottom: 20px;
     padding: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #333;
     border-radius: 5px;
     background-color: #f9f9f9;
   }

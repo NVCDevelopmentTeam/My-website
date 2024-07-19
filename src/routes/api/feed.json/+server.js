@@ -1,5 +1,5 @@
-import { siteTitle, siteDescription, siteURL, siteLink } from '$lib/data/config';
 import database from '$lib/data/database';
+import { siteTitle, siteDescription, siteURL, siteLink } from '$lib/data/config';
 
 const generateFeed = (items) => {
   return {
@@ -17,7 +17,6 @@ const generateFeed = (items) => {
   };
 };
 
-// GET /api/feed.json
 export async function GET() {
   const comments = database.getComments();
   const feed = generateFeed(comments);

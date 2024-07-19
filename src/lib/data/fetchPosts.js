@@ -1,6 +1,6 @@
 import { postsPerPage } from '$lib/data/config';
 
-const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '', author = '', tags = '' } = {}) => {
+const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '', author = '', tag = '' } = {}) => {
 
     const posts = await Promise.all(
         Object.entries(import.meta.glob('/src/lib/posts/*.md')).map(async ([path, resolver]) => {
@@ -16,8 +16,8 @@ const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '', aut
         sortedPosts = sortedPosts.filter(post => post.categories.includes(category));
     }
 
-    if (tags) {
-        sortedPosts = sortedPosts.filter(post => post.tags.includes(tags));
+    if (tag) {
+        sortedPosts = sortedPosts.filter(post => post.tags.includes(tag));
     }
 
     if (author) {

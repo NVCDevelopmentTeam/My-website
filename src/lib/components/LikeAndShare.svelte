@@ -13,8 +13,20 @@
     localStorage.setItem('likes', data);
   };
 
-  const shareContent = () => {
-    // Code to share content goes here
+  const shareOnFacebook = () => {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+  };
+
+  const shareOnTwitter = () => {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent('Check out this awesome content!');
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+  };
+
+  const shareOnLinkedIn = () => {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
   };
 
   onMount(() => {
@@ -31,7 +43,9 @@
 </div>
 
 <div>
-  <button class="share-button" on:click={shareContent}>Share</button>
+  <a href="#" class="share-link" on:click|preventDefault={shareOnFacebook}>Share on Facebook</a>
+  <a href="#" class="share-link" on:click|preventDefault={shareOnTwitter}>Share on Twitter</a>
+  <a href="#" class="share-link" on:click|preventDefault={shareOnLinkedIn}>Share on LinkedIn</a>
 </div>
 
 <style>
@@ -52,7 +66,18 @@
     background-color: #4CAF50;
   }
 
-  .share-button {
+  .share-link {
+    display: block;
     background-color: #008CBA;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin: 4px 2px;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+
+  .share-link:hover {
+    background-color: #007B9A;
   }
 </style>

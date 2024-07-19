@@ -5,12 +5,12 @@ import contact from '$lib/data/contact';
 
 dotenv.config();
 
-// Tạo một transporter cho Nodemailer
+// Create a transporter for Nodemailer
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
   secure: false, // true for 465, false for other ports
-  auth: {
+  Auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
@@ -32,23 +32,23 @@ export async function POST({ request }) {
       return json({ success: false, message: 'All fields are required' }, { status: 400 });
     }
 
-    // Cấu hình nội dung email
+    // Configure email content
     const mailOptions = {
-      from: `"${data.name}" <${data.email}>`, // Hiển thị email của người dùng điền vào form
-      to: process.env.EMAIL_USER, // Email quản trị viên (email của anh)
-      replyTo: data.email, // Email của người dùng điền vào form
+      from: `"${data.name}" <${data.email}>`, // Display the email of the user filling out the form
+      to: process.env.EMAIL_USER, // Administrator email (your email)
+      replyTo: data.email, // Email of the user filling in the form
       subject: `Contact form submission: ${data.title}`,
       text: `Name: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
-      // Để nội dung email thêm rõ ràng hơn, ta có thể thêm phần text vào đây.
+      // To make the email content more clear, we can add text here.
       html: `<p><strong>Name:</strong> ${data.name}</p>
              <p><strong>Email:</strong> ${data.email}</p>
              <p><strong>Message:</strong> ${data.message}</p>`
     };
 
-    // Gửi email
+    // Send email
     await transporter.sendMail(mailOptions);
 
-    // Lưu dữ liệu liên hệ
+    // Save contact data
     await contact.save(data);
 
     return json({ success: true, message: 'Thank you for your message!' });

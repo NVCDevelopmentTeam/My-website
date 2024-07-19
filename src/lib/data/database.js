@@ -1,51 +1,78 @@
-let stats = {
-  visitsToday: 0,
-  totalVisits: 0,
-  totalVisitors: 0,
-  totalCountries: 0
-};
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
 
-let comments = [];
-
-function incrementVisitorCount() {
-  stats.visitsToday++;
-  stats.totalVisits++;
-  stats.totalVisitors++; // Adjust this logic as needed
+export async function openDB() {
+  return open({
+    filename: './subscribers.db',
+    driver: sqlite3.Database
+  });
 }
 
-function getStats() {
-  return { ...stats }; // Ensure it is a plain object
+export async function createTable() {
+  const db = await openDB();
+  await db.exec(`CREATE TABLE IF NOT EXISTS subscribers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE,
+    subscribed_at TEXT,
+    unsubscribe_token TEXT
+  )`);
 }
 
-function updateStats(newStats) {
-  stats = { ...stats, ...newStats };
+export async function unsubscribe(email) {
+  const db = await openDB();
+  await db.run('DELETE FROM subscribers WHERE email = ?', email);
 }
 
-function getComments() {
-  return [...comments];
-}
+createTable();
+const database = {
+  // Statistical data
+  stats: {
+    visitsToday: 0,
+    totalVisits: 0,
+    totalVisitors: new Set(),
+    totalCountries: new Set()
+  },
+  
+  // Comment data
+  comments: [],
 
-function addComment(newComment) {
-  comments.push(newComment);
-}
+  // Get visit statistics
+  getStats() {
+    return {
+      visitsToday: this.stats.visitsToday,
+      totalVisits: this.stats.totalVisits,
+      totalVisitors: this.stats.totalVisitors.size,
+      totalCountries: this.stats.totalCountries.size
+    };
+  },
 
-function deleteComment(commentId) {
-  comments = comments.filter(comment => comment.id !== commentId);
-}
+  // Update visit statistics
+  updateStats(newVisit) {
+    const { ip, country } = newVisit;
 
-function updateComment(commentId, updatedData) {
-  const commentIndex = comments.findIndex(comment => comment.id === commentId);
-  if (commentIndex !== -1) {
-    comments[commentIndex] = { ...comments[commentIndex], ...updatedData };
+    // Update statistics
+    this.stats.visitsToday += 1;
+    this.stats.totalVisits += 1;
+    this.stats.totalVisitors.add(ip);
+    this.stats.totalCountries.add(country);
+  },
+
+  // Get all comments
+  getComments() {
+    return this.comments;
+  },
+
+  // Add new comment
+  addComment(comment) {
+    const newComment = { id: this.comments.length + 1, ...comment };
+    this.comments.push(newComment);
+    return newComment;
+  },
+
+  // Delete comments
+  deleteComment(id) {
+    this.comments = this.comments.filter(comment => comment.id !== id);
   }
-}
-
-export default {
-  incrementVisitorCount,
-  getStats,
-  updateStats,
-  getComments,
-  addComment,
-  deleteComment,
-  updateComment
 };
+
+export default database;

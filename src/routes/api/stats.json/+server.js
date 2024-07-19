@@ -1,10 +1,8 @@
-import { getStats, incrementVisitorCount } from '$lib/data/statsService';
+import database from '$lib/data/database';
 
 export async function GET() {
   try {
-    await incrementVisitorCount();
-    const stats = await getStats();
-
+    const stats = database.getStats();
     return new Response(JSON.stringify(stats), {
       status: 200,
       headers: {
@@ -12,10 +10,8 @@ export async function GET() {
       }
     });
   } catch (error) {
-    console.error('Stats API error:', error);
-    return new Response(JSON.stringify({
-      error: 'An error occurred while fetching or updating the statistics.'
-    }), {
+    console.error('Error fetching stats:', error);
+    return new Response(JSON.stringify({ error: 'An error occurred while fetching the statistics.' }), {
       status: 500,
       headers: {
         'Content-Type': 'application/json'

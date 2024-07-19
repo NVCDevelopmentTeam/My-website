@@ -2,8 +2,10 @@
   import { page } from '$app/stores';
   import { browser } from '$app/environment'
   import logo from '$lib/images/logo.png';
+  import Search from '$lib/components/Search.svelte';
+  import Accessibility from '$lib/components/Accessibility.svelte';
 
-  export let navMenu;
+  export let navMenu = 'NavMenu';
   let expanded = false;
 </script>
 
@@ -27,9 +29,6 @@
     </ul>
   </div>
   <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 fixed-top" id="nav">
-    <svg viewBox="0 0 2 3" aria-hidden="true">
-      <path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-    </svg>
     <button
       class="navbar-toggler"
       type="button"
@@ -40,10 +39,6 @@
       aria-label="Toggle navigation"
       on:click={() => expanded = !expanded}>
       {navMenu}
-      <svg viewBox="0 0 20 20" fill="none">
-        <path class="vert" d="M10 1V19" stroke="black" stroke-width="2" />
-        <path d="M1 10L19 10" stroke="black" stroke-width="2" />
-      </svg>
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive" hidden={!expanded}>
@@ -61,11 +56,12 @@
           <a href="/contact">contact</a>
         </li>
       </ul>
-      <svg viewBox="0 0 2 3" aria-hidden="true">
-        <path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-      </svg>
     </div>
   </nav>
+  <div class="search-accessibility">
+    <Accessibility />
+    <Search />
+  </div>
 </header>
 <style>
 	header {
@@ -96,16 +92,6 @@
 		display: flex;
 		justify-content: center;
 		--background: rgba(255, 255, 255, 0.7);
-	}
-
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
-
-	path {
-		fill: var(--background);
 	}
 
 	ul {

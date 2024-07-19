@@ -1,12 +1,25 @@
-import { incrementVisitorCount } from '$lib/data/statsService';
+import { getStats, updateStats } from '$lib/data/statsService';
 
-export async function handle({ event, resolve }) {
+export const handle = async ({ event, resolve }) => {
+  // Start request event
+  const response = await resolve(event);
+
+  // Get the client's IP address
+  const clientIP = event.request.headers.get('x-forwarded-for') || event.getClientAddress() || 'unknown';
+
+  // Create a new visit record
+  const newVisit = {
+    ip: clientIP,
+    timestamp: new Date()
+  };
+
   try {
-    await incrementVisitorCount();
-    const response = await resolve(event);
-    return response;
+    // Update visit statistics
+    await updateStats(newVisit);
   } catch (error) {
-    console.error('Error in hooks:', error);
-    return new Response('Internal Server Error', { status: 500 });
+    console.error('Error updating visit stats:', error);
   }
-}
+
+  // Return response
+  return response;
+};

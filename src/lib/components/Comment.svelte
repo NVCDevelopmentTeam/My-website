@@ -1,20 +1,19 @@
 <script>
   import { onMount } from 'svelte';
-  import { fetch as fetchComments } from '$lib/data/comment';
+  import { fetchComments, addComment, deleteComment } from '$lib/data/comment';
+
+  export let comments = [];
 
   let author = '';
   let content = '';
-  let comments = [];
 
   const ITEMS_PER_PAGE = 5;
   let currentPage = 1;
 
   async function fetchCommentsData() {
     try {
-      const response = await fetch('/api/comment.json');
-      if (!response.ok) throw new Error('Failed to fetch comments');
-      const data = await response.json();
-      comments = data.items; // Assuming comments are in the 'items' field
+      const data = await fetchComments();
+      comments = data;
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
@@ -23,6 +22,7 @@
   async function handleSubmit(event) {
     event.preventDefault();
     const newComment = {
+      id: Date.now().toString(),
       author,
       content,
       date: new Date().toLocaleString(),
@@ -34,17 +34,7 @@
     };
 
     try {
-      const response = await fetch('/api/comment.json', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newComment)
-      });
-
-      if (!response.ok) throw new Error('Failed to post comment');
-      
-      const data = await response.json();
+      const data = await addComment(newComment);
       comments = [data, ...comments];
       author = '';
       content = '';
@@ -78,8 +68,13 @@
     // Handle report comment
   }
 
-  function handleDelete(comment) {
-    comments = comments.filter(c => c !== comment);
+  async function handleDelete(comment) {
+    try {
+      await deleteComment(comment.id);
+      comments = comments.filter(c => c.id !== comment.id);
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
   }
 
   function handleLike(comment) {
@@ -134,24 +129,24 @@
           <div class="comment-header">
             <p>{comment.author} - {comment.date}</p>
             <div class="menu-surface">
-              <button>More</button>
+              <button type="button">More</button>
               <div class="menu">
-                <button on:click={() => handleReply(comment)}>Reply</button>
-                <button on:click={() => handlePin(comment)}>Pin</button>
-                <button on:click={() => handleReport(comment)}>Report</button>
-                <button on:click={() => handleDelete(comment)}>Delete</button>
+                <button type="button" on:click={() => handleReply(comment)}>Reply</button>
+                <button type="button" on:click={() => handlePin(comment)}>Pin</button>
+                <button type="button" on:click={() => handleReport(comment)}>Report</button>
+                <button type="button" on:click={() => handleDelete(comment)}>Delete</button>
               </div>
             </div>
           </div>
           <div class="comment-content">
             <p>{comment.content}</p>
             <div class="comment-actions">
-              <button on:click={() => handleLike(comment)}>Like</button>
+              <button type="button" on:click={() => handleLike(comment)}>Like</button>
               <span>{comment.likes}</span>
-              <button on:click={() => handleDislike(comment)}>Dislike</button>
+              <button type="button" on:click={() => handleDislike(comment)}>Dislike</button>
               <span>{comment.dislikes}</span>
               {#if comment.replies.length > 0}
-                <button on:click={() => (comment.showReplies = !comment.showReplies)}>
+                <button type="button" on:click={() => (comment.showReplies = !comment.showReplies)}>
                   {comment.showReplies ? 'Hide Replies' : 'Show Replies'} ({comment.replies.length})
                 </button>
               {/if}
@@ -175,7 +170,7 @@
       {/each}
     </ul>
   {:else}
-    <p>No comments yet.</p>
+    <p>0 comments</p>
   {/if}
 </div>
 
@@ -191,15 +186,23 @@
 
   .comment-item {
     margin-bottom: 15px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
   }
 
   .comment-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+  }
+
+  .comment-header p {
+    margin: 0;
   }
 
   .comment-content {
-    margin-top: 5px;
+    margin-top: 10px;
   }
 
   .comment-actions {
@@ -210,20 +213,28 @@
 
   .reply {
     margin-left: 20px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 5px;
   }
 
   .pagination {
     display: flex;
     gap: 5px;
     margin-bottom: 10px;
+    justify-content: center;
   }
 
   .pagination button {
     padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    cursor: pointer;
   }
 
   .pagination button.selected {
     font-weight: bold;
+    background-color: #ddd;
   }
 
   .menu-surface {
@@ -235,13 +246,29 @@
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;
     background-color: white;
     border: 1px solid #ccc;
     padding: 5px;
+    z-index: 1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
 
   .menu-surface:hover .menu {
     display: block;
+  }
+
+  .menu button {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .menu button:hover {
+    background-color: #f5f5f5;
   }
 </style>

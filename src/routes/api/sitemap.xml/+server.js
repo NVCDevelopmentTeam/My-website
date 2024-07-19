@@ -1,28 +1,24 @@
-// This is an endpoint that generates a basic sitemap for the index page and all posts.
-// It's helpful for SEO but does require you to keep it updated to reflect the routes of your website.
-// It is OK to delete this file if you'd rather not bother with it.
-
-import { fetchPosts  } from '$lib/data/fetchPosts';
+import fetchPosts from '$lib/data/fetchPosts';
 import { siteURL } from '$lib/data/config';
 
-// export the sitemap.xml file name
+// Export the sitemap.xml file name
 export const prerender = true;
-export const filename = 'sitemap.xml';
 
-// make sure this matches your post route
-const getPostUrl = (slug) => `${website.url}/post/${slug}`;
+/**
+ * Generates the post URL based on the slug.
+ * @param {string} slug - The slug of the post.
+ * @returns {string} - The full URL of the post.
+ */
+const getPostUrl = (slug) => `${siteURL}/post/${slug}`;
 
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
  */
-export async function GET({ setHeaders }) {
-  // set the headers for xml content type and cache control
-  setHeaders({
-    'Cache-Control': `max-age=0, s-max-age=600`,
-    'Content-Type': 'application/xml'
-  });
+export async function GET() {
+  // Fetch all posts
+  const { posts } = await fetchPosts();
 
-  // generate the xml string for the sitemap
+  // Generate the XML string for the sitemap
   const xml = `<?xml version="1.0" encoding="UTF-8" ?>
     <urlset
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -36,7 +32,7 @@ export async function GET({ setHeaders }) {
       xmlns:xhtml="http://www.w3.org/1999/xhtml"
     >
       <url>
-        <loc>${website.url}</loc>
+        <loc>${siteURL}</loc>
         <priority>1.0</priority>
       </url>
 
@@ -44,20 +40,23 @@ export async function GET({ setHeaders }) {
         .map(
           (post) => `<url>
             <loc>${getPostUrl(post.slug)}</loc>
-            <lastmod
-              >${
-                post.updated
-                  ? new Date(post.updated).toISOString()
-                  : new Date(post.date).toISOString()
-              }</lastmod
-            >
+            <lastmod>${
+              post.updated
+                ? new Date(post.updated).toISOString()
+                : new Date(post.date).toISOString()
+            }</lastmod>
             <changefreq>monthly</changefreq>
-            <priority>1.0</priority>
+            <priority>0.8</priority>
           </url>`
         )
         .join('')}
     </urlset>`;
 
-  // return the xml response
-  return new Response(xml);
+  // Return the XML response
+  return new Response(xml, {
+    headers: {
+      'Content-Type': 'application/xml',
+      'Cache-Control': 'max-age=0, s-max-age=600',
+    },
+  });
 }

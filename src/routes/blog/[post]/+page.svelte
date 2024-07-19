@@ -1,59 +1,52 @@
 <script>
-  import { head } from 'svelte/internal';
   import LikeAndShare from '$lib/components/LikeAndShare.svelte';
   import Comment from '$lib/components/Comment.svelte';
-
   export let data;
 
-  const {
-    title,
-    excerpt,
-    date,
-    updated,
-    author,
-    coverImage,
-    coverWidth,
-    coverHeight,
-    categories,
-    tags
-  } = data.meta;
-
-  const { PostContent, Comment: postComment } = data;
+  const { title, excerpt, date, updated, author, categories, coverImage, coverWidth, coverHeight, tags } = data.meta;
+  const { PostContent, comments } = data;
 </script>
 
 <svelte:head>
   <!-- Be sure to add your image files and un-comment the lines below -->
   <title>{title}</title>
-  <meta name="description" content="{excerpt}" />
+  <meta data-key="description" name="description" content={excerpt} />
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="{title}" />
-  <meta name="twitter:title" content="{title}" />
-  <meta property="og:description" content="{excerpt}" />
-  <meta name="twitter:description" content="{excerpt}" />
+  <meta property="og:title" content={title} />
+  <meta name="twitter:title" content={title} />
+  <meta property="og:description" content={excerpt} />
+  <meta name="twitter:description" content={excerpt} />
   <!-- <meta property="og:image" content="https://yourdomain.com/image_path" /> -->
-  <meta property="og:image:width" content="{coverWidth}" />
-  <meta property="og:image:height" content="{coverHeight}" />
+  <meta property="og:image:width" content={coverWidth} />
+  <meta property="og:image:height" content={coverHeight} />
   <!-- <meta name="twitter:image" content="https://yourdomain.com/image_path" /> -->
-  <link rel="stylesheet" href="styles.css">
 </svelte:head>
 
 <article class="post">
   <!-- You might want to add an alt frontmatter attribute. If not, leaving alt blank here works, too. -->
   <img
     class="cover-image"
-    src="{coverImage}"
+    src={coverImage}
     alt=""
     style="aspect-ratio: {coverWidth} / {coverHeight};"
-    width="{coverWidth}"
-    height="{coverHeight}"
+    width={coverWidth}
+    height={coverHeight}
   />
 
   <h1>{title}</h1>
+  
+  <div class="meta">
+    <b>Posted by:</b> {author}
+    <br />
+    <b>Published:</b> {date}
+    <br />
+    <b>Updated:</b> {updated}
+  </div>
 
   {#if categories}
     <aside class="post-header">
-      <b>Posted in:</b>
-      <ul>
+      <p>Posted in:</p>
+      <ul class="post-header__categories">
         {#each categories as category}
           <li>
             <a href="/blog/category/{category}/">
@@ -64,25 +57,18 @@
       </ul>
     </aside>
   {/if}
-  <div class="meta">
-    <b>Posted by:</b> {author}
-    <br>
-    <b>Published:</b> {date}
-    <br>
-    <b>Updated:</b> {updated}
-  </div>
-
+  
   <LikeAndShare />
-
-  <PostContent />
+  
+  <svelte:component this={PostContent} />
 
   {#if tags}
     <aside class="post-footer">
       <p>Tags: </p>
-      <ul>
+      <ul class="post-footer__tags">
         {#each tags as tag}
           <li>
-            <a href="/blog/tags/{tag}/">
+            <a href="/blog/tag/{tag}/">
               {tag}
             </a>
           </li>
@@ -90,50 +76,76 @@
       </ul>
     </aside>
   {/if}
-
-  <Comment Comment={postComment} />
+  
+  <Comment {comments} />
 </article>
+
 <style>
-/* styles.css */
 .post {
   margin: 20px;
   padding: 20px;
   background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .cover-image {
   display: block;
   margin-bottom: 20px;
+  max-width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.meta {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #555;
 }
 
 .post-header {
   margin-bottom: 10px;
 }
 
-.post-header ul {
+.post-header__categories {
   list-style-type: none;
   padding: 0;
 }
 
-.meta {
-  margin-bottom: 20px;
+.post-header__categories li {
+  display: inline;
+  margin-right: 10px;
+}
+
+.post-header__categories li a {
+  text-decoration: none;
+  color: #007acc;
+}
+
+.post-header__categories li a:hover {
+  text-decoration: underline;
 }
 
 .post-footer {
   margin-top: 20px;
 }
 
-.post-footer ul {
+.post-footer__tags {
   list-style-type: none;
   padding: 0;
 }
 
-.post-footer ul li {
+.post-footer__tags li {
   display: inline;
   margin-right: 10px;
 }
 
-.post-footer ul li:last-child {
-  margin-right: 0;
+.post-footer__tags li a {
+  text-decoration: none;
+  color: #007acc;
+}
+
+.post-footer__tags li a:hover {
+  text-decoration: underline;
 }
 </style>
