@@ -1,5 +1,7 @@
-<script>
-  import { page } from '$app/stores';
+<script context="module">
+  export async function load({ error }) {
+    error(404, 'Not Found');
+  }
 </script>
 
 <svelte:head>
