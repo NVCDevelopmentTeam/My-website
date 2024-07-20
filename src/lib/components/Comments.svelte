@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { fetchComments, addComment, deleteComment } from '$lib/data/comment';
+  import { fetchComments, addComment, deleteComment } from '$lib/data/discussions';
 
   export let comments = [];
 

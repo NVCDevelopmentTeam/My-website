@@ -1,6 +1,6 @@
 <script>
   import LikeAndShare from '$lib/components/LikeAndShare.svelte';
-  import Comment from '$lib/components/Comment.svelte';
+  import Comments from '$lib/components/Comments.svelte';
   export let data;
 
   const { title, excerpt, date, updated, author, categories, coverImage, coverWidth, coverHeight, tags } = data.meta;
@@ -77,7 +77,7 @@
     </aside>
   {/if}
   
-  <Comment {comments} />
+  <Comments {comments} />
 </article>
 
 <style>
