@@ -28,9 +28,9 @@
 </script>
 
 <section class="mb-8 w-full">
-  <h3 id="latest" class="mb-6 text-2xl font-bold tracking-tight text-black dark:text-white md:text-4xl">
+  <h2 id="latest" class="mb-6 text-2xl font-bold tracking-tight text-black dark:text-white md:text-4xl">
     Latest Posts
-  </h3>
+  </h2>
   <ul class="space-y-2">
     {#if posts.length > 0}
       {#each posts as post (post.slug)}
@@ -55,7 +55,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
-  h3 {
+  h2 {
     border-bottom: 2px solid #e2e8f0;
     padding-bottom: 10px;
     margin-bottom: 20px;

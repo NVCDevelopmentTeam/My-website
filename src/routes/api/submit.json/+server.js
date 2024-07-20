@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import contact from '$lib/data/contact';  // Make sure the path and file extension are correct
+import submitions from '$lib/data/submitions';  // Make sure the path and file extension are correct
 
 dotenv.config();
 

@@ -72,7 +72,6 @@
     <div id="accessibility-options" role="menu">
       <a
         href="#"
-        role="link"
         aria-controls="darkMode"
         aria-pressed={darkMode}
         aria-label="Toggle dark mode"
@@ -86,7 +85,6 @@
 
       <a
         href="#"
-        role="link"
         aria-controls="increaseFontSize"
         aria-label="Increase font size"
         on:click|preventDefault={increaseFontSize}>
@@ -95,7 +93,6 @@
 
       <a
         href="#"
-        role="link"
         aria-controls="decreaseFontSize"
         aria-label="Decrease font size"
         on:click|preventDefault={decreaseFontSize}>
@@ -108,7 +105,6 @@
 
       <a
         href="#"
-        role="link"
         aria-controls="contrast"
         aria-pressed={contrast}
         aria-label="Toggle contrast"
@@ -122,7 +118,6 @@
 
       <a
         href="#"
-        role="link"
         aria-controls="colorFilters"
         aria-pressed={colorFilters}
         aria-label="Toggle color filters"
