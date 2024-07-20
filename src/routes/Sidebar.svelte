@@ -1,8 +1,8 @@
 <script>
   import LatestPosts from '$lib/components/LatestPosts.svelte';
   import SocialLinks from '$lib/components/SocialLinks.svelte';
-import Subscribe from '$lib/components/Subscribe.svelte';
-import Traffic from '$lib/components/Traffic.svelte';
+import Newsletter  from '$lib/components/Newsletter.svelte';
+import VisitorStatistics from '$lib/components/VisitorStatistics.svelte';
 </script>
 
 <sidebar class="sidebar">
@@ -10,9 +10,9 @@ import Traffic from '$lib/components/Traffic.svelte';
     <LatestPosts />
   </div>
   <div class="social-links">
-<Subscribe />
+<Newsletter />
     <SocialLinks />
-<Traffic />
+<VisitorStatistics />
   </div>
 
 </sidebar>
