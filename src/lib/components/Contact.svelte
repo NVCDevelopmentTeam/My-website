@@ -17,22 +17,31 @@
       message
     };
 
-    const response = await fetch("/api/submit.json", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch("/api/submit.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (result.success) {
-      console.log(result);
-      status = result.message || "Success";
-    } else {
-      status = result.message || "An error occurred while processing your request";
+      if (response.ok && result.success) {
+        status = result.message || "Success";
+        // Reset form fields after successful submission
+        name = '';
+        email = '';
+        title = '';
+        message = '';
+      } else {
+        status = result.message || "An error occurred while processing your request";
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      status = "An error occurred while processing your request";
     }
   };
 </script>

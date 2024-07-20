@@ -1,21 +1,18 @@
 import { json } from '@sveltejs/kit';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import contact from '$lib/data/contact';
+import contact from '$lib/data/contact';  // Make sure the path and file extension are correct
 
 dotenv.config();
 
-// Create a transporter for Nodemailer
+// Create a transporter for Nodemailer using SSL
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
+  port: 465, // Using SSL
+  secure: true, // true for 465, false for other ports
+  Auth: {
+    user: process.env.SMTP_USER, // Actually the outgoing email
+    pass: process.env.SMTP_PASS // Application password
   }
 });
 
@@ -34,12 +31,11 @@ export async function POST({ request }) {
 
     // Configure email content
     const mailOptions = {
-      from: `"${data.name}" <${data.email}>`, // Display the email of the user filling out the form
-      to: process.env.EMAIL_USER, // Administrator email (your email)
-      replyTo: data.email, // Email of the user filling in the form
+      from: `"${process.env.FROM_NAME}" <${process.env.FROM_EMAIL}>`, // Sender name and email address
+      to: process.env.SMTP_USER, // Administrator email (your email)
+      replyTo: data.email, // Email of the form sender
       subject: `Contact form submission: ${data.title}`,
       text: `Name: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}`,
-      // To make the email content more clear, we can add text here.
       html: `<p><strong>Name:</strong> ${data.name}</p>
              <p><strong>Email:</strong> ${data.email}</p>
              <p><strong>Message:</strong> ${data.message}</p>`
@@ -54,6 +50,6 @@ export async function POST({ request }) {
     return json({ success: true, message: 'Thank you for your message!' });
   } catch (error) {
     console.error('Error:', error);
-    return json({ success: false, message: 'An error occurred while processing your request' }, { status: 500 });
+    return json({ success: false, message: `An error occurred while processing your request: ${error.message}` }, { status: 500 });
   }
 }
