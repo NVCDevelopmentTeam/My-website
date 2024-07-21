@@ -2,45 +2,55 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
 
-  let darkMode = false;
-  let fontSize = 16;
-  let contrast = false;
-  let colorFilters = false;
+  let darkMode = writable(false);
+  let fontSize = writable(16);
+  let contrast = writable(false);
+  let colorFilters = writable(false);
   let menuOpen = writable(false);
 
   function toggleDarkMode() {
-    darkMode = !darkMode;
-    document.body.classList.toggle('dark', darkMode);
-    announceMode('Dark mode', darkMode);
+    darkMode.update(value => {
+      document.body.classList.toggle('dark', !value);
+      announceMode('Dark mode', !value);
+      return !value;
+    });
   }
 
   function increaseFontSize() {
-    fontSize += 2;
-    document.documentElement.style.fontSize = `${fontSize}px`;
-    announceFontSize();
+    fontSize.update(size => {
+      document.documentElement.style.fontSize = `${size + 2}px`;
+      announceFontSize(size + 2);
+      return size + 2;
+    });
   }
 
   function decreaseFontSize() {
-    fontSize -= 2;
-    document.documentElement.style.fontSize = `${fontSize}px`;
-    announceFontSize();
+    fontSize.update(size => {
+      document.documentElement.style.fontSize = `${size - 2}px`;
+      announceFontSize(size - 2);
+      return size - 2;
+    });
   }
 
   function toggleContrast() {
-    contrast = !contrast;
-    document.body.classList.toggle('high-contrast', contrast);
-    announceMode('High contrast mode', contrast);
+    contrast.update(value => {
+      document.body.classList.toggle('high-contrast', !value);
+      announceMode('High contrast mode', !value);
+      return !value;
+    });
   }
 
   function toggleColorFilters() {
-    colorFilters = !colorFilters;
-    document.body.classList.toggle('color-filters', colorFilters);
-    announceMode('Color filters', colorFilters);
+    colorFilters.update(value => {
+      document.body.classList.toggle('color-filters', !value);
+      announceMode('Color filters', !value);
+      return !value;
+    });
   }
 
-  function announceFontSize() {
+  function announceFontSize(size) {
     const announcer = document.getElementById('font-size-announcer');
-    announcer.innerText = `Font size is now ${fontSize}px`;
+    announcer.innerText = `Font size is now ${size}px`;
     setTimeout(() => announcer.innerText = '', 1000);
   }
 
@@ -51,10 +61,9 @@
   }
 
   onMount(() => {
-    document.body.classList.toggle('dark', darkMode);
+    darkMode.subscribe(value => document.body.classList.toggle('dark', value));
   });
 </script>
-
 <nav aria-label="Accessibility menu" class="accessibility-menu">
   <button
     type="button"
@@ -70,64 +79,64 @@
 
   {#if $menuOpen}
     <div id="accessibility-options" role="menu">
-      <a
-        href="#"
+      <button
+        type="button"
         aria-controls="darkMode"
-        aria-pressed={darkMode}
+        aria-pressed={$darkMode}
         aria-label="Toggle dark mode"
-        on:click|preventDefault={toggleDarkMode}>
-        {#if darkMode}
+        on:click={toggleDarkMode}>
+        {#if $darkMode}
           Go light
         {:else}
           Go dark
         {/if}
-      </a>
+      </button>
 
-      <a
-        href="#"
+      <button
+        type="button"
         aria-controls="increaseFontSize"
         aria-label="Increase font size"
-        on:click|preventDefault={increaseFontSize}>
+        on:click={increaseFontSize}>
         Increase font size
-      </a>
+      </button>
 
-      <a
-        href="#"
+      <button
+        type="button"
         aria-controls="decreaseFontSize"
         aria-label="Decrease font size"
-        on:click|preventDefault={decreaseFontSize}>
+        on:click={decreaseFontSize}>
         Decrease font size
-      </a>
+      </button>
 
-      <p style="font-size: {fontSize + 'px'}">Font size is: {fontSize}</p>
+      <p style="font-size: {$fontSize + 'px'}">Font size is: {$fontSize}</p>
       <div id="font-size-announcer" aria-live="assertive" style="position: absolute; left: -9999px;"></div>
       <div id="mode-announcer" aria-live="assertive" style="position: absolute; left: -9999px;"></div>
 
-      <a
-        href="#"
+      <button
+        type="button"
         aria-controls="contrast"
-        aria-pressed={contrast}
+        aria-pressed={$contrast}
         aria-label="Toggle contrast"
-        on:click|preventDefault={toggleContrast}>
-        {#if contrast}
+        on:click={toggleContrast}>
+        {#if $contrast}
           Low contrast
         {:else}
           High contrast
         {/if}
-      </a>
+      </button>
 
-      <a
-        href="#"
+      <button
+        type="button"
         aria-controls="colorFilters"
-        aria-pressed={colorFilters}
+        aria-pressed={$colorFilters}
         aria-label="Toggle color filters"
-        on:click|preventDefault={toggleColorFilters}>
-        {#if colorFilters}
+        on:click={toggleColorFilters}>
+        {#if $colorFilters}
           Default filters
         {:else}
           Change filters
         {/if}
-      </a>
+      </button>
     </div>
   {/if}
 </nav>
@@ -179,7 +188,7 @@
     margin-top: 10px;
   }
 
-  #accessibility-options a {
+  #accessibility-options button {
     background: #fff;
     border: 2px solid #000;
     border-radius: 5px;
@@ -192,7 +201,7 @@
     text-align: center;
   }
 
-  #accessibility-options a:active {
+  #accessibility-options button:active {
     background: inherit;
   }
 
