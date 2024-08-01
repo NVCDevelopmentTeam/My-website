@@ -17,10 +17,10 @@ tags:
 
 The Zepp OS Screen Reader is a screen reader developed specifically for Zepp OS devices. It allows blind and low vision users to use their devices without relying on visual cues. The screen reader provides a number of features, including:
 
-• Text-to-speech output
-• Braille support
-• Navigation commands
-• Interaction with apps and settings
+- Text-to-speech output
+- Braille support
+- Navigation commands
+- Interaction with apps and settings
 
 ## How to Run
 
@@ -28,10 +28,10 @@ To get started, you will need to clone the repository to your local machine and 
     zeus dev  
 Once the compilation preview is started, you can interact with the screen reader by using the following keyboard shortcuts:
 
-• Space - Speak the current item
-• Tab - Move to the next item
-• Shift+Tab - Move to the previous item
-• Enter - Select the current item
+- Space - Speak the current item
+- Tab - Move to the next item
+- Shift+Tab - Move to the previous item
+- Enter - Select the current item
 
 ## How to Build
 
