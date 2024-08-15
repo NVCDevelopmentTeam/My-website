@@ -7,7 +7,7 @@
 		"preview": "vite preview"
 	},
 	"devDependencies": {
-		"@neoconfetti/svelte": "^1.0.0",
+		"@neoconfetti/svelte": "^2.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"svelte": "^4.2.7",
@@ -18,9 +18,10 @@
 		"@sveltejs/adapter-node": "^5.2.0",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
-		"gray-matter": "^4.0.3",
 		"mdsvex": "^0.11.2",
+		"node-html-parser": "^6.1.13",
 		"nodemailer": "^6.9.14",
+		"reading-time": "^1.5.0",
 		"rehype-autolink-headings": "^7.1.0",
 		"rehype-slug": "^6.0.0",
 		"socket.io": "^4.7.5",

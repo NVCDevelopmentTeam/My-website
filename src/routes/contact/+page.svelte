@@ -10,10 +10,3 @@ import Contact from "$lib/components/Contact.svelte";
 <h3>Contact Us</h3>
 
 <Contact />
-
-<style>
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-</style>

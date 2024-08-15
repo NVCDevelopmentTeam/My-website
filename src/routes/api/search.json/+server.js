@@ -1,101 +1,97 @@
 import { json } from '@sveltejs/kit';
-import { compile } from 'mdsvex';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeSlug from 'rehype-slug';
-import matter from 'gray-matter';
+import { parse } from 'node-html-parser';
+import readingTime from 'reading-time/lib/reading-time.js';
 
-// Define patterns to strip markdown
-const patterns = {
-  inline: /\*([^*]+)\*/g, // Inline code
-  tags: /[<>]/g, // HTML tags
-  link: /\[([^\]]+)]\([^)]+\)/g, // Markdown links
-  italic: /\*([^*]+)\*/g, // Italic text
-  // Add other patterns (e.g., headings, images, blockquotes)
-};
+// Use import.meta.glob to get all Markdown files
+const postModules = import.meta.glob('/src/lib/posts/**/*.md', { eager: true });
 
-// Define HTML entities
-const htmlEntities = {
-  '<': '&lt;',
-  '>': '&gt;',
-};
-
-// Function to strip markdown content
 function stripMarkdown(markdown) {
-  for (const pattern in patterns) {
-    switch (pattern) {
-      case 'inline':
-        markdown = markdown.replace(patterns[pattern], '$1');
-        break;
-      case 'tags':
-        markdown = markdown.replace(
-          patterns[pattern],
-          (match) => htmlEntities[match]
-        );
-        break;
-      case 'link':
-        markdown = markdown.replace(patterns[pattern], '$1');
-        break;
-      case 'italic':
-        markdown = markdown.replace(patterns[pattern], '$1');
-        break;
-      // Add handling for other patterns (e.g., headings, images)
-      default:
-        markdown = markdown.replace(patterns[pattern], '');
-    }
+  if (typeof markdown !== 'string') {
+    return '';
   }
-  return markdown;
+
+  const patterns = {
+    code: /```[\s\S]*?```/gm,
+    inline: /`([^`]+)`/g,
+    heading: /^#{1,6}\s+.+$/gm,
+    link: /\[([^\]]+)\]\(([^)]+)\)/g,
+    image: /!\[([^\]]*)\]\(([^)]+)\)/g,
+    blockquote: /^>\s.+$/gm,
+    bold: /\*\*(.+?)\*\*/g,
+    italic: /_(.+?)_/g,
+    htmlTags: /<[^>]+>/g,
+  };
+
+  for (const [key, pattern] of Object.entries(patterns)) {
+    markdown = markdown.replace(pattern, (match, p1) => {
+      if (key === 'link' || key === 'image') return p1 || '';
+      if (key === 'bold' || key === 'italic') return p1;
+      return '';
+    });
+  }
+
+  return markdown.trim();
 }
 
-// GET handler for search
 export async function GET({ url }) {
-  const query = url.searchParams.get('q')?.toLowerCase();
+  const query = url.searchParams.get('q') || '';
+  const category = url.searchParams.get('category') || '';
+  const tag = url.searchParams.get('tag') || '';
+  const author = url.searchParams.get('author') || '';
 
-  // Import markdown files from the specified directory
-  const paths = import.meta.glob('/src/lib/posts/*.md', { as: 'raw', eager: true });
-
-  // Process the markdown files
+  // Fetch and process all posts
   const posts = await Promise.all(
-    Object.entries(paths).map(async ([_, content]) => {
-      try {
-        const { data, content: mdContent } = matter(content);
+    Object.entries(postModules).map(async ([filepath, module]) => {
+      const { metadata, default: content } = module;
+      const html = parse(content.render().html);
+      const previewElement = metadata.preview ? parse(metadata.preview) : html.querySelector('p');
+      const previewText = previewElement ? previewElement.textContent : '';
+      const structuredText = html.textContent || '';
+      const slug = filepath.replace(/(\/index)?\.md/, '').split('/').pop();
 
-        // Skip draft posts
-        if (data.draft) {
-          return null;
-        }
-
-        // Compile markdown content
-        const mdsvexContent = await compile(mdContent, {
-          rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
-        });
-
-        // Strip markdown content
-        const strippedContent = stripMarkdown(mdsvexContent.code);
-
-        // Return post data
-        return {
-          title: data.title,
-          slug: data.slug,
-          content: strippedContent,
-          description: data.description || '',
-        };
-      } catch (error) {
-        console.error('Error processing content:', error);
-        return null;
-      }
+      return {
+        ...metadata,
+        slug,
+        preview: {
+          html: previewElement ? previewElement.toString() : '',
+          text: previewText
+        },
+        readingTime: readingTime(structuredText).text,
+        content: stripMarkdown(content),
+      };
     })
   );
 
-  // Filter posts based on query
+  // Filter and sort posts
   const filteredPosts = posts
-    .filter(Boolean)
-    .filter(
-      (post) =>
-        !query ||
-        post.title.toLowerCase().includes(query) ||
-        post.content.toLowerCase().includes(query)
-    );
+    .filter(post => {
+      const isPublished = new Date() >= new Date(post.date);
+      const matchesQuery = query === '' || 
+        post.title.toLowerCase().includes(query.toLowerCase()) ||
+        post.preview.text.toLowerCase().includes(query.toLowerCase()) ||
+        post.content.toLowerCase().includes(query.toLowerCase());
+      const matchesCategory = category === '' || (post.categories && post.categories.includes(category));
+      const matchesTag = tag === '' || (post.tags && post.tags.includes(tag));
+      const matchesAuthor = author === '' || (post.author && post.author.includes(author));
 
-  // Return the filtered posts as JSON
-  return json(filteredPosts);
+      return isPublished && !post.hidden && matchesQuery && matchesCategory && matchesTag && matchesAuthor;
+    })
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Prepare the response
+  const searchResults = filteredPosts.map(post => ({
+    title: post.title,
+    slug: post.slug,
+    date: post.date,
+    preview: post.preview,
+    readingTime: post.readingTime,
+    categories: post.categories || [],
+    tags: post.tags || [],
+    author: post.author
+  }));
+
+  return json({
+    results: searchResults,
+    count: searchResults.length
+  });
 }

@@ -1,5 +1,6 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import io from 'socket.io-client'; // Import socket.io-client
 
   let visitsToday = 0;
   let totalVisits = 0;
@@ -7,7 +8,37 @@
   let totalCountries = 0;
   let loading = true;
   let error = null;
+  let socket;
 
+  // Function to initialize socket connection
+  function initializeSocket() {
+    // Connect to the socket.io server
+    socket = io();
+
+    // Listen for 'stats' event from server
+    socket.on('stats', (data) => {
+      visitsToday = data.visitsToday;
+      totalVisits = data.totalVisits;
+      totalVisitors = data.totalVisitors;
+      totalCountries = data.totalCountries;
+      loading = false;
+    });
+
+    // Handle connection errors
+    socket.on('connect_error', (err) => {
+      error = 'Failed to connect to the server';
+      console.error('Socket connection error:', err);
+      loading = false;
+    });
+
+    // Handle disconnection
+    socket.on('disconnect', () => {
+      error = 'Disconnected from the server';
+      loading = false;
+    });
+  }
+
+  // Load stats from API on mount
   async function loadStats() {
     try {
       const response = await fetch('/api/stats.json');
@@ -29,6 +60,14 @@
 
   onMount(() => {
     loadStats();
+    initializeSocket();
+  });
+
+  onDestroy(() => {
+    // Clean up the socket connection when the component is destroyed
+    if (socket) {
+      socket.disconnect();
+    }
   });
 </script>
 
@@ -46,25 +85,3 @@
     <li>Total Countries: {totalCountries}</li>
   </ul>
 {/if}
-
-<style>
-  h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-  }
-
-  p {
-    font-size: 1.2rem;
-    color: #ff0000; /* Error color */
-  }
-</style>

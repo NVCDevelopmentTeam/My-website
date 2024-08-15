@@ -63,13 +63,21 @@
   onMount(() => {
     darkMode.subscribe(value => document.body.classList.toggle('dark', value));
   });
+
+  function handleKeydown(event, action) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      action();
+    }
+  }
 </script>
+
 <nav aria-label="Accessibility menu" class="accessibility-menu">
   <button
-    type="button"
     aria-expanded={$menuOpen}
     aria-controls="accessibility-options"
-    on:click={() => menuOpen.set(!$menuOpen)}>
+    on:click={() => menuOpen.set(!$menuOpen)}
+    on:keydown={(event) => handleKeydown(event, () => menuOpen.set(!$menuOpen))}>
     {#if $menuOpen}
       Close accessibility menu
     {:else}
@@ -80,11 +88,10 @@
   {#if $menuOpen}
     <div id="accessibility-options" role="menu">
       <button
-        type="button"
-        aria-controls="darkMode"
         aria-pressed={$darkMode}
         aria-label="Toggle dark mode"
-        on:click={toggleDarkMode}>
+        on:click={toggleDarkMode}
+        on:keydown={(event) => handleKeydown(event, toggleDarkMode)}>
         {#if $darkMode}
           Go light
         {:else}
@@ -93,18 +100,16 @@
       </button>
 
       <button
-        type="button"
-        aria-controls="increaseFontSize"
         aria-label="Increase font size"
-        on:click={increaseFontSize}>
+        on:click={increaseFontSize}
+        on:keydown={(event) => handleKeydown(event, increaseFontSize)}>
         Increase font size
       </button>
 
       <button
-        type="button"
-        aria-controls="decreaseFontSize"
         aria-label="Decrease font size"
-        on:click={decreaseFontSize}>
+        on:click={decreaseFontSize}
+        on:keydown={(event) => handleKeydown(event, decreaseFontSize)}>
         Decrease font size
       </button>
 
@@ -113,11 +118,10 @@
       <div id="mode-announcer" aria-live="assertive" style="position: absolute; left: -9999px;"></div>
 
       <button
-        type="button"
-        aria-controls="contrast"
         aria-pressed={$contrast}
         aria-label="Toggle contrast"
-        on:click={toggleContrast}>
+        on:click={toggleContrast}
+        on:keydown={(event) => handleKeydown(event, toggleContrast)}>
         {#if $contrast}
           Low contrast
         {:else}
@@ -126,11 +130,10 @@
       </button>
 
       <button
-        type="button"
-        aria-controls="colorFilters"
         aria-pressed={$colorFilters}
         aria-label="Toggle color filters"
-        on:click={toggleColorFilters}>
+        on:click={toggleColorFilters}
+        on:keydown={(event) => handleKeydown(event, toggleColorFilters)}>
         {#if $colorFilters}
           Default filters
         {:else}
@@ -140,73 +143,3 @@
     </div>
   {/if}
 </nav>
-
-<style>
-  :global(body.dark) {
-    background: #333;
-    color: #fff;
-  }
-
-  :global(body.high-contrast) {
-    background: #000;
-    color: #fff;
-  }
-
-  :global(body.color-filters) {
-    filter: invert(1);
-  }
-
-  .accessibility-menu {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-
-  .accessibility-menu > button {
-    background: #fff;
-    border: 2px solid #000;
-    border-radius: 5px;
-    color: #000;
-    padding: 10px 15px;
-    margin: 5px 0;
-    cursor: pointer;
-    width: 100%;
-  }
-
-  .accessibility-menu > button:active {
-    background: inherit;
-  }
-
-  #accessibility-options {
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-  }
-
-  #accessibility-options button {
-    background: #fff;
-    border: 2px solid #000;
-    border-radius: 5px;
-    color: #000;
-    padding: 10px 15px;
-    margin: 5px 0;
-    cursor: pointer;
-    text-decoration: none;
-    width: 100%;
-    text-align: center;
-  }
-
-  #accessibility-options button:active {
-    background: inherit;
-  }
-
-  #accessibility-options p {
-    margin: 5px 0;
-    font-size: 1em;
-  }
-</style>

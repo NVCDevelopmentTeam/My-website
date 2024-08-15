@@ -1,42 +1,74 @@
 import { writable } from 'svelte/store';
 
-// Store for search query
 export const searchQuery = writable('');
-
-// Store for search results
 export const searchResults = writable([]);
+export const isLoading = writable(false);
+export const noResults = writable(false);
+export const totalResults = writable(0);
 
-/**
- * Performs a search based on the provided query.
- * @param {string} query - The search query.
- * @returns {Promise<Array>} - An array of search results.
- */
-export async function search(query) {
+export const searchFilters = writable({
+  category: '',
+  tag: '',
+  author: ''
+});
+
+export async function search(query, filters = {}) {
+  searchQuery.set(query);
+  isLoading.set(true);
+  noResults.set(false);
+
   try {
-    // Encode the search query
-    const ResApi = `/api/search.json?q=${encodeURIComponent(query)}`;
+    const urlParams = new URLSearchParams({
+      q: query,
+      ...filters
+    });
+
+    const response = await fetch(`/api/search.json?${urlParams}`);
     
-    // Fetch the search results from the API
-    const response = await fetch(ResApi);
-    
-    // Check if the response is ok
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error('Failed to fetch search results');
     }
 
-    // Parse the JSON response
-    const results = await response.json();
+    const data = await response.json();
     
-    // Update the search results store
-    searchResults.set(results);
-    
-    return results;
+    searchResults.set(data.results);
+    totalResults.set(data.count);
+    noResults.set(data.count === 0);
   } catch (error) {
     console.error('Error during search:', error);
-    
-    // Clear previous results in case of error
     searchResults.set([]);
-    
-    return [];
+    totalResults.set(0);
+    noResults.set(true);
+  } finally {
+    isLoading.set(false);
   }
+}
+
+export function updateSearchFilters(newFilters) {
+  searchFilters.update(currentFilters => ({
+    ...currentFilters,
+    ...newFilters
+  }));
+}
+
+export function clearSearchFilters() {
+  searchFilters.set({
+    category: '',
+    tag: '',
+    author: ''
+  });
+}
+
+export function subscribeToSearchChanges(callback) {
+  return searchQuery.subscribe(query => {
+    searchFilters.subscribe(filters => {
+      if (query) {
+        search(query, filters);
+      } else {
+        searchResults.set([]);
+        totalResults.set(0);
+        noResults.set(false);
+      }
+    });
+  });
 }

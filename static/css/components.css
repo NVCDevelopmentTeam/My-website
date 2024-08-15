@@ -1,19 +1,3 @@
-.callout {
-	background: var(--lightAccent);
-	padding: 2rem 1rem;
-  width: calc(100% + 2rem);
-	max-width: unset;
-  margin: 2rem 0 2rem -1rem;
-	font-style: italic;
-	border-radius: 0.125rem;
-
-  @media (min-width: 48rem) {
-    width: calc(100% + 4rem);
-    margin: 2rem 0 2rem -2rem;
-    padding: 2rem;
-  }
-}
-
 .pagination {
 	margin: 0 0 1rem;
 
@@ -57,3 +41,112 @@
 
 	}
 }
+  :global(body.dark) {
+    background: #333;
+    color: #fff;
+  }
+
+  :global(body.high-contrast) {
+    background: #000;
+    color: #fff;
+  }
+
+  :global(body.color-filters) {
+    filter: invert(1);
+  }
+
+  .accessibility-menu {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  .accessibility-menu > a {
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 5px;
+    color: #000;
+    padding: 10px 15px;
+    margin: 5px 0;
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  #accessibility-options {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  #accessibility-options a {
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 5px;
+    color: #000;
+    padding: 10px 15px;
+    margin: 5px 0;
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  #accessibility-options p {
+    margin: 5px 0;
+    font-size: 1em;
+  }
+  button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+
+  .like-button {
+    background-color: #4CAF50;
+  }
+
+  .share-button {
+    background-color: #008CBA;
+  }
+
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .share-options {
+    margin-top: 20px;
+  }
+
+  .share-link {
+    display: block;
+    color: #008CBA;
+    text-align: left;
+    padding: 5px 0;
+  }
+
+  .share-link:hover {
+    color: #005F73;
+  }
