@@ -2,7 +2,7 @@
     export let posts = []; // Get list of posts from props
     import { formatDate } from '$lib/data/utils';
 
-    // Kiểm tra đầu vào
+    // Check input
     $: hasPosts = posts.length > 0;
 </script>
 

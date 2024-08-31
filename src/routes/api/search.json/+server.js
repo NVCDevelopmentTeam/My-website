@@ -1,35 +1,59 @@
 import { json } from '@sveltejs/kit';
+import { postsPerPage } from '$lib/data/config';
+import fetchPosts from '$lib/data/fetchPosts';
 import { parse } from 'node-html-parser';
 import readingTime from 'reading-time/lib/reading-time.js';
+import { browser } from '$app/environment';
 
-// Use import.meta.glob to get all Markdown files
-const postModules = import.meta.glob('/src/lib/posts/**/*.md', { eager: true });
+export const prerender = true;
+
+// Ensure this code only runs on the server-side
+if (browser) {
+  throw new Error('Posts can only be imported server-side');
+}
+
+// Patterns to remove unnecessary Markdown elements
+const patterns = {
+  frontmatter: /---.*?---/gs,
+  code: /```[\s\S]*?```/g,
+  inline: /`([^`]*)`/g,
+  heading: /^#{1,6}\s.*$/gm,
+  link: /\[([^\]]+)\]\(([^)]+)\)/g,
+  image: /\!\[.*?\]\(.*?\)/g,
+  blockquote: /> /gm,
+  bold: /\*\*([^*]+)\*\*/g,
+  italic: /\b_([^_]+)_(?!\w)/g,
+  special: /{%.*?%}/g,
+  tags: /[<>]/g,
+};
+
+const htmlEntities = {
+  '<': '&lt;',
+  '>': '&gt;',
+};
 
 function stripMarkdown(markdown) {
-  if (typeof markdown !== 'string') {
-    return '';
+  for (const pattern in patterns) {
+    switch (pattern) {
+      case 'inline':
+        markdown = markdown.replace(patterns[pattern], '$1');
+        break;
+      case 'tags':
+        markdown = markdown.replace(
+          patterns[pattern],
+          (match) => htmlEntities[match]
+        );
+        break;
+      case 'link':
+        markdown = markdown.replace(patterns[pattern], '$2');
+        break;
+      case 'italic':
+        markdown = markdown.replace(patterns[pattern], '$1');
+        break;
+      default:
+        markdown = markdown.replace(patterns[pattern], '');
+    }
   }
-
-  const patterns = {
-    code: /```[\s\S]*?```/gm,
-    inline: /`([^`]+)`/g,
-    heading: /^#{1,6}\s+.+$/gm,
-    link: /\[([^\]]+)\]\(([^)]+)\)/g,
-    image: /!\[([^\]]*)\]\(([^)]+)\)/g,
-    blockquote: /^>\s.+$/gm,
-    bold: /\*\*(.+?)\*\*/g,
-    italic: /_(.+?)_/g,
-    htmlTags: /<[^>]+>/g,
-  };
-
-  for (const [key, pattern] of Object.entries(patterns)) {
-    markdown = markdown.replace(pattern, (match, p1) => {
-      if (key === 'link' || key === 'image') return p1 || '';
-      if (key === 'bold' || key === 'italic') return p1;
-      return '';
-    });
-  }
-
   return markdown.trim();
 }
 
@@ -38,60 +62,55 @@ export async function GET({ url }) {
   const category = url.searchParams.get('category') || '';
   const tag = url.searchParams.get('tag') || '';
   const author = url.searchParams.get('author') || '';
+  const offset = Number(url.searchParams.get('offset') || 0);
+  const limit = Number(url.searchParams.get('limit') || postsPerPage);
 
-  // Fetch and process all posts
-  const posts = await Promise.all(
-    Object.entries(postModules).map(async ([filepath, module]) => {
-      const { metadata, default: content } = module;
-      const html = parse(content.render().html);
-      const previewElement = metadata.preview ? parse(metadata.preview) : html.querySelector('p');
-      const previewText = previewElement ? previewElement.textContent : '';
-      const structuredText = html.textContent || '';
-      const slug = filepath.replace(/(\/index)?\.md/, '').split('/').pop();
+  try {
+    // Fetch all posts
+    const fetchedPosts = await fetchPosts({ offset, limit, category, author, tag });
 
-      return {
-        ...metadata,
-        slug,
-        preview: {
-          html: previewElement ? previewElement.toString() : '',
-          text: previewText
-        },
-        readingTime: readingTime(structuredText).text,
-        content: stripMarkdown(content),
-      };
-    })
-  );
+    if (!fetchedPosts || !fetchedPosts.posts) {
+      throw new Error('Failed to fetch posts: Invalid data');
+    }
 
-  // Filter and sort posts
-  const filteredPosts = posts
-    .filter(post => {
-      const isPublished = new Date() >= new Date(post.date);
-      const matchesQuery = query === '' || 
-        post.title.toLowerCase().includes(query.toLowerCase()) ||
-        post.preview.text.toLowerCase().includes(query.toLowerCase()) ||
-        post.content.toLowerCase().includes(query.toLowerCase());
-      const matchesCategory = category === '' || (post.categories && post.categories.includes(category));
-      const matchesTag = tag === '' || (post.tags && post.tags.includes(tag));
-      const matchesAuthor = author === '' || (post.author && post.author.includes(author));
+    const { posts } = fetchedPosts;
 
-      return isPublished && !post.hidden && matchesQuery && matchesCategory && matchesTag && matchesAuthor;
-    })
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Process and strip unnecessary Markdown
+    const processedPosts = posts.map(post => {
+      const html = parse(post.content);
+      post.content = stripMarkdown(html.structuredText);
+      post.readingTime = readingTime(post.content).text;
 
-  // Prepare the response
-  const searchResults = filteredPosts.map(post => ({
-    title: post.title,
-    slug: post.slug,
-    date: post.date,
-    preview: post.preview,
-    readingTime: post.readingTime,
-    categories: post.categories || [],
-    tags: post.tags || [],
-    author: post.author
-  }));
+      // Use a trimmed version of the content for preview if not already provided
+      post.preview.text = post.preview.text || post.content.substring(0, 200) + '...';
 
-  return json({
-    results: searchResults,
-    count: searchResults.length
-  });
+      return post;
+    });
+
+    // Filter posts based on the search query and other parameters
+    const filteredPosts = processedPosts
+      .filter(post => {
+        const isPublished = new Date() >= new Date(post.date);
+        const matchesQuery =
+          query === '' ||
+          post.title.toLowerCase().includes(query.toLowerCase()) ||
+          post.content.toLowerCase().includes(query.toLowerCase());
+        const matchesCategory = category === '' || post.categories?.includes(category);
+        const matchesTag = tag === '' || post.tags?.includes(tag);
+        const matchesAuthor = author === '' || post.author?.includes(author);
+
+        return isPublished && !post.hidden && matchesQuery && matchesCategory && matchesTag && matchesAuthor;
+      })
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(offset, limit);
+
+    // Return the filtered search results as JSON
+    return json({
+      results: filteredPosts,
+      count: filteredPosts.length,
+    });
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return json({ error: `Failed to fetch posts: ${error.message}` }, { status: 500 });
+  }
 }

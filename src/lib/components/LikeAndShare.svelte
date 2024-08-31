@@ -4,7 +4,7 @@
   let likes = 0;
   let dialog;
 
-  // Tăng số lượt thích và lưu vào localStorage
+  // Increase the number of likes and save to localStorage
   const incrementLikes = () => {
     likes += 1;
     saveLikes();
@@ -15,32 +15,32 @@
     localStorage.setItem('likes', data);
   };
 
-  // Mở hộp thoại chia sẻ
+  // Open the sharing dialog box
   const openDialog = () => {
     dialog.showModal();
     dialog.focus();
   };
 
-  // Đóng hộp thoại chia sẻ
+  // Close the sharing dialog
   const closeDialog = () => {
     dialog.close();
   };
 
-  // Chia sẻ trên Facebook
+  // Share on Facebook
   const shareOnFacebook = () => {
     const url = encodeURIComponent(window.location.href);
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
     closeDialog();
   };
 
-  // Chia sẻ trên Zalo
+  // Share on Zalo
   const shareOnZalo = () => {
     const url = encodeURIComponent(window.location.href);
     window.open(`https://chat.zalo.me/share/url?url=${url}`, '_blank');
     closeDialog();
   };
 
-  // Chia sẻ trên Twitter
+  // Share on Twitter
   const shareOnTwitter = () => {
     const url = encodeURIComponent(window.location.href);
     const text = encodeURIComponent('Check out this awesome content!');
@@ -48,14 +48,14 @@
     closeDialog();
   };
 
-  // Chia sẻ trên LinkedIn
+  // Share on LinkedIn
   const shareOnLinkedIn = () => {
     const url = encodeURIComponent(window.location.href);
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
     closeDialog();
   };
 
-  // Sao chép liên kết
+  // Copy link
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href)
       .then(() => alert('Link copied to clipboard!'))
@@ -63,7 +63,7 @@
     closeDialog();
   };
 
-  // Khởi tạo số lượt thích từ localStorage khi tải trang
+  // Initialize likes from localStorage on page load
   onMount(() => {
     const data = localStorage.getItem('likes');
     if (data) {

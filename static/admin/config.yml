@@ -6,9 +6,9 @@ media_folder: "static/uploads"
 public_folder: "/uploads"
 
 collections:
-  - name: "blog"
-    label: "Blog"
-    folder: "src/routes/blog"
+  - name: "posts"
+    label: "posts"
+    folder: "src/lib/posts"
     create: true
     slug: "{{slug}}"
     fields:
@@ -18,9 +18,9 @@ backend:
   name: git-gateway
   branch: main
 collections:
-  - name: routes
-    label: routes
-    folder: src/routes
+  - name: posts
+    label: posts
+    folder: src/lib/posts
     create: true
     fields:
       - name: title

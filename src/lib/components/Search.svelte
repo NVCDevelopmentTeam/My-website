@@ -3,121 +3,101 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { searchQuery, search, isLoading } from '$lib/data/search';
+  import { browser } from '$app/environment';
+  import { get } from 'svelte/store';
 
   let voiceSearchSupported = false;
-  let recognition;
+  let recognition = null;
   let isListening = false;
-  let audioContext;
-  let audioBuffers = {};
+  let query = ''; 
 
-  // Initialize the component
+  // Lấy query từ URL nếu có
+  $: if (page && page.url) {
+    query = page.url.searchParams.get('q') || '';
+  }
+
+  // Khởi tạo các chức năng khi component được gắn vào DOM
   onMount(() => {
-    const query = $page.url.searchParams.get('q');
-    if (query) {
-      $searchQuery = query;
-      performSearch();
-    }
-    
-    // Check for voice search support
-    voiceSearchSupported = 'webkitSpeechRecognition' in window;
-    if (voiceSearchSupported) {
-      setupVoiceRecognition();
-    }
+    if (browser) {
+      voiceSearchSupported = 'webkitSpeechRecognition' in window;
 
-    // Initialize Web Audio API
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    loadAudios();
+      if (voiceSearchSupported) {
+        setupVoiceRecognition();
+      }
+
+      // Nếu có query từ URL, thực hiện tìm kiếm ngay
+      if (query) {
+        searchQuery.set(query);
+        performSearch(query);
+      }
+    }
   });
 
-  // Set up voice recognition
+  // Cài đặt nhận diện giọng nói
   function setupVoiceRecognition() {
-    recognition = new webkitSpeechRecognition();
+    recognition = new window.webkitSpeechRecognition();
     recognition.lang = 'vi-VN';
     recognition.continuous = false;
     recognition.interimResults = false;
 
     recognition.onstart = () => {
       isListening = true;
-      playAudio('start');
     };
 
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
-      $searchQuery = transcript;
-      playAudio('end');
-      setTimeout(() => performSearch(), 500); // Delay to allow 'end' sound to play
+      searchQuery.set(transcript);
+      recognition.stop();
+      performSearch(transcript);
     };
 
     recognition.onend = () => {
       isListening = false;
-      if (!$searchQuery) {
-        playAudio('error');
-      }
     };
 
     recognition.onerror = (event) => {
       isListening = false;
-      playAudio('error');
-      console.error('Speech recognition error', event.error);
+      console.error('Lỗi nhận diện giọng nói', event.error);
     };
   }
 
-  // Load audio files
-  async function loadAudios() {
-    const audioFiles = ['start', 'end', 'error', 'success'];
-    for (const file of audioFiles) {
-      const response = await fetch(`/src/lib/Sound/${file}.mp3`);
-      const arrayBuffer = await response.arrayBuffer();
-      audioBuffers[file] = await audioContext.decodeAudioData(arrayBuffer);
-    }
-  }
-
-  // Play audio based on type
-  function playAudio(audioType) {
-    if (audioBuffers[audioType]) {
-      const source = audioContext.createBufferSource();
-      source.buffer = audioBuffers[audioType];
-      source.connect(audioContext.destination);
-      source.start();
-    }
-  }
-
-  // Perform search operation
-  async function performSearch() {
-    const query = $searchQuery.trim();
-    if (!query) {
-      playAudio('error');
+  // Thực hiện tìm kiếm khi có từ khóa
+  async function performSearch(queryText) {
+    const trimmedQuery = queryText.trim();
+    if (!trimmedQuery) {
+      alert('Vui lòng nhập từ khóa tìm kiếm.');
       return;
     }
+
     try {
-      await search(query);
-      goto(`/Search-results?q=${encodeURIComponent(query)}`, { replaceState: true });
-      if (isListening) {
-        playAudio('success');
-      }
+      isLoading.set(true);
+      await search(trimmedQuery);
+      await goto(`/Search-results?q=${encodeURIComponent(trimmedQuery)}`, { replaceState: true });
     } catch (error) {
-      console.error('Error during search:', error);
-      playAudio('error');
+      console.error('Lỗi khi thực hiện tìm kiếm:', error);
+    } finally {
+      isLoading.set(false);
     }
   }
 
-  // Handle form submission
+  // Xử lý sự kiện khi form được submit
   function handleSubmit(event) {
     event.preventDefault();
-    performSearch();
+    performSearch(get(searchQuery));
   }
 
-  // Handle voice search
+  // Xử lý sự kiện khi nhấn nút tìm kiếm bằng giọng nói
   function handleVoiceSearch() {
-    if (voiceSearchSupported) {
-      if (isListening) {
-        recognition.stop();
-      } else {
-        $searchQuery = '';
-        recognition.start();
-      }
-    } else {
+    if (!voiceSearchSupported || !recognition) {
       alert('Trình duyệt của bạn không hỗ trợ tìm kiếm bằng giọng nói.');
+      return;
+    }
+
+    if (isListening) {
+      recognition.stop();
+    } else {
+      searchQuery.set('');
+      recognition.start();
     }
   }
 </script>
@@ -133,7 +113,7 @@
       bind:value={$searchQuery} 
       placeholder="Nhập từ khóa..."
       autocomplete="off"
-    >
+    />
     {#if voiceSearchSupported}
       <button 
         type="button" 

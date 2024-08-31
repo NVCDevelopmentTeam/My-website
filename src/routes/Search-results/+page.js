@@ -1,7 +1,7 @@
 import { dev } from '$app/environment';
 
-// Enable Server-Side Rendering
-export const ssr = true;
+// Disable Server-Side Rendering
+export const ssr = false;
 
-// Disable Prerendering as this page is dynamic
-export const prerender = false;
+// Enable Prerendering as this page is dynamic
+export const prerender = true;

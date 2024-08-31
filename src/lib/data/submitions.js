@@ -1,3 +1,4 @@
+import database from '$lib/data/database';
 const contacts = [];
 
 // Fake save function to simulate saving data
