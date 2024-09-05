@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
-import { Server } from 'socket.io'; // Import Server from socket.io
-import { attachSockets } from './sockets'; // Import attachSockets from sockets.js
+import { attachSockets } from './sockets.js'; // Ensure the correct path
 
 const socketIoPlugin = {
   name: 'socket-io-plugin',

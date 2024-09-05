@@ -1,5 +1,3 @@
-// comments.js
-
 // Function to get all comments from the API
 export async function fetchComments() {
   try {

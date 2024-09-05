@@ -1,6 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import FlexSearch from 'flexsearch';
 
+// Stores
 export const searchQuery = writable('');
 export const searchResults = writable([]);
 export const isLoading = writable(false);
@@ -12,7 +13,7 @@ export const searchFilters = writable({
   author: ''
 });
 
-// Initialize FlexSearch index
+// FlexSearch index configuration
 const index = new FlexSearch.Document({
   document: {
     id: 'slug',
@@ -23,7 +24,6 @@ const index = new FlexSearch.Document({
 
 let indexInitialized = false;
 
-// Function to add posts to FlexSearch index
 function addPostsToIndex(posts) {
   posts.forEach(post => {
     index.add(post);
@@ -31,36 +31,22 @@ function addPostsToIndex(posts) {
   indexInitialized = true;
 }
 
-// Debounce function
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
-// Async function to fetch posts and initialize index
 async function initializeIndex() {
   if (!indexInitialized) {
     try {
       const response = await fetch('/api/search.json');
       if (!response.ok) {
-        throw new Error('Failed to fetch posts');
+        throw new Error(`Failed to fetch posts: ${response.status} ${response.statusText}`);
       }
       const data = await response.json();
       addPostsToIndex(data.results);
     } catch (error) {
       console.error('Error initializing search index:', error);
+      throw error;
     }
   }
 }
 
-// Search function using FlexSearch
 async function searchPosts(query, filters = {}) {
   await initializeIndex();
   
@@ -70,11 +56,23 @@ async function searchPosts(query, filters = {}) {
     ...filters
   };
   
-  const results = await index.searchAsync(query, searchOptions);
-  return results.flatMap(result => result.result);
+  try {
+    const results = await index.search(query, searchOptions);
+    return results.flatMap(result => result.result);
+  } catch (error) {
+    console.error('Error during search:', error);
+    throw error;
+  }
 }
 
-// Debounced search function
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
 const debouncedSearch = debounce(async (query, filters) => {
   isLoading.set(true);
   noResults.set(false);
@@ -94,7 +92,6 @@ const debouncedSearch = debounce(async (query, filters) => {
   }
 }, 300);
 
-// Derived store for combined search query and filters
 export const combinedSearch = derived(
   [searchQuery, searchFilters],
   ([$searchQuery, $searchFilters]) => {
@@ -102,9 +99,8 @@ export const combinedSearch = derived(
   }
 );
 
-// Subscribe to changes in combinedSearch
 combinedSearch.subscribe(({ query, filters }) => {
-  if (query) {
+  if (query.trim()) {
     debouncedSearch(query, filters);
   } else {
     searchResults.set([]);
@@ -124,11 +120,10 @@ export function clearSearchFilters() {
   searchFilters.set({
     category: '',
     tag: '',
-    author: '',
+    author: ''
   });
 }
 
-// Export search function for backwards compatibility
 export function search(query, filters = {}) {
   searchQuery.set(query);
   updateSearchFilters(filters);

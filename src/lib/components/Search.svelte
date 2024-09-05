@@ -2,30 +2,27 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { searchQuery, search, isLoading } from '$lib/data/search';
+  import { searchQuery, searchResults, isLoading, noResults, search } from '$lib/data/search';
   import { browser } from '$app/environment';
-  import { get } from 'svelte/store';
 
   let voiceSearchSupported = false;
-  let recognition = null;
+  let recognition;
   let isListening = false;
-  let query = ''; 
+  let query = '';
+  let audioContext;
+  let audioBuffers = {};
+  let isVoiceSearch = false; // Flag to indicate voice search usage
+  const audioFilePath = '/src/lib/sounds';
 
-  // Lấy query từ URL nếu có
-  $: if (page && page.url) {
-    query = page.url.searchParams.get('q') || '';
-  }
+  $: query = $page?.url?.searchParams?.get('q') || '';
 
-  // Khởi tạo các chức năng khi component được gắn vào DOM
   onMount(() => {
     if (browser) {
       voiceSearchSupported = 'webkitSpeechRecognition' in window;
-
       if (voiceSearchSupported) {
         setupVoiceRecognition();
       }
-
-      // Nếu có query từ URL, thực hiện tìm kiếm ngay
+      initializeAudio();
       if (query) {
         searchQuery.set(query);
         performSearch(query);
@@ -33,15 +30,16 @@
     }
   });
 
-  // Cài đặt nhận diện giọng nói
   function setupVoiceRecognition() {
     recognition = new window.webkitSpeechRecognition();
-    recognition.lang = 'vi-VN';
+    recognition.lang = 'Vi-VN';
     recognition.continuous = false;
     recognition.interimResults = false;
 
     recognition.onstart = () => {
       isListening = true;
+      isVoiceSearch = true; // Indicate voice search started
+      playAudio('start-search');
     };
 
     recognition.onresult = (event) => {
@@ -53,43 +51,89 @@
 
     recognition.onend = () => {
       isListening = false;
+      if (!isVoiceSearch) return; // Ensure this block is only for voice search
+
+      // Play stop sound when user manually stops voice search
+      playAudio('error');
+
+      // If no results were found and search was via voice
+      if (!searchResults.length && !noResults) {
+        playAudio('error');
+      }
+      isVoiceSearch = false;
     };
 
     recognition.onerror = (event) => {
       isListening = false;
-      console.error('Lỗi nhận diện giọng nói', event.error);
+      console.error('Voice recognition error:', event.error);
+      playAudio('error');
+      isVoiceSearch = false;
     };
   }
 
-  // Thực hiện tìm kiếm khi có từ khóa
+  async function initializeAudio() {
+    try {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioFiles = ['start-search', 'no-results', 'error', 'search-results', 'stop-search'];
+
+      for (const file of audioFiles) {
+        const response = await fetch(`${audioFilePath}/${file}.mp3`);
+        const arrayBuffer = await response.arrayBuffer();
+        audioBuffers[file] = await audioContext.decodeAudioData(arrayBuffer);
+      }
+    } catch (error) {
+      console.error('Error initializing audio:', error);
+    }
+  }
+
+  function playAudio(audioType) {
+    if (audioContext && audioBuffers[audioType]) {
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffers[audioType];
+      source.connect(audioContext.destination);
+      source.start();
+    }
+  }
+
   async function performSearch(queryText) {
     const trimmedQuery = queryText.trim();
     if (!trimmedQuery) {
-      alert('Vui lòng nhập từ khóa tìm kiếm.');
+      alert('Please enter search keywords.');
       return;
     }
 
     try {
       isLoading.set(true);
       await search(trimmedQuery);
+
+      if (isVoiceSearch) {
+        // Play sound only for voice search results
+        if ($searchResults.length > 0) {
+          playAudio('search-results');
+        } else {
+          playAudio('no-results');
+        }
+      }
+
       await goto(`/Search-results?q=${encodeURIComponent(trimmedQuery)}`, { replaceState: true });
     } catch (error) {
-      console.error('Lỗi khi thực hiện tìm kiếm:', error);
+      console.error('Error performing search:', error);
+      if (isVoiceSearch) playAudio('error');
     } finally {
       isLoading.set(false);
+      isVoiceSearch = false; // Reset voice search flag after search
     }
   }
 
-  // Xử lý sự kiện khi form được submit
   function handleSubmit(event) {
     event.preventDefault();
-    performSearch(get(searchQuery));
+    isVoiceSearch = false; // Indicate this is text search
+    performSearch($searchQuery);
   }
 
-  // Xử lý sự kiện khi nhấn nút tìm kiếm bằng giọng nói
   function handleVoiceSearch() {
     if (!voiceSearchSupported || !recognition) {
-      alert('Trình duyệt của bạn không hỗ trợ tìm kiếm bằng giọng nói.');
+      alert('Your browser does not support voice search.');
       return;
     }
 
@@ -102,37 +146,35 @@
   }
 </script>
 
-<div class="search-container">
-  <form on:submit={handleSubmit} class="search-form">
+<!-- Main search container and form -->
+<div>
+  <form on:submit={handleSubmit}>
     <input 
-      type="text" 
-      name="search" 
-      class="search-input" 
-      id="search" 
-      aria-label="Tìm kiếm" 
-      bind:value={$searchQuery} 
-      placeholder="Nhập từ khóa..."
+      type="text"
+      name="search"
+      id="search"
+      aria-label="Search"
+      bind:value={$searchQuery}
+      placeholder="Enter keyword..."
       autocomplete="off"
     />
     {#if voiceSearchSupported}
       <button 
-        type="button" 
-        class="voice-search" 
-        title={isListening ? "Dừng tìm kiếm bằng giọng nói" : "Tìm kiếm bằng giọng nói"}
-        aria-label={isListening ? "Dừng tìm kiếm bằng giọng nói" : "Tìm kiếm bằng giọng nói"}
+        type="button"
+        title={isListening ? "Stop voice search" : "Voice search"}
+        aria-label={isListening ? "Stop voice search" : "Voice search"}
         on:click={handleVoiceSearch}
       >
-        <i class="fa {isListening ? 'fa-stop' : 'fa-microphone'}"></i>
+        {isListening ? 'Stop Voice Search' : 'Start Voice Search'}
       </button>
     {/if}
     <button 
-      type="submit" 
-      class="search-button" 
-      title="Tìm kiếm" 
-      aria-label="Tìm kiếm" 
+      type="submit"
+      title="Search"
+      aria-label="Search"
       disabled={$isLoading}
     >
-      {$isLoading ? 'Đang tìm...' : 'Tìm kiếm'}
+      {$isLoading ? 'Searching...' : 'Search'}
     </button>
   </form>
 </div>

@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
 
+  // Initialize variables
   export let title = '';
   export let postContent = '';
 
@@ -18,10 +19,11 @@
 
   $: speechText = `${title}. ${postContent}`;
 
+  // On component mount
   onMount(() => {
     if (browser && window.responsiveVoice) {
       responsiveVoiceReady = true;
-      voices = window.responsiveVoice.getVoices().filter(voice => 
+      voices = window.responsiveVoice.getVoices().filter(voice =>
         voice.name === 'Vietnamese Female' || voice.name === 'Vietnamese Male'
       );
       if (voices.length > 0) {
@@ -33,6 +35,7 @@
       console.error('ResponsiveVoice is not available.');
     }
 
+    // Cleanup on component unmount
     return () => {
       if (isSpeaking) {
         stopSpeech();
@@ -40,14 +43,16 @@
     };
   });
 
+  // Start or resume speech
   function startSpeech() {
     if (responsiveVoiceReady && speechText && !isSpeaking && selectedVoice) {
-      window.responsiveVoice.speak(speechText, selectedVoice, {
+      const textToRead = speechText.substring(Math.floor(progress * speechText.length));
+      window.responsiveVoice.speak(textToRead, selectedVoice, {
         rate: speechRate,
         volume: isMuted ? 0 : 1,
         onstart: () => {
           isSpeaking = true;
-          speechDuration = speechText.length / (speechRate * 5);
+          speechDuration = textToRead.length / (speechRate * 5);
           updateProgress();
         },
         onend: () => {
@@ -60,6 +65,7 @@
     }
   }
 
+  // Stop speech
   function stopSpeech() {
     if (isSpeaking) {
       window.responsiveVoice.cancel();
@@ -68,6 +74,7 @@
     }
   }
 
+  // Toggle between start and stop speech
   function toggleSpeech() {
     if (isSpeaking) {
       stopSpeech();
@@ -76,6 +83,7 @@
     }
   }
 
+  // Toggle mute/unmute
   function toggleMute() {
     isMuted = !isMuted;
     if (isSpeaking) {
@@ -84,6 +92,7 @@
     }
   }
 
+  // Change speech rate
   function handleRateChange(rate) {
     speechRate = rate;
     if (isSpeaking) {
@@ -93,6 +102,7 @@
     isRateMenuOpen = false;
   }
 
+  // Change selected voice
   function handleVoiceChange(event) {
     selectedVoice = event.target.value;
     if (isSpeaking) {
@@ -101,6 +111,7 @@
     }
   }
 
+  // Update progress of speech
   function updateProgress() {
     clearInterval(intervalId);
     intervalId = setInterval(() => {
@@ -112,11 +123,38 @@
     }, 1000);
   }
 
+  // Reset progress
   function resetProgress() {
     progress = 0;
     clearInterval(intervalId);
   }
 
+  // Seek forward or backward by 10 seconds
+  function seek(seconds) {
+    if (isSpeaking) {
+      stopSpeech();
+      progress += seconds / speechDuration;
+      if (progress < 0) progress = 0;
+      if (progress > 1) progress = 1;
+      const newPosition = Math.floor(progress * speechText.length);
+      const newSpeechText = speechText.substring(newPosition);
+      window.responsiveVoice.speak(newSpeechText, selectedVoice, {
+        rate: speechRate,
+        volume: isMuted ? 0 : 1,
+        onstart: () => {
+          isSpeaking = true;
+          speechDuration = newSpeechText.length / (speechRate * 5);
+          updateProgress();
+        },
+        onend: () => {
+          isSpeaking = false;
+          resetProgress();
+        }
+      });
+    }
+  }
+
+  // Handle progress change via slider
   function handleProgressChange(event) {
     const newProgress = parseFloat(event.target.value);
     if (isSpeaking) {
@@ -150,6 +188,12 @@
     </button>
     <button on:click={toggleMute}>
       {isMuted ? 'Unmute' : 'Mute'}
+    </button>
+    <button on:click={() => seek(-10)} disabled={!responsiveVoiceReady || voices.length === 0}>
+      Rewind 10s
+    </button>
+    <button on:click={() => seek(10)} disabled={!responsiveVoiceReady || voices.length === 0}>
+      Forward 10s
     </button>
   </div>
 

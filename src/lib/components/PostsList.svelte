@@ -49,14 +49,6 @@
                             {@html post.preview.html}
                         </div>
                     {/if}
-                    {#if post.content}
-                        <div class="post-content">
-                            {@html post.content.html}
-                        </div>
-                    {/if}
-                    {#if post.excerpt}
-                        <p class="post-summary">{post.excerpt}</p>
-                    {/if}
                 </article>
             </li>
         {/each}

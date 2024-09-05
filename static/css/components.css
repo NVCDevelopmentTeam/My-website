@@ -214,3 +214,13 @@
 .rate-control input, .progress-control input {
   flex-grow: 1;
 }
+  .pagination a[aria-current="page"] {
+    font-weight: bold;
+    color: #000;
+    pointer-events: none;
+    background-color: #f0f0f0;
+  }
+
+  .pagination a:hover {
+    background-color: #e2e2e2;
+  }

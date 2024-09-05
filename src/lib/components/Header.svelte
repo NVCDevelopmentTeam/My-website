@@ -3,7 +3,7 @@
   import { browser } from '$app/environment'
   import logo from '$lib/images/logo.png';
   import Search from '$lib/components/Search.svelte';
-  import Accessibility from '$lib/components/Accessibility.svelte';
+  import AccessibilityMenu from '$lib/components/AccessibilityMenu.svelte';
 
   export let navMenu = 'NavMenu';
   let expanded = false;
@@ -59,7 +59,7 @@
     </div>
   </nav>
   <div class="search-accessibility">
-    <Accessibility />
+    <AccessibilityMenu />
     <Search />
   </div>
 </header>

@@ -1,14 +1,14 @@
-import database from '$lib/data/database';
+import { openDB, logVisit, getVisitStats } from '$lib/data/database';
 
 // Function to get statistics from database
 async function getStats() {
   try {
-    const { visitsToday, totalVisits, totalVisitors, totalCountries } = database.getStats();
+    const stats = await getVisitStats(); // Sử dụng hàm getVisitStats từ database.js
     return {
-      visitsToday,
-      totalVisits,
-      totalVisitors,
-      totalCountries
+      visitsToday: stats.visitsToday,
+      totalVisits: stats.totalVisits,
+      totalVisitors: stats.totalVisitors,
+      totalCountries: stats.totalCountries
     };
   } catch (error) {
     console.error('Error fetching statistics:', error);
@@ -19,7 +19,8 @@ async function getStats() {
 // Function to update statistics in the database
 async function updateStats(newVisit) {
   try {
-    database.updateStats(newVisit);
+    const { ip, country } = newVisit;
+    await logVisit(ip, country); // Sử dụng hàm logVisit từ database.js để ghi lại thông tin lượt truy cập
   } catch (error) {
     console.error('Error updating statistics:', error);
     throw new Error('An error occurred while updating the statistics.');
