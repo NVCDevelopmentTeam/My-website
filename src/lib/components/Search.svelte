@@ -74,7 +74,7 @@
   async function initializeAudio() {
     try {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const audioFiles = ['start-search', 'no-results', 'error', 'search-results', 'stop-search'];
+      const audioFiles = ['start-search', 'no-results', 'error', 'search-results', 'error'];
 
       for (const file of audioFiles) {
         const response = await fetch(`${audioFilePath}/${file}.mp3`);

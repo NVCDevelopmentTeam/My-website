@@ -3,21 +3,21 @@
   import { browser } from '$app/environment';
 
   // Initialize variables
-  export let title = '';
-  export let postContent = '';
+  export let title = ''; // Title of the article
+  export let postContent = ''; // Main content of the article
 
-  let isSpeaking = false;
-  let responsiveVoiceReady = false;
-  let speechRate = 1;
-  let isMuted = false;
-  let selectedVoice = '';
-  let voices = [];
-  let progress = 0;
-  let speechDuration = 0;
-  let intervalId;
-  let isRateMenuOpen = false;
+  let isSpeaking = false; // Track if content is being spoken
+  let responsiveVoiceReady = false; // Flag to check if ResponsiveVoice is ready
+  let speechRate = 1; // Speech rate (default is 1)
+  let isMuted = false; // Mute state
+  let selectedVoice = ''; // Currently selected voice
+  let voices = []; // List of available voices
+  let progress = 0; // Progress of the speech
+  let speechDuration = 0; // Estimated duration of speech
+  let intervalId; // ID for progress interval
+  let isRateMenuOpen = false; // State for showing/hiding speech rate dropdown
 
-  $: speechText = `${title}. ${postContent}`;
+  $: speechText = `${title}. ${postContent}`; // Combine title and content
 
   // On component mount
   onMount(() => {
@@ -52,7 +52,7 @@
         volume: isMuted ? 0 : 1,
         onstart: () => {
           isSpeaking = true;
-          speechDuration = textToRead.length / (speechRate * 5);
+          speechDuration = textToRead.length / (speechRate * 5); // Estimate based on rate
           updateProgress();
         },
         onend: () => {
@@ -70,11 +70,11 @@
     if (isSpeaking) {
       window.responsiveVoice.cancel();
       isSpeaking = false;
-      resetProgress();
+      clearInterval(intervalId);
     }
   }
 
-  // Toggle between start and stop speech
+  // Toggle between play and pause
   function toggleSpeech() {
     if (isSpeaking) {
       stopSpeech();
@@ -83,7 +83,7 @@
     }
   }
 
-  // Toggle mute/unmute
+  // Mute/unmute and apply instantly
   function toggleMute() {
     isMuted = !isMuted;
     if (isSpeaking) {
@@ -92,7 +92,7 @@
     }
   }
 
-  // Change speech rate
+  // Change speech rate and apply instantly
   function handleRateChange(rate) {
     speechRate = rate;
     if (isSpeaking) {
@@ -111,7 +111,7 @@
     }
   }
 
-  // Update progress of speech
+  // Update progress of speech at intervals
   function updateProgress() {
     clearInterval(intervalId);
     intervalId = setInterval(() => {
@@ -123,13 +123,13 @@
     }, 1000);
   }
 
-  // Reset progress
+  // Reset progress and clear interval
   function resetProgress() {
     progress = 0;
     clearInterval(intervalId);
   }
 
-  // Seek forward or backward by 10 seconds
+  // Fast forward or rewind by 10 seconds
   function seek(seconds) {
     if (isSpeaking) {
       stopSpeech();
@@ -143,7 +143,7 @@
         volume: isMuted ? 0 : 1,
         onstart: () => {
           isSpeaking = true;
-          speechDuration = newSpeechText.length / (speechRate * 5);
+          speechDuration = newSpeechText.length / (speechRate * 5); // Recalculate duration
           updateProgress();
         },
         onend: () => {
@@ -154,7 +154,7 @@
     }
   }
 
-  // Handle progress change via slider
+  // Handle manual progress change via slider
   function handleProgressChange(event) {
     const newProgress = parseFloat(event.target.value);
     if (isSpeaking) {
@@ -181,14 +181,20 @@
   }
 </script>
 
+<!-- UI Components -->
 <div class="text-to-speech">
   <div class="controls">
+    <!-- Play/Pause Button -->
     <button on:click={toggleSpeech} disabled={!responsiveVoiceReady || voices.length === 0}>
       {isSpeaking ? 'Pause' : 'Play'}
     </button>
+
+    <!-- Mute/Unmute Button -->
     <button on:click={toggleMute}>
       {isMuted ? 'Unmute' : 'Mute'}
     </button>
+
+    <!-- Rewind and Fast Forward Buttons -->
     <button on:click={() => seek(-10)} disabled={!responsiveVoiceReady || voices.length === 0}>
       Rewind 10s
     </button>
@@ -197,6 +203,7 @@
     </button>
   </div>
 
+  <!-- Speech Rate Dropdown -->
   <div class="rate-control">
     <label for="speechRate">Speech Rate:</label>
     <div class="dropdown">
@@ -215,6 +222,7 @@
     </div>
   </div>
 
+  <!-- Voice Selection -->
   <div class="voice-select">
     <label for="voiceSelect">Voice:</label>
     <select
@@ -229,6 +237,7 @@
     </select>
   </div>
 
+  <!-- Progress Slider -->
   <div class="progress-control">
     <label for="progressRange">Progress:</label>
     <input

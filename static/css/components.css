@@ -224,3 +224,13 @@
   .pagination a:hover {
     background-color: #e2e2e2;
   }
+  /* Add styles for dropdown, buttons, and other elements */
+  .controls {
+    display: flex;
+    gap: 10px;
+  }
+
+  .rate-control, .voice-select, .progress-control {
+    margin-top: 10px;
+  }
+
