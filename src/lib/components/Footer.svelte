@@ -1,3 +1,7 @@
+<script>
+import LiveChat from '$lib/components/LiveChat.svelte';
+</script>
+
 <div class="site-footer">
   <footer class="site-info" aria-label="Site" itemtype="" itemscope>
     <div class="inside-site-info grid-container" id="footer">
@@ -9,4 +13,4 @@
 </div>
 
 <a class="back" href="#top">back to top</a>
-
+<LiveChat />

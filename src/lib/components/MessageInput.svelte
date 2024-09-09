@@ -1,47 +1,93 @@
+<!-- MessageInput.svelte -->
 <script>
-    export let message = '';
-    export let sendMessage;
+    import { createEventDispatcher } from 'svelte';
 
-    // Handle file attachment
-    function attachFile() {
-        console.log("File attachment feature is not yet implemented.");
-        // Placeholder for future file attachment functionality
-    }
+    let message = '';
+    let attachedFile = null;
+    let emojiPickerVisible = false;
 
-    // Handle sending emojis
-    function sendEmoji() {
-        console.log("Emoji sending feature is not yet implemented.");
-        // Placeholder for future emoji functionality
-    }
+    const dispatch = createEventDispatcher();
 
-    // Handle sending messages
-    function handleSendMessage() {
-        if (message.trim()) {
-            sendMessage(message);
-            message = '';  // Clear the message input after sending
+    const emojis = ['😊', '😂', '😍', '👍', '🎉', '❤️', '😎'];
+
+    function sendMessage() {
+        if (message.trim() !== '' || attachedFile) {
+            dispatch('messageSent', { message, attachedFile });
+            message = '';
+            attachedFile = null;
         }
     }
 
-    // Prevent form submission on Enter key press
-    function handleKeyDown(event) {
-        if (event.key === 'Enter' && !event.shiftKey) {
+    function handleFileAttachment(event) {
+        attachedFile = event.target.files[0];
+    }
+
+    function toggleEmojiPicker() {
+        emojiPickerVisible = !emojiPickerVisible;
+    }
+
+    function addEmoji(emoji) {
+        message += emoji;
+        emojiPickerVisible = false;
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
             event.preventDefault();
-            handleSendMessage();
+            sendMessage();
         }
     }
 </script>
 
-<!-- Message input area -->
 <div>
-    <button title="Attach File" aria-label="Attach File" on:click={attachFile}>📎</button>
-    <button title="Send Emoji" aria-label="Send Emoji" on:click={sendEmoji}>😊</button>
+    <label for="messageInput" class="sr-only">Message Input</label>
     <input
-        id="message-input"
+        id="messageInput"
         type="text"
-        bind:value={message}
         placeholder="Type your message..."
-        on:keydown={handleKeyDown}
+        bind:value={message}
         aria-label="Message input"
+        aria-describedby="messageHelp"
+        on:keypress={handleKeyPress} 
     />
-    <button on:click={handleSendMessage} aria-label="Send message">Send</button>
+
+    <span id="messageHelp" class="sr-only">
+        Press Enter to send the message.
+    </span>
+
+    <button 
+        on:click={toggleEmojiPicker} 
+        aria-label="Toggle Emoji Picker" 
+        aria-expanded={emojiPickerVisible} 
+        aria-controls="emojiPicker">
+        😊
+    </button>
+
+    {#if emojiPickerVisible}
+        <div id="emojiPicker" role="dialog" aria-label="Emoji Picker">
+            {#each emojis as emoji}
+                <button on:click={() => addEmoji(emoji)} aria-label={`Insert emoji ${emoji}`}>
+                    {emoji}
+                </button>
+            {/each}
+        </div>
+    {/if}
+
+    <label for="fileInput" class="sr-only">Attach File</label>
+    <input 
+        id="fileInput" 
+        type="file" 
+        on:change={handleFileAttachment} 
+        aria-label="Attach a file" 
+    />
+
+    <button on:click={sendMessage} aria-label="Send message">
+        Send
+    </button>
 </div>
+
+{#if attachedFile}
+    <div aria-live="polite">
+        Attached file: {attachedFile.name}
+    </div>
+{/if}
