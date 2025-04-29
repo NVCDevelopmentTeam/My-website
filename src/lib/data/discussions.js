@@ -46,7 +46,7 @@ export async function deleteComment(commentId) {
 // Function to get data from API feed (if necessary)
 export async function fetchFeed() {
   try {
-    const response = await fetch('/api/feed.json');
+    const response = await fetch('/api/feed.xml');
     if (!response.ok) throw new Error('Failed to fetch feed');
     const data = await response.json();
     return data;

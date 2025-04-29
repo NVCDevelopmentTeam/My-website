@@ -3,7 +3,7 @@
   import { formatDate } from '$lib/data/utils';
   import { postsPerPage } from '$lib/data/config';
 
-  let posts = [];
+  let posts = $state([]);
 
   // Function to fetch data from API
   async function fetchPosts() {

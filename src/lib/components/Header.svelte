@@ -1,12 +1,18 @@
 <script>
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { browser } from '$app/environment'
   import logo from '$lib/images/logo.png';
-  import Search from '$lib/components/Search.svelte';
-  import AccessibilityMenu from '$lib/components/AccessibilityMenu.svelte';
+  import Search from './Search.svelte';
+  import AccessibilityMenu from './AccessibilityMenu.svelte';
 
-  export let navMenu = 'NavMenu';
-  let expanded = false;
+  /**
+   * @typedef {Object} Props
+   * @property {string} [navMenu]
+   */
+
+  /** @type {Props} */
+  let { navMenu = 'NavMenu' } = $props();
+  let expanded = $state(false);
 </script>
 
 <header id="top">
@@ -37,23 +43,29 @@
       aria-controls="navbarResponsive"
       aria-expanded={expanded}
       aria-label="Toggle navigation"
-      on:click={() => expanded = !expanded}>
+      onclick={() => expanded = !expanded}>
       {navMenu}
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive" hidden={!expanded}>
       <ul id="main-menu" class="navbar-nav ml-auto">
-        <li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
+        <li aria-current={page.url.pathname === '/' ? 'page' : undefined}>
           <a href="/">Home</a>
         </li>
-        <li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
+        <li aria-current={page.url.pathname === '/about' ? 'page' : undefined}>
           <a href="/about">About</a>
         </li>
-        <li aria-current={$page.url.pathname.startsWith('/blog') ? 'page' : undefined}>
+        <li aria-current={page.url.pathname.startsWith('/blog') ? 'page' : undefined}>
           <a href="/blog">blog</a>
         </li>
-        <li aria-current={$page.url.pathname === '/contact' ? 'page' : undefined}>
+        <li aria-current={page.url.pathname === '/contact' ? 'page' : undefined}>
           <a href="/contact">contact</a>
+        </li>
+        <li aria-current={page.url.pathname === '/Portfolio' ? 'page' : undefined}>
+          <a href="/Portfolio">Portfolio</a>
+        </li>
+        <li aria-current={page.url.pathname === '/project' ? 'page' : undefined}>
+          <a href="/project">project</a>
         </li>
       </ul>
     </div>

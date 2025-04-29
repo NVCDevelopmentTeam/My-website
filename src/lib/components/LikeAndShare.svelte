@@ -1,8 +1,8 @@
 <script>
   import { onMount } from 'svelte';
 
-  let likes = 0;
-  let dialog;
+  let likes = $state(0);
+  let dialog = $state();
 
   // Increase the number of likes and save to localStorage
   const incrementLikes = () => {
@@ -73,22 +73,22 @@
 </script>
 
 <div>
-  <button on:click={incrementLikes}>Like</button>
+  <button onclick={incrementLikes}>Like</button>
   <p>{likes} Likes</p>
 </div>
 
 <div>
-  <button on:click={openDialog}>Share</button>
+  <button onclick={openDialog}>Share</button>
 
   <dialog bind:this={dialog} aria-labelledby="dialog-title" aria-modal="true">
     <h2 id="dialog-title">Share this content</h2>
-    <button on:click={closeDialog} aria-label="Close">X</button>
+    <button onclick={closeDialog} aria-label="Close">X</button>
     <div>
-      <button role="link" on:click={shareOnFacebook}>Share on Facebook</button>
-      <button role="link" on:click={shareOnZalo}>Share on Zalo</button>
-      <button role="link" on:click={shareOnTwitter}>Share on Twitter</button>
-      <button role="link" on:click={shareOnLinkedIn}>Share on LinkedIn</button>
-      <button role="link" on:click={copyLink}>Copy Link</button>
+      <button role="link" onclick={shareOnFacebook}>Share on Facebook</button>
+      <button role="link" onclick={shareOnZalo}>Share on Zalo</button>
+      <button role="link" onclick={shareOnTwitter}>Share on Twitter</button>
+      <button role="link" onclick={shareOnLinkedIn}>Share on LinkedIn</button>
+      <button role="link" onclick={copyLink}>Copy Link</button>
     </div>
   </dialog>
 </div>

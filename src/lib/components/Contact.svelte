@@ -1,10 +1,10 @@
 <script>
   import { onMount } from 'svelte';
-  let name = '';
-  let email = '';
-  let title = '';
-  let message = '';
-  let status = "";
+  let name = $state('');
+  let email = $state('');
+  let title = $state('');
+  let message = $state('');
+  let status = $state("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -46,7 +46,7 @@
   };
 </script>
 
-<form on:submit={handleSubmit}>
+<form onsubmit={handleSubmit}>
   <div class="form-group">
     <label for="name">Name *</label>
     <input type="text" id="name" bind:value={name} class="form-input" required />

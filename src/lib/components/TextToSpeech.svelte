@@ -2,22 +2,29 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
 
-  // Initialize variables
-  export let title = ''; // Title of the article
-  export let postContent = ''; // Main content of the article
+  
+  /**
+   * @typedef {Object} Props
+   * @property {string} [title] - Initialize variables
+   * @property {string} [postContent]
+   */
 
-  let isSpeaking = false; // Track if content is being spoken
-  let responsiveVoiceReady = false; // Flag to check if ResponsiveVoice is ready
-  let speechRate = 1; // Speech rate (default is 1)
-  let isMuted = false; // Mute state
-  let selectedVoice = ''; // Currently selected voice
-  let voices = []; // List of available voices
-  let progress = 0; // Progress of the speech
-  let speechDuration = 0; // Estimated duration of speech
-  let intervalId; // ID for progress interval
-  let isRateMenuOpen = false; // State for showing/hiding speech rate dropdown
+  /** @type {Props} */
+  let { title = '', postContent = '' } = $props();
 
-  $: speechText = `${title}. ${postContent}`; // Combine title and content
+  let isSpeaking = $state(false);
+  let responsiveVoiceReady = $state(false);
+  let speechRate = $state(1);
+  let volume = $state(1);
+  let isMuted = $state(false);
+  let selectedVoice = $state('');
+  let voices = $state([]);
+  let progress = $state(0);
+  let speechDuration = 0;
+  let intervalId;
+  let isRateMenuOpen = $state(false);
+
+  let speechText = $derived(`${title}. ${postContent}`);
 
   // On component mount
   onMount(() => {
@@ -49,10 +56,10 @@
       const textToRead = speechText.substring(Math.floor(progress * speechText.length));
       window.responsiveVoice.speak(textToRead, selectedVoice, {
         rate: speechRate,
-        volume: isMuted ? 0 : 1,
+        volume: isMuted ? 0 : volume,
         onstart: () => {
           isSpeaking = true;
-          speechDuration = textToRead.length / (speechRate * 5); // Estimate based on rate
+          speechDuration = textToRead.length / (speechRate * 5);
           updateProgress();
         },
         onend: () => {
@@ -88,7 +95,7 @@
     isMuted = !isMuted;
     if (isSpeaking) {
       stopSpeech();
-      startSpeech(); // Restart speech to apply mute/unmute
+      startSpeech();
     }
   }
 
@@ -97,7 +104,7 @@
     speechRate = rate;
     if (isSpeaking) {
       stopSpeech();
-      startSpeech(); // Restart speech to apply new rate
+      startSpeech();
     }
     isRateMenuOpen = false;
   }
@@ -107,7 +114,7 @@
     selectedVoice = event.target.value;
     if (isSpeaking) {
       stopSpeech();
-      startSpeech(); // Restart speech to apply new voice
+      startSpeech();
     }
   }
 
@@ -136,21 +143,7 @@
       progress += seconds / speechDuration;
       if (progress < 0) progress = 0;
       if (progress > 1) progress = 1;
-      const newPosition = Math.floor(progress * speechText.length);
-      const newSpeechText = speechText.substring(newPosition);
-      window.responsiveVoice.speak(newSpeechText, selectedVoice, {
-        rate: speechRate,
-        volume: isMuted ? 0 : 1,
-        onstart: () => {
-          isSpeaking = true;
-          speechDuration = newSpeechText.length / (speechRate * 5); // Recalculate duration
-          updateProgress();
-        },
-        onend: () => {
-          isSpeaking = false;
-          resetProgress();
-        }
-      });
+      startSpeech();
     }
   }
 
@@ -160,23 +153,18 @@
     if (isSpeaking) {
       stopSpeech();
       progress = newProgress;
-      const newPosition = Math.floor(progress * speechText.length);
-      const newSpeechText = speechText.substring(newPosition);
-      window.responsiveVoice.speak(newSpeechText, selectedVoice, {
-        rate: speechRate,
-        volume: isMuted ? 0 : 1,
-        onstart: () => {
-          isSpeaking = true;
-          speechDuration = newSpeechText.length / (speechRate * 5);
-          updateProgress();
-        },
-        onend: () => {
-          isSpeaking = false;
-          resetProgress();
-        }
-      });
+      startSpeech();
     } else {
       progress = newProgress;
+    }
+  }
+
+  // Handle volume change
+  function handleVolumeChange(event) {
+    volume = parseFloat(event.target.value);
+    if (isSpeaking) {
+      stopSpeech();
+      startSpeech();
     }
   }
 </script>
@@ -185,20 +173,20 @@
 <div class="text-to-speech">
   <div class="controls">
     <!-- Play/Pause Button -->
-    <button on:click={toggleSpeech} disabled={!responsiveVoiceReady || voices.length === 0}>
+    <button onclick={toggleSpeech} disabled={!responsiveVoiceReady || voices.length === 0}>
       {isSpeaking ? 'Pause' : 'Play'}
     </button>
 
     <!-- Mute/Unmute Button -->
-    <button on:click={toggleMute}>
+    <button onclick={toggleMute}>
       {isMuted ? 'Unmute' : 'Mute'}
     </button>
 
     <!-- Rewind and Fast Forward Buttons -->
-    <button on:click={() => seek(-10)} disabled={!responsiveVoiceReady || voices.length === 0}>
+    <button onclick={() => seek(-10)} disabled={!responsiveVoiceReady || voices.length === 0}>
       Rewind 10s
     </button>
-    <button on:click={() => seek(10)} disabled={!responsiveVoiceReady || voices.length === 0}>
+    <button onclick={() => seek(10)} disabled={!responsiveVoiceReady || voices.length === 0}>
       Forward 10s
     </button>
   </div>
@@ -207,19 +195,31 @@
   <div class="rate-control">
     <label for="speechRate">Speech Rate:</label>
     <div class="dropdown">
-      <button on:click={() => isRateMenuOpen = !isRateMenuOpen}>
+      <button onclick={() => isRateMenuOpen = !isRateMenuOpen}>
         {speechRate}x
       </button>
       {#if isRateMenuOpen}
         <div class="dropdown-menu">
           {#each [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] as rate}
-            <button on:click={() => handleRateChange(rate)}>
-              {rate}x
-            </button>
+            <button onclick={() => handleRateChange(rate)}>{rate}x</button>
           {/each}
         </div>
       {/if}
     </div>
+  </div>
+
+  <!-- Volume Control -->
+  <div class="volume-control">
+    <label for="volumeRange">Volume:</label>
+    <input
+      id="volumeRange"
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      bind:value={volume}
+      oninput={handleVolumeChange}
+    />
   </div>
 
   <!-- Voice Selection -->
@@ -227,7 +227,7 @@
     <label for="voiceSelect">Voice:</label>
     <select
       id="voiceSelect"
-      on:change={handleVoiceChange}
+      onchange={handleVoiceChange}
       bind:value={selectedVoice}
       disabled={!responsiveVoiceReady || voices.length === 0}
     >
@@ -247,7 +247,31 @@
       max="1"
       step="0.01"
       bind:value={progress}
-      on:input={handleProgressChange}
+      oninput={handleProgressChange}
     />
   </div>
 </div>
+
+<style>
+  .text-to-speech {
+    /* Add your styles here */
+  }
+  .controls {
+    display: flex;
+    gap: 10px;
+  }
+  .rate-control, .volume-control, .voice-select, .progress-control {
+    margin-top: 10px;
+  }
+  .dropdown {
+    position: relative;
+  }
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+</style>

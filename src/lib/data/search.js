@@ -1,3 +1,4 @@
+import { postsPerPage } from '$lib/data/config';
 import { writable, derived } from 'svelte/store';
 import FlexSearch from 'flexsearch';
 
@@ -51,7 +52,7 @@ async function searchPosts(query, filters = {}) {
   await initializeIndex();
   
   const searchOptions = {
-    limit: 1000,
+    limit: 1000, // Set a sensible limit
     suggest: true,
     ...filters
   };

@@ -74,10 +74,11 @@
 
 <nav aria-label="Accessibility menu" class="accessibility-menu">
   <button
+role="link" 
     aria-expanded={$menuOpen}
     aria-controls="accessibility-options"
-    on:click={() => menuOpen.set(!$menuOpen)}
-    on:keydown={(event) => handleKeydown(event, () => menuOpen.set(!$menuOpen))}>
+    onclick={() => menuOpen.set(!$menuOpen)}
+    onkeydown={(event) => handleKeydown(event, () => menuOpen.set(!$menuOpen))}>
     {#if $menuOpen}
       Close accessibility menu
     {:else}
@@ -90,8 +91,8 @@
       <button
         aria-pressed={$darkMode}
         aria-label="Toggle dark mode"
-        on:click={toggleDarkMode}
-        on:keydown={(event) => handleKeydown(event, toggleDarkMode)}>
+        onclick={toggleDarkMode}
+        onkeydown={(event) => handleKeydown(event, toggleDarkMode)}>
         {#if $darkMode}
           Go light
         {:else}
@@ -101,15 +102,15 @@
 
       <button
         aria-label="Increase font size"
-        on:click={increaseFontSize}
-        on:keydown={(event) => handleKeydown(event, increaseFontSize)}>
+        onclick={increaseFontSize}
+        onkeydown={(event) => handleKeydown(event, increaseFontSize)}>
         Increase font size
       </button>
 
       <button
         aria-label="Decrease font size"
-        on:click={decreaseFontSize}
-        on:keydown={(event) => handleKeydown(event, decreaseFontSize)}>
+        onclick={decreaseFontSize}
+        onkeydown={(event) => handleKeydown(event, decreaseFontSize)}>
         Decrease font size
       </button>
 
@@ -120,8 +121,8 @@
       <button
         aria-pressed={$contrast}
         aria-label="Toggle contrast"
-        on:click={toggleContrast}
-        on:keydown={(event) => handleKeydown(event, toggleContrast)}>
+        onclick={toggleContrast}
+        onkeydown={(event) => handleKeydown(event, toggleContrast)}>
         {#if $contrast}
           Low contrast
         {:else}
@@ -132,8 +133,8 @@
       <button
         aria-pressed={$colorFilters}
         aria-label="Toggle color filters"
-        on:click={toggleColorFilters}
-        on:keydown={(event) => handleKeydown(event, toggleColorFilters)}>
+        onclick={toggleColorFilters}
+        onkeydown={(event) => handleKeydown(event, toggleColorFilters)}>
         {#if $colorFilters}
           Default filters
         {:else}

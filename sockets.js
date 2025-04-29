@@ -1,91 +1,164 @@
 import { Server } from 'socket.io';
 
+// Function to attach sockets to the HTTP server
 export function attachSockets(httpServer) {
   const io = new Server(httpServer, {
     cors: {
-      origin: "*", // Allow cross-origin requests if needed
-      methods: ["GET", "POST"]
-    }
+      origin: '*',
+      methods: ['GET', 'POST'],
+    },
   });
 
-  // Stats object to hold visits and other details
+  // Initialize statistics
   let stats = {
     visitsToday: 0,
     totalVisits: 0,
+      totalVisitors: 0,
     totalCountries: new Set(),
-    connectedClients: new Set(),
+    connectedClients: new Map(),
   };
 
+  // Handle new socket connections
   io.on('connection', (socket) => {
-    handleNewConnection(socket, stats);
+    handleNewConnection(socket);
 
-    // Handle receiving a chat message
-    socket.on('chatMessage', (message) => handleChatMessage(io, socket, message));
-
-    // Handle disconnect event
-    socket.on('disconnect', () => handleDisconnection(io, socket, stats));
-
-    // Handle socket errors
+    socket.on('chat-message', (data) => handleChatMessage(socket, data));
+    socket.on('call-offer', (offer) => handleCallOffer(socket, offer));
+    socket.on('call-answer', (answer) => handleCallAnswer(socket, answer));
+    socket.on('disconnect', () => handleDisconnection(socket));
     socket.on('error', (error) => handleError(socket, error));
   });
 
-  // Reset daily visits at midnight using setInterval
-  setInterval(() => resetDailyVisits(stats), 24 * 60 * 60 * 1000);
+  // Function to handle new connections
+  function handleNewConnection(socket) {
+    const { userType, userId, country = 'Unknown' } = socket.handshake.auth;
+
+    // Validate userType and userId
+    if (!['admin', 'user'].includes(userType) || !userId) {
+      socket.disconnect(true);
+      return;
+    }
+
+    // Update statistics
+    stats.visitsToday++;
+    stats.totalVisits++;
+stats.totalVisitors++;
+    stats.totalCountries.add(country.toLowerCase());
+    stats.connectedClients.set(userId, { userType, country });
+
+    // Attach user data to the socket
+    socket.userData = { userType, userId, country };
+
+    console.log(`${userType} connected: ${userId} from ${country}`);
+
+    // Send appropriate messages based on userType
+    if (userType === 'admin') {
+      socket.emit('stats-update', getFormattedStats());
+    } else if (userType === 'user') {
+      const roomId = userId;
+      socket.join(roomId);
+      socket.emit('chat-message', {
+        message: 'Hello! You can start chatting with the admin.',
+        sender: 'system',
+      });
+    }
+
+    // Broadcast updated stats to all clients
+    io.emit('stats-update', getFormattedStats());
+  }
+
+  // Function to handle chat messages
+  function handleChatMessage(socket, data) {
+    const { userType, userId } = socket.userData;
+    const { roomId, message, sender } = data;
+
+    // Validate roomId and message
+    if (!roomId || !message) {
+      socket.emit('chat-error', { error: 'Invalid message data' });
+      return;
+    }
+
+    // Ensure users can only send messages to their own room
+    if (userType === 'user' && roomId !== userId) {
+      socket.emit('chat-error', { error: 'You cannot send messages to this room' });
+      return;
+    }
+
+    // Emit the chat message to the specified room
+    io.to(roomId).emit('chat-message', { sender: sender || userId, message });
+    // Implement saveChatMessage function to persist chat messages if needed
+    // saveChatMessage(roomId, sender || userId, message);
+  }
+
+  // Function to handle call offers
+  function handleCallOffer(socket, offer) {
+    const { userId } = socket.userData;
+    const { targetUserId } = offer;
+
+    // Find the target socket
+    const targetSocket = [...io.sockets.sockets.values()].find(
+      (s) => s.userData.userType === 'user' && s.userData.userId === targetUserId
+    );
+
+    // Emit the call offer to the target user
+    if (targetSocket) {
+      targetSocket.emit('call-offer', { offer, from: userId });
+    } else {
+      socket.emit('call-error', { error: 'Target user not found or not connected' });
+    }
+  }
+
+  // Function to handle call answers
+  function handleCallAnswer(socket, answer) {
+    const { userId } = socket.userData;
+    const { targetUserId } = answer;
+
+    // Find the target socket
+    const targetSocket = [...io.sockets.sockets.values()].find(
+      (s) => s.userData.userType === 'user' && s.userData.userId === targetUserId
+    );
+
+    // Emit the call answer to the target user
+    if (targetSocket) {
+      targetSocket.emit('call-answer', { answer, from: userId });
+    } else {
+      socket.emit('call-error', { error: 'Target user not found or not connected' });
+    }
+  }
+
+  // Function to handle disconnections
+  function handleDisconnection(socket) {
+    const { userId, userType } = socket.userData;
+
+    // Remove the client from connectedClients
+    stats.connectedClients.delete(userId);
+    console.log(`${userType} disconnected: ${userId}`);
+
+    // Broadcast updated stats to all clients
+    io.emit('stats-update', getFormattedStats());
+  }
+
+  // Function to handle errors
+  function handleError(socket, error) {
+    console.error(`Socket error (${socket.id}):`, error.message);
+  }
+
+  // Function to get formatted statistics
+  function getFormattedStats() {
+    return {
+      visitsToday: stats.visitsToday,
+      totalVisits: stats.totalVisits,
+        totalVisitors: stats.totalVisitors,
+      activeUsers: stats.connectedClients.size,
+      totalCountries: stats.totalCountries.size,
+      countries: Array.from(stats.totalCountries),
+    };
+  }
+
+  // Periodically broadcast stats to all clients
+  setInterval(() => {
+    io.emit('stats-update', getFormattedStats());
+  }, 10000);
 
   return io;
-}
-
-function handleNewConnection(socket, stats) {
-  // Increment visit counts and track connected clients
-  stats.visitsToday++;
-  stats.totalVisits++;
-  stats.connectedClients.add(socket.id);
-
-  // Get country from headers, default to 'Unknown'
-  const country = socket.handshake.headers['x-country'] || 'Unknown';
-  stats.totalCountries.add(country);
-
-  // Log the new connection and broadcast stats
-  console.log(`New connection from ${country}. Total visits today: ${stats.visitsToday}`);
-  broadcastStats(socket.server, stats);
-}
-
-function handleChatMessage(io, socket, message) {
-  // Emit chat message to all connected clients
-  io.emit('chatMessage', {
-    user: socket.id,
-    message,
-    timestamp: new Date().toISOString(),
-  });
-  console.log(`Message from ${socket.id}: ${message}`);
-}
-
-function handleDisconnection(io, socket, stats) {
-  // Remove client from connected clients set on disconnect
-  stats.connectedClients.delete(socket.id);
-  console.log(`Client ${socket.id} disconnected.`);
-  broadcastStats(io, stats); // Update stats after disconnection
-}
-
-function handleError(socket, error) {
-  // Log socket errors
-  console.error(`Error from client ${socket.id}:`, error);
-}
-
-function broadcastStats(io, stats) {
-  // Emit updated stats to all connected clients
-  io.emit('stats', {
-    visitsToday: stats.visitsToday,
-    totalVisits: stats.totalVisits,
-    totalVisitors: stats.connectedClients.size,
-    totalCountries: stats.totalCountries.size,
-    countrySet: Array.from(stats.totalCountries), // Convert Set to Array for broadcasting
-  });
-}
-
-function resetDailyVisits(stats) {
-  // Reset daily visits count and log the reset
-  stats.visitsToday = 0;
-  console.log('Daily visits reset.');
-  // Optional: Persist totalVisits and totalCountries to a database
 }

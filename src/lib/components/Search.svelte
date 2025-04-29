@@ -1,20 +1,24 @@
 <script>
+  import { run } from 'svelte/legacy';
+
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { searchQuery, searchResults, isLoading, noResults, search } from '$lib/data/search';
   import { browser } from '$app/environment';
 
-  let voiceSearchSupported = false;
+  let voiceSearchSupported = $state(false);
   let recognition;
-  let isListening = false;
-  let query = '';
+  let isListening = $state(false);
+  let query = $state('');
   let audioContext;
   let audioBuffers = {};
   let isVoiceSearch = false; // Flag to indicate voice search usage
   const audioFilePath = '/src/lib/sounds';
 
-  $: query = $page?.url?.searchParams?.get('q') || '';
+  run(() => {
+    query = page?.url?.searchParams?.get('q') || '';
+  });
 
   onMount(() => {
     if (browser) {
@@ -148,7 +152,7 @@
 
 <!-- Main search container and form -->
 <div>
-  <form on:submit={handleSubmit}>
+  <form onsubmit={handleSubmit}>
     <input 
       type="text"
       name="search"
@@ -163,7 +167,7 @@
         type="button"
         title={isListening ? "Stop voice search" : "Voice search"}
         aria-label={isListening ? "Stop voice search" : "Voice search"}
-        on:click={handleVoiceSearch}
+        onclick={handleVoiceSearch}
       >
         {isListening ? 'Stop Voice Search' : 'Start Voice Search'}
       </button>

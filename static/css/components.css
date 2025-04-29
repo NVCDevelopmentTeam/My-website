@@ -1,175 +1,227 @@
+/* Pagination Styles */
 .pagination {
-	margin: 0 0 1rem;
-
-	ul {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: start;
-		list-style-type: none;
-		gap: 0.5rem;
-		margin: 0;
-		padding: 0;
-
-		li {
-			margin: 0;
-		}
-
-		a {
-			background: var(--lightAccent);
-			text-decoration: none;
-			line-height: 1;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 2em;
-			height: 2em;
-			font-family: var(--primaryFont);
-			font-weight: bold;
-			transition: background .1s;
-
-			&:hover {
-				background: var(--accent);
-				color: var(--background);
-			}
-
-			&[aria-current="true"] {
-				background: var(--accent);
-				color: var(--background);
-				border: 1px solid currentColor;
-			}
-		}
-
-	}
+  margin: 0 0 1rem;
 }
-  :global(body.dark) {
-    background: #333;
-    color: #fff;
-  }
 
-  :global(body.high-contrast) {
-    background: #000;
-    color: #fff;
-  }
+.pagination ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style-type: none;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+}
 
-  :global(body.color-filters) {
-    filter: invert(1);
-  }
+.pagination li {
+  margin: 0;
+}
 
-  .accessibility-menu {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
+.pagination a {
+  background: var(--lightAccent);
+  text-decoration: none;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5em;
+  height: 2.5em;
+  padding: 0 0.5em;
+  border-radius: 4px;
+  font-family: var(--primaryFont);
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid transparent;
+}
 
-  .accessibility-menu > a {
-    background: #fff;
-    border: 2px solid #000;
-    border-radius: 5px;
-    color: #000;
-    padding: 10px 15px;
-    margin: 5px 0;
-    cursor: pointer;
-    display: block;
-    text-decoration: none;
-    text-align: center;
-  }
+.pagination a:hover {
+  background: var(--accent);
+  color: var(--background);
+  transform: translateY(-1px);
+}
 
-  #accessibility-options {
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-  }
+.pagination a:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--background),
+              0 0 0 4px var(--accent);
+}
 
-  #accessibility-options a {
-    background: #fff;
-    border: 2px solid #000;
-    border-radius: 5px;
-    color: #000;
-    padding: 10px 15px;
-    margin: 5px 0;
-    cursor: pointer;
-    text-decoration: none;
-    width: 100%;
-    text-align: center;
-  }
+.pagination a[aria-current="page"] {
+  background: var(--accent);
+  color: var(--background);
+  font-weight: 600;
+  pointer-events: none;
+}
 
-  #accessibility-options p {
-    margin: 5px 0;
-    font-size: 1em;
-  }
-  button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-  }
+/* Debug styles */
+.debug-mode * {
+  outline: 1px solid rgba(255, 0, 0, 0.2);
+}
 
-  .like-button {
-    background-color: #4CAF50;
-  }
+.debug-mode .pagination {
+  outline: 2px solid rgba(0, 0, 255, 0.3);
+}
 
-  .share-button {
-    background-color: #008CBA;
-  }
+.debug-mode .pagination ul {
+  outline: 2px solid rgba(0, 255, 0, 0.3);
+}
 
-  dialog::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-  }
+.debug-mode .pagination li {
+  outline: 2px solid rgba(255, 165, 0, 0.3);
+}
 
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-  }
+.debug-info {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  z-index: 9999;
+}
 
-  .share-options {
-    margin-top: 20px;
-  }
+/* Accessibility Modes */
+:global(body.dark) {
+  background: #333;
+  color: #fff;
+}
 
-  .share-link {
-    display: block;
-    color: #008CBA;
-    text-align: left;
-    padding: 5px 0;
-  }
+:global(body.high-contrast) {
+  background: #000;
+  color: #fff;
+}
 
-  .share-link:hover {
-    color: #005F73;
-  }
-  .search-container {
-    /* Add your CSS styles here */
-  }
+:global(body.color-filters) {
+  filter: invert(1);
+}
 
-  .search-form {
-    /* Add your CSS styles here */
-  }
+/* Accessibility Menu */
+.accessibility-menu {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
 
-  .search-input {
-    /* Add your CSS styles here */
-  }
+.accessibility-menu > a {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 5px;
+  color: #000;
+  padding: 10px 15px;
+  margin: 5px 0;
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  text-align: center;
+}
 
-  .voice-search {
-    /* Add your CSS styles here */
-  }
+#accessibility-options {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
 
-  .search-button {
-    /* Add your CSS styles here */
-  }
+#accessibility-options a {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 5px;
+  color: #000;
+  padding: 10px 15px;
+  margin: 5px 0;
+  cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+  text-align: center;
+}
 
+#accessibility-options p {
+  margin: 5px 0;
+  font-size: 1em;
+}
+
+/* Buttons */
+button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.like-button {
+  background-color: #4CAF50;
+}
+
+.share-button {
+  background-color: #008CBA;
+}
+
+/* Dialog Backdrop */
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Close Button */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Share Options */
+.share-options {
+  margin-top: 20px;
+}
+
+.share-link {
+  display: block;
+  color: #008CBA;
+  text-align: left;
+  padding: 5px 0;
+}
+
+.share-link:hover {
+  color: #005F73;
+}
+
+/* Search Container */
+.search-container {
+  /* Add your CSS styles here */
+}
+
+.search-form {
+  /* Add your CSS styles here */
+}
+
+.search-input {
+  /* Add your CSS styles here */
+}
+
+.voice-search {
+  /* Add your CSS styles here */
+}
+
+.search-button {
+  /* Add your CSS styles here */
+}
+
+/* Audio Player */
 .audio-player {
   display: flex;
   flex-direction: column;
@@ -214,23 +266,143 @@
 .rate-control input, .progress-control input {
   flex-grow: 1;
 }
-  .pagination a[aria-current="page"] {
-    font-weight: bold;
-    color: #000;
-    pointer-events: none;
-    background-color: #f0f0f0;
-  }
 
-  .pagination a:hover {
-    background-color: #e2e2e2;
-  }
-  /* Add styles for dropdown, buttons, and other elements */
-  .controls {
+/* Controls */
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+.rate-control, .voice-select, .progress-control {
+  margin-top: 10px;
+}
+
+/* Responsive Design */
+.text-to-speech {
+  max-width: 600px;
+  margin: auto;
+}
+
+.controls,
+.rate-control,
+.voice-select,
+.progress-control {
+  margin-bottom: 1em;
+}
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 80px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #ddd;
+}
+
+/* Responsive Design for Small Screens */
+@media (max-width: 600px) {
+  .controls,
+  .rate-control,
+  .voice-select,
+  .progress-control {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .rate-control, .voice-select, .progress-control {
-    margin-top: 10px;
+  .controls button,
+  .rate-control button,
+  .voice-select select,
+  .progress-control input {
+    width: 100%;
+    margin-bottom: 0.5em;
+  }
+}
+
+/* Section and Post Items */
+section {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+  color: #000;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.post-item {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.post-item:hover {
+  background-color: #f9fafb;
+}
+
+.post-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.post-title:hover {
+  color: #3b82f6;
+}
+
+.post-date {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.loading {
+  padding: 1rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+@media (min-width: 768px) {
+  h2 {
+    font-size: 2.25rem;
   }
 
+  .post-item {
+    padding: 1.5rem;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+  }
+}

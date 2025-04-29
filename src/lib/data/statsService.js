@@ -20,7 +20,7 @@ async function getStats() {
 async function updateStats(newVisit) {
   try {
     const { ip, country } = newVisit;
-    await logVisit(ip, country); // Sử dụng hàm logVisit từ database.js để ghi lại thông tin lượt truy cập
+    await logVisit(ip, country); // Use logvisit functions from database.js to record visits
   } catch (error) {
     console.error('Error updating statistics:', error);
     throw new Error('An error occurred while updating the statistics.');

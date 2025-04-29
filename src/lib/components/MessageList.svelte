@@ -1,39 +1,49 @@
 <script>
-    export let messages = []; // Ensure messages is an array
+  import { tick } from 'svelte';
 
-    // Scroll to the bottom of the message list when a new message is added
-    let messageListContainer;
+  // Props for receiving messages
+  const { messages = [] } = $props(); // Use $props() to declare props
 
-    $: scrollToBottom();
+  // Reactive state for the container element
+  let listContainer = $state();
 
-    function scrollToBottom() {
-        if (messageListContainer) {
-            messageListContainer.scrollTop = messageListContainer.scrollHeight;
-        }
+  /**
+   * Formats a timestamp into a human-readable time string.
+   * @param {number} timestamp - The timestamp to format.
+   * @returns {string} - Formatted time string (e.g., "02:30 PM").
+   */
+  function formatTime(timestamp) {
+    return new Date(timestamp).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  /**
+   * Scrolls the message list to the bottom when new messages are added.
+   */
+  async function scrollToBottom() {
+    await tick(); // Wait for DOM updates to complete
+    if (listContainer) {
+      listContainer.scrollTop = listContainer.scrollHeight;
     }
+  }
 
-    // Function to format message timestamps
-    function formatTimestamp(timestamp) {
-        const date = new Date(timestamp);
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
+  // Watch for changes in the messages array and scroll to the bottom
+  $effect(() => {
+    scrollToBottom();
+  }); // No need for a dependency array; $effect tracks `messages` automatically
 </script>
 
-<!-- Message list container with accessibility support -->
-<div
-    class="message-list"
-    bind:this={messageListContainer}
-    aria-live="polite"
->
-    {#each messages as message (message.id)}
-        <!-- Message block, distinguish between 'me' and 'others' -->
-        <div class="message {message.isMe ? 'me' : 'other'}">
-            <span class="message-text" aria-label={`Message from ${message.sender}`}>
-                {message.text}
-            </span>
-            <span class="message-time">
-                {formatTimestamp(message.timestamp)}
-            </span>
-        </div>
-    {/each}
+<!-- Message List UI -->
+<div class="message-list" bind:this={listContainer}>
+  {#each messages as msg (msg.id)}
+    <div class="message {msg.isMe ? 'outgoing' : 'incoming'}">
+      <div class="message-header">
+        <span class="sender">{msg.sender}</span>
+        <span class="time">{formatTime(msg.timestamp)}</span>
+      </div>
+      <div class="message-content">{msg.text}</div>
+    </div>
+  {/each}
 </div>

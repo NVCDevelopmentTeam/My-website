@@ -1,9 +1,11 @@
 <script>
+  import { preventDefault } from 'svelte/legacy';
+
   import { onMount } from 'svelte';
 
-  let email = '';
-  let message = '';
-  let loading = false;
+  let email = $state('');
+  let message = $state('');
+  let loading = $state(false);
 
   const subscribe = async () => {
     loading = true;
@@ -31,7 +33,7 @@
   };
 </script>
 <h2>Subscribe to the to receive useful articles from me</h2>
-<form on:submit|preventDefault={subscribe} class="subscribe-form">
+<form onsubmit={preventDefault(subscribe)} class="subscribe-form">
   <input
     type="email"
     bind:value={email}

@@ -1,19 +1,21 @@
 <script>
   import { onMount } from 'svelte';
   import { fetchComments, addComment, deleteComment } from '$lib/data/discussions';
+  import { writable, derived, get } from 'svelte/store';
 
-  export let comments = [];
-
-  let author = '';
-  let content = '';
+  let comments = writable([]);
+  let author = writable('');
+  let content = writable('');
+  let replyingTo = writable(null);
+  let replyContent = writable('');
+  let currentPage = writable(1);
 
   const ITEMS_PER_PAGE = 5;
-  let currentPage = 1;
 
   async function fetchCommentsData() {
     try {
       const data = await fetchComments();
-      comments = data;
+      comments.set(data);
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
@@ -21,147 +23,99 @@
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const newComment = {
+    if (!get(content).trim() || !get(author).trim()) return;
+    
+    let newComment = {
       id: Date.now().toString(),
-      author,
-      content,
+      author: get(author),
+      content: get(content),
       date: new Date().toLocaleString(),
-      likes: 0,
-      dislikes: 0,
-      replies: [],
-      showReplies: false,
-      pinned: false
+      replies: []
     };
 
     try {
       const data = await addComment(newComment);
-      comments = [data, ...comments];
-      author = '';
-      content = '';
+      comments.update(c => [...c, data]);
+      author.set('');
+      content.set('');
     } catch (error) {
       console.error('Error posting comment:', error);
     }
   }
 
-  function getPaginatedComments() {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    return comments.slice(start, end);
-  }
-
-  function getTotalPages() {
-    return Math.ceil(comments.length / ITEMS_PER_PAGE);
-  }
-
-  $: paginatedComments = getPaginatedComments();
-  $: totalPages = getTotalPages();
-
-  function handleReply(comment) {
-    // Handle reply to comment
-  }
-
-  function handlePin(comment) {
-    comment.pinned = !comment.pinned;
-  }
-
-  function handleReport(comment) {
-    // Handle report comment
-  }
-
-  async function handleDelete(comment) {
+  async function handleDelete(commentId) {
+    if (!confirm('Are you sure you want to delete this comment?')) return;
     try {
-      await deleteComment(comment.id);
-      comments = comments.filter(c => c.id !== comment.id);
+      await deleteComment(commentId);
+      comments.update(c => c.filter(comment => comment.id !== commentId));
     } catch (error) {
       console.error('Error deleting comment:', error);
     }
   }
 
-  function handleLike(comment) {
-    comment.likes += 1;
+  function handleReply(comment) {
+    replyingTo.set(comment);
   }
 
-  function handleDislike(comment) {
-    comment.dislikes += 1;
+  function cancelReply() {
+    replyingTo.set(null);
+    replyContent.set('');
   }
 
-  onMount(async () => {
-    await fetchCommentsData();
+  async function submitReply() {
+    if (!get(replyContent).trim() || !get(replyingTo)) return;
+    
+    const reply = {
+      id: Date.now().toString(),
+      author: get(author) || 'Anonymous',
+      content: get(replyContent),
+      date: new Date().toLocaleString()
+    };
+
+    comments.update(c => c.map(item => 
+      item.id === get(replyingTo).id 
+        ? { ...item, replies: [...item.replies, reply] } 
+        : item
+    ));
+
+    replyingTo.set(null);
+    replyContent.set('');
+  }
+
+  const paginatedComments = derived([comments, currentPage], ([$comments, $currentPage]) => {
+    const start = ($currentPage - 1) * ITEMS_PER_PAGE;
+    return $comments.slice(start, start + ITEMS_PER_PAGE);
   });
+
+  const totalPages = derived(comments, $comments => Math.ceil($comments.length / ITEMS_PER_PAGE));
+
+  onMount(fetchCommentsData);
 </script>
 
-<div class="comment">
-  <form on:submit={handleSubmit}>
+<div>
+  <form onsubmit={handleSubmit}>
     <h2>Write a comment</h2>
-    <label>
-      Name:
-      <input type="text" bind:value={author} required />
-    </label>
-    <label>
-      Comment:
-      <textarea bind:value={content} required></textarea>
-    </label>
+    <input type="text" bind:value={$author} placeholder="Your name" required />
+    <textarea bind:value={$content} placeholder="Write your comment..." required></textarea>
     <button type="submit">Submit</button>
   </form>
 
-  {#if comments.length > 0}
+  {#if $comments.length > 0}
     <h2>Comments:</h2>
-    <p>
-      <strong>Total Comments:</strong> {comments.length}
-    </p>
-    <!-- Pagination -->
-    {#if totalPages > 1}
-      <div class="pagination">
-        {#each Array(totalPages) as _, i}
-          <button
-            class:selected={currentPage === i + 1}
-            on:click={() => (currentPage = i + 1)}
-          >
-            {i + 1}
-          </button>
-        {/each}
-      </div>
-    {/if}
-
     <ul>
-      {#each paginatedComments as comment}
-        <li class="comment-item">
-          <div class="comment-header">
-            <p>{comment.author} - {comment.date}</p>
-            <div class="menu-surface">
-              <button type="button">More</button>
-              <div class="menu">
-                <button type="button" on:click={() => handleReply(comment)}>Reply</button>
-                <button type="button" on:click={() => handlePin(comment)}>Pin</button>
-                <button type="button" on:click={() => handleReport(comment)}>Report</button>
-                <button type="button" on:click={() => handleDelete(comment)}>Delete</button>
-              </div>
-            </div>
-          </div>
-          <div class="comment-content">
-            <p>{comment.content}</p>
-            <div class="comment-actions">
-              <button type="button" on:click={() => handleLike(comment)}>Like</button>
-              <span>{comment.likes}</span>
-              <button type="button" on:click={() => handleDislike(comment)}>Dislike</button>
-              <span>{comment.dislikes}</span>
-              {#if comment.replies.length > 0}
-                <button type="button" on:click={() => (comment.showReplies = !comment.showReplies)}>
-                  {comment.showReplies ? 'Hide Replies' : 'Show Replies'} ({comment.replies.length})
-                </button>
-              {/if}
-            </div>
-          </div>
-          {#if comment.replies.length > 0 && comment.showReplies}
+      {#each $paginatedComments as comment (comment.id)}
+        <li>
+          <p><strong>{comment.author}</strong> - {comment.date}</p>
+          <p>{comment.content}</p>
+          <button onclick={() => handleReply(comment)}>Reply</button>
+          <button onclick={() => handleDelete(comment.id)}>Delete</button>
+          
+          {#if comment.replies.length > 0}
             <ul>
-              {#each comment.replies as reply}
-                <li class="comment-item reply">
-                  <div class="comment-header">
-                    <p>{reply.author} - {reply.date}</p>
-                  </div>
-                  <div class="comment-content">
-                    <p>{reply.content}</p>
-                  </div>
+              {#each comment.replies as reply (reply.id)}
+                <li>
+                  <p><strong>{reply.author}</strong> - {reply.date}</p>
+                  <p>{reply.content}</p>
                 </li>
               {/each}
             </ul>
@@ -169,7 +123,5 @@
         </li>
       {/each}
     </ul>
-  {:else}
-    <p>0 comments</p>
   {/if}
 </div>

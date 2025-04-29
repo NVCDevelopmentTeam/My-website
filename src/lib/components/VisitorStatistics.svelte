@@ -1,21 +1,18 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import io from 'socket.io-client'; // Import socket.io-client
+  import io from 'socket.io-client';
 
-  let visitsToday = 0;
-  let totalVisits = 0;
-  let totalVisitors = 0;
-  let totalCountries = 0;
-  let loading = true;
-  let error = null;
+  let visitsToday = $state(0);
+  let totalVisits = $state(0);
+  let totalVisitors = $state(0);
+  let totalCountries = $state(0);
+  let loading = $state(true);
+  let error = $state(null);
   let socket;
 
-  // Function to initialize socket connection
   function initializeSocket() {
-    // Connect to the socket.io server
     socket = io();
 
-    // Listen for 'stats' event from server
     socket.on('stats', (data) => {
       visitsToday = data.visitsToday;
       totalVisits = data.totalVisits;
@@ -24,26 +21,23 @@
       loading = false;
     });
 
-    // Handle connection errors
     socket.on('connect_error', (err) => {
-      error = 'Failed to connect to the server';
-      console.error('Socket connection error:', err);
+      error = 'Không thể kết nối đến server';
+      console.error('Lỗi kết nối socket:', err);
       loading = false;
     });
 
-    // Handle disconnection
     socket.on('disconnect', () => {
-      error = 'Disconnected from the server';
+      error = 'Mất kết nối với server';
       loading = false;
     });
   }
 
-  // Load stats from API on mount
   async function loadStats() {
     try {
       const response = await fetch('/api/stats.json');
       if (!response.ok) {
-        throw new Error('Failed to load statistics');
+        throw new Error('Không thể tải thống kê');
       }
       const data = await response.json();
       visitsToday = data.visitsToday;
@@ -53,7 +47,7 @@
       loading = false;
     } catch (err) {
       error = err.message;
-      console.error('Error loading statistics:', err);
+      console.error('Lỗi khi tải thống kê:', err);
       loading = false;
     }
   }
@@ -64,24 +58,23 @@
   });
 
   onDestroy(() => {
-    // Clean up the socket connection when the component is destroyed
     if (socket) {
       socket.disconnect();
     }
   });
 </script>
 
-<h2>Visitor Statistics</h2>
+<h2>Thống kê khách truy cập</h2>
 
 {#if loading}
-  <p>Loading statistics...</p>
+  <p>Đang tải thống kê...</p>
 {:else if error}
-  <p>Error: {error}</p>
+  <p>Lỗi: {error}</p>
 {:else}
   <ul>
-    <li>Visits Today: {visitsToday}</li>
-    <li>Total Visits: {totalVisits}</li>
-    <li>Total Visitors: {totalVisitors}</li>
-    <li>Total Countries: {totalCountries}</li>
+    <li>Lượt truy cập hôm nay: {visitsToday}</li>
+    <li>Tổng lượt truy cập: {totalVisits}</li>
+    <li>Tổng số khách truy cập: {totalVisitors}</li>
+    <li>Tổng số quốc gia: {totalCountries}</li>
   </ul>
 {/if}

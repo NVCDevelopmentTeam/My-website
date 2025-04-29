@@ -9,7 +9,7 @@ export const siteTitle = 'Coding Nguyễn'
 export const siteDescription = 'Built with the SvelteKit Static Blog Starter'
 export const siteURL = 'example.com'
 export const siteLink = 'https://github.com/josh-collinsworth/sveltekit-blog-starter'
-export const siteAuthor = '- Coding Nguyễn all rights reserved'
+export const siteAuthor = '- Coding Nguyễn'
 
 // Controls how many posts are shown per page on the main blog index pages
 export const postsPerPage = 10

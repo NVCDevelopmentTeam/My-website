@@ -1,9 +1,9 @@
 <script>
-    export let posts = []; // Get list of posts from props
     import { formatDate } from '$lib/data/utils';
+    let { posts = [] } = $props();
 
     // Check input
-    $: hasPosts = posts.length > 0;
+    let hasPosts = $derived(posts.length > 0);
 </script>
 
 {#if hasPosts}
