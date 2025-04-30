@@ -119,7 +119,7 @@
         }
       }
 
-      await goto(`/Search-results?q=${encodeURIComponent(trimmedQuery)}`, { replaceState: true });
+      await goto(`/search-results?q=${encodeURIComponent(trimmedQuery)}`, { replaceState: true });
     } catch (error) {
       console.error('Error performing search:', error);
       if (isVoiceSearch) playAudio('error');
