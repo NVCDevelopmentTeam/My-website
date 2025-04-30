@@ -1,9 +1,14 @@
 {
 	"name": "my-website",
 	"version": "1.0.1",
+	"private": true,
+	"main": "server.js",
 	"scripts": {
+		"start": "node server.js",
 		"dev": "vite dev",
-		"build": "vite build",
+		"build:kit": "vite build",
+		"build:server": "jsc server.js --esModuleInterop --target esnext --moduleResolution node",
+		"build": "npm run build:kit && npm run build:server",
 		"preview": "vite preview"
 	},
 	"devDependencies": {
