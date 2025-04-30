@@ -1,5 +1,5 @@
 <script>
-import siteTitle from '$lib/data/config';
+import {siteTitle} from '$lib/data/config';
 	let { children } = $props();
 </script>
 <svelte:head>
