@@ -9,6 +9,7 @@
 <svelte:head>
   <title>Blog - {siteTitle}</title>
   <meta name="description" content={siteDescription} />
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=6BLD3hdr"></script>
 </svelte:head>
 
 <h1>Blog</h1>
