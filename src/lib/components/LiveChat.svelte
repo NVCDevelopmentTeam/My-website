@@ -1,4 +1,32 @@
+<!-- @migration-task Error while migrating Svelte code: Identifier 'messages' has already been declared
+https://svelte.dev/e/js_parse_error -->
 <script>
+  let socket = new WebSocket('wss://yourserver/chat');
+  let messages = [];
+  let incomingCall = null;
+
+  socket.onmessage = event => {
+    const payload = JSON.parse(event.data);
+    if (payload.type === 'message') {
+      messages.push(payload);
+      dispatchNotification('Tin nhắn mới', payload.text);
+    } else if (payload.type === 'call') {
+      incomingCall = payload;
+      dispatchNotification('Cuộc gọi đến', `Từ ${payload.from}`);
+    }
+  };
+
+  function dispatchNotification(title, body) {
+    if (Notification.permission === 'granted') {
+      new Notification(title, { body });
+    }
+  }
+
+  onMount(() => {
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission();
+    }
+  });
   import { onMount, onDestroy } from 'svelte';
   import { initSocket, joinRoom, sendMessage } from '$lib/data/liveChat';
   import MessageInput from './MessageInput.svelte';

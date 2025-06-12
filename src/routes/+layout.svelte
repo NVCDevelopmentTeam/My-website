@@ -1,4 +1,5 @@
 <script>
+	import '../app.postcss';
 import { siteTitle } from '$lib/data/config';
 	let { children } = $props();
 </script>

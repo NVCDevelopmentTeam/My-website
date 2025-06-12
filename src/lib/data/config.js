@@ -7,7 +7,7 @@
 
 export const siteTitle = 'Coding Nguyễn'
 export const siteDescription = 'Built with the SvelteKit Static Blog Starter'
-export const siteURL = 'example.com'
+export const siteURL = 'Https://codingNguyen.com'
 export const siteLink = 'https://github.com/josh-collinsworth/sveltekit-blog-starter'
 export const siteAuthor = '- Coding Nguyễn'
 

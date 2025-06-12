@@ -1,37 +1,47 @@
-import { getStats, updateStats } from '$lib/data/statsService';
+import { updateStats } from '$lib/data/statsService';
+import { auth } from '$lib/server/lucia';
 
+/** @type {import('@sveltejs/kit').Handle} */
 export const handle = async ({ event, resolve }) => {
-  // Start request event
+  // Initialize authentication for the current request
+  event.locals.auth = auth.handleRequest(event);
+
+  // Proceed to resolve the request and obtain the response
   const response = await resolve(event);
 
-  // Get the client's IP address
-  const clientIP = event.request.headers.get('x-forwarded-for') || event.getClientAddress() || 'unknown';
+  // Determine the client's IP address
+  const clientIP =
+    event.request.headers.get('x-forwarded-for') || event.getClientAddress();
 
-  // Retrieve country information based on IP (this requires an external API or service)
+  // Initialize country as 'unknown' by default
   let country = 'unknown';
   try {
-    // Example: Call an external geolocation API to get the country
-    const geoResponse = await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=YOUR_API_KEY&ip=${clientIP}`);
-    const geoData = await geoResponse.json();
-    country = geoData.country_name || 'unknown';
+    // Fetch geolocation data based on the client's IP address
+    const geoResponse = await fetch(`https://get.geojs.io/v1/ip/geo/${clientIP}.json`);
+    if (geoResponse.ok) {
+      const geoData = await geoResponse.json();
+      country = geoData.country || 'unknown';
+    }
   } catch (err) {
+    // Log any errors encountered during the geolocation fetch
     console.error('Error fetching country data:', err);
   }
 
-  // Create a new visit record
+  // Construct a new visit record with IP, country, and timestamp
   const newVisit = {
     ip: clientIP,
-    country, // Add the country information
+    country,
     timestamp: new Date()
   };
 
   try {
-    // Update visit statistics
+    // Update the visit statistics with the new record
     await updateStats(newVisit);
   } catch (error) {
+    // Log any errors encountered while updating statistics
     console.error('Error updating visit stats:', error);
   }
 
-  // Return response
+  // Return the response to the client
   return response;
 };
