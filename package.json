@@ -1,5 +1,5 @@
 {
-	"name": "my-website",
+	"name": "My-website",
 	"private": true,
 	"version": "0.0.2",
 	"description": "This is my website",
@@ -17,38 +17,18 @@
 		"prepare": "svelte-kit sync || echo ''"
 	},
 	"devDependencies": {
-		"@sveltejs/kit": "^2.21.5",
-		"@sveltejs/vite-plugin-svelte": "^5.1.0",
-		"svelte": "^5.34.3",
-		"prisma": "^6.9.0",
-		"vite": "^6.3.5"
+		"@sveltejs/kit": "^2.16.0",
+		"@sveltejs/vite-plugin-svelte": "^5.0.0",
+		"svelte": "^5.25.0",
+		"vite": "^6.2.6"
 	},
 	"dependencies": {
 		"@sveltejs/adapter-node": "^5.2.12",
-		"dotenv": "^16.5.0",
-		"express": "^5.1.0",
-		"flexsearch": "^0.8.205",
 		"mdsvex": "^0.12.6",
-		"node-html-parser": "^7.0.1",
-		"nodemailer": "^7.0.3",
-		"reading-time": "^1.5.0",
 		"rehype-autolink-headings": "^7.1.0",
 		"rehype-slug": "^6.0.0",
 		"socket.io": "^4.8.1",
-		"socket.io-client": "^4.8.1",
 		"sqlite": "^5.1.1",
-		"sqlite3": "^5.1.7",
-		"uuid": "^11.1.0",
-		"prettier": "^3.5.3",
-		"prettier-plugin-svelte": "^3.4.0",
-		"eslint": "^9.29.0",
-		"eslint-config-prettier": "^10.1.5",
-		"eslint-plugin-svelte": "^3.9.2",
-		"@lucia-auth/adapter-prisma": "^4.0.1",
-		"lucia": "^3.2.2",
-		"@tailwindcss/postcss": "^4.1.10",
-		"autoprefixer": "^10.4.21",
-		"postcss-load-config": "^6.0.1",
-		"@prisma/client": "^6.9.0"
+		"sqlite3": "^5.1.7"
 	}
 }
