@@ -1,5 +1,5 @@
 <script>
-	import '../app.postcss';
+	import '../app.css';
 import { siteTitle } from '$lib/data/config';
 	let { children } = $props();
 </script>
