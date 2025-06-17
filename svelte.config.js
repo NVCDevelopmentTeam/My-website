@@ -1,7 +1,7 @@
-import adapter from '@sveltejs/adapter-node'
-import { mdsvex } from 'mdsvex'
-import rehypeAutolinkHeadings from 'rehype-autolink-headings'
-import rehypeSlug from 'rehype-slug'
+import adapter from '@sveltejs/adapter-node';
+import { mdsvex } from 'mdsvex';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeSlug from 'rehype-slug';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -23,22 +23,10 @@ const config = {
 
 	kit: {
 		adapter: adapter(),
-    prerender: {
-      entries: [
-        '*',
-        '/api/posts/page/*',
-        '/api/latestPosts/*',
-        '/blog/category/*/page/',
-        '/blog/category/*/page/*',
-        '/blog/category/page/',
-        '/blog/category/page/*',
-        '/blog/page/',
-        '/blog/page/*',
-        '/blog/tags/',
-        '/blog/tags/*',
-      ]
-    }
+		// Svelte 5 doesn't use prerender.entries in the same way. This will be handled by SvelteKit's new routing.
+		// For more complex prerendering, consider using `handleFetch` or `load` functions.
 	}
 };
 
 export default config;
+

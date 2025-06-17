@@ -2,19 +2,22 @@ import { auth } from '$lib/server/lucia';
 
 class AuthService {
 	async login(
-		formData: { email: string; password: string },
-		metadata: { platform: string; ip_address: string }
+		formData,
+		metadata
 	) {
 		const { email, password } = formData;
-		const key = await auth.useKey('email', email.toLowerCase(), password);
-		return auth.createSession({ userId: key.userId, attributes: metadata });
+		const user = await auth.validateUser(email, password);
+		if (!user) {
+			throw new Error('Invalid credentials');
+		}
+		return auth.createSession({ userId: user.id, attributes: metadata });
 	}
 
-	async logout(userId: string) {
+	async logout(userId) {
 		return auth.invalidateAllUserSessions(userId);
 	}
 
-	signUp(formData: { email: string; firstName: string; lastName: string; password: string }) {
+	signUp(formData) {
 		const { email, firstName, lastName, password } = formData;
 		return auth.createUser({
 			key: {
@@ -32,3 +35,4 @@ class AuthService {
 }
 
 export const authService = new AuthService();
+

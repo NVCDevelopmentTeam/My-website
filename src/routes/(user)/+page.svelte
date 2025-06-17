@@ -1,12 +1,10 @@
 <script>
-	import { run } from 'svelte/legacy';
-
   import HeroSlider from '$lib/components/HeroSlider.svelte';
 	import * as Accordition from '$lib/components/ui/accordion';
 	import * as Popover from '$lib/components/ui/popover';
 	import { notificationStore } from '$stores/notification';
 
-	run(() => {
+	$effect(() => {
 		console.log('notificationStore', $notificationStore);
 	});
 import { siteTitle } from "$lib/data/config";
@@ -42,3 +40,4 @@ import { siteTitle } from "$lib/data/config";
 	<Popover.Trigger>Open</Popover.Trigger>
 	<Popover.Content>Place content for the popover here.</Popover.Content>
 </Popover.Root>
+

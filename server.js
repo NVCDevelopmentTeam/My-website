@@ -1,6 +1,6 @@
-const express = require("express");
-const { handler } = require("./build/handler.js");
-const { attach_sockets } = require("./sockets.js");
+import express from "express";
+import { handler } from "./build/handler.js";
+import { attachSockets } from "./sockets.js";
 
 const PORT = 3000;
 const app = express();
@@ -9,4 +9,5 @@ const server = app.listen(PORT, () => {
 });
 
 app.use(handler);
-attach_sockets(server);
+attachSockets(server);
+

@@ -1,6 +1,4 @@
 <script>
-  import { run } from 'svelte/legacy';
-
   import { page } from '$app/state';
   import { onMount } from 'svelte';
 
@@ -9,7 +7,8 @@
   let loading = $state(false);
 
   let unsubscribeToken = $derived(page.data.token);
-  run(() => {
+  
+  $effect(() => {
     email = page.data.email;
   });
 
@@ -49,3 +48,4 @@
     {#if !loading} Yes, Unsubscribe {/if}
   </button>
 {/if}
+

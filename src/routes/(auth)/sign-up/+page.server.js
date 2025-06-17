@@ -1,10 +1,10 @@
 import { superValidate } from 'sveltekit-superforms/server';
-import type { Actions, PageServerLoad } from './$types';
 import { signUpSchema } from './schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { authUseCases } from '$usecases/auth-usecases';
 
-export const load: PageServerLoad = async ({ locals }) => {
+/** @type {import('./$types').PageServerLoad} */
+export const load = async ({ locals }) => {
 	const session = await locals.auth.validate();
 	if (session) {
 		redirect(301, '/admin');
@@ -13,7 +13,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 	return { form };
 };
 
-export const actions: Actions = {
+/** @type {import('./$types').Actions} */
+export const actions = {
 	default: async (event) => {
 		const form = await superValidate(event, signUpSchema);
 		const { locals, request } = event;
@@ -37,3 +38,4 @@ export const actions: Actions = {
 		redirect(301, '/admin');
 	}
 };
+

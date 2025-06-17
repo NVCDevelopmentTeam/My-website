@@ -1,6 +1,4 @@
 <script>
-  import { run } from 'svelte/legacy';
-
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
@@ -16,7 +14,7 @@
   let isVoiceSearch = false; // Flag to indicate voice search usage
   const audioFilePath = '/src/lib/sounds';
 
-  run(() => {
+  $effect(() => {
     query = page?.url?.searchParams?.get('q') || '';
   });
 
@@ -182,3 +180,4 @@
     </button>
   </form>
 </div>
+

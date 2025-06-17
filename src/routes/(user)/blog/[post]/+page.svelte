@@ -1,6 +1,4 @@
 <script>
-  import { run } from 'svelte/legacy';
-
   import { onMount } from 'svelte';
   import LikeAndShare from '$lib/components/LikeAndShare.svelte';
   import Comments from '$lib/components/Comments.svelte';
@@ -43,7 +41,7 @@
   });
 
   // Ensure content is updated when postElement changes
-  run(() => {
+  $effect(() => {
     if (postElement) {
       updatePlainTextContent();
     }
@@ -127,3 +125,4 @@
 
 <!-- Comments section -->
 <Comments {comments} />
+

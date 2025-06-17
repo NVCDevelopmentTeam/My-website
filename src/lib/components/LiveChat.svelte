@@ -1,47 +1,19 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier 'messages' has already been declared
-https://svelte.dev/e/js_parse_error -->
 <script>
-  let socket = new WebSocket('wss://yourserver/chat');
-  let messages = [];
-  let incomingCall = null;
-
-  socket.onmessage = event => {
-    const payload = JSON.parse(event.data);
-    if (payload.type === 'message') {
-      messages.push(payload);
-      dispatchNotification('Tin nhắn mới', payload.text);
-    } else if (payload.type === 'call') {
-      incomingCall = payload;
-      dispatchNotification('Cuộc gọi đến', `Từ ${payload.from}`);
-    }
-  };
-
-  function dispatchNotification(title, body) {
-    if (Notification.permission === 'granted') {
-      new Notification(title, { body });
-    }
-  }
-
-  onMount(() => {
-    if (Notification.permission !== 'granted') {
-      Notification.requestPermission();
-    }
-  });
   import { onMount, onDestroy } from 'svelte';
   import { initSocket, joinRoom, sendMessage } from '$lib/data/liveChat';
   import MessageInput from './MessageInput.svelte';
   import MessageList from './MessageList.svelte';
   import ChatToolbar from './ChatToolbar.svelte';
 
-  // Reactive state variables (no reassignment allowed for exported states)
-  const isChatVisible = $state(false);
-  const isChatStarted = $state(false);
-  const messages = $state([]);
-  const roomId = $state(null);
-  const errors = $state({ name: '', contact: '', message: '' });
+  // Reactive state variables
+  let isChatVisible = $state(false);
+  let isChatStarted = $state(false);
+  let messages = $state([]);
+  let roomId = $state(null);
+  let errors = $state({ name: '', contact: '', message: '' });
 
   // Component state
-  const userInfo = $state({
+  let userInfo = $state({
     name: '',
     email: '',
     phone: '',
@@ -92,31 +64,37 @@ https://svelte.dev/e/js_parse_error -->
       valid = false;
     }
 
-    Object.assign(errors, newErrors); // Mutate properties instead of reassigning
+    errors = newErrors;
     return valid;
   }
 
   async function handleStartChat(event) {
-    event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault();
 
     if (!validateForm()) return;
 
     try {
       const newRoomId = `room-${Date.now()}`;
       await joinRoom(socket, newRoomId);
-      roomId.value = newRoomId; // Use `.value` to mutate the state
+      roomId = newRoomId;
       await sendMessage(socket, newRoomId, userInfo.initialMessage);
-      isChatStarted.value = true; // Use `.value` to mutate the state
+      isChatStarted = true;
     } catch (error) {
-      Object.assign(errors, { ...errors, general: error.message }); // Mutate properties
+      errors = { ...errors, general: error.message };
     }
   }
 
   async function handleNewMessage(content) {
     try {
-      await sendMessage(socket, roomId.value, content);
+      await sendMessage(socket, roomId, content);
     } catch (error) {
-      Object.assign(errors, { ...errors, general: 'Failed to send message' }); // Mutate properties
+      errors = { ...errors, general: 'Failed to send message' };
+    }
+  }
+
+  function dispatchNotification(title, body) {
+    if (Notification.permission === 'granted') {
+      new Notification(title, { body });
     }
   }
 
@@ -128,17 +106,17 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Chat toggle button -->
 <button
   class="chat-toggle"
-  onclick={() => isChatVisible.value = !isChatVisible.value}
-  aria-label={isChatVisible.value ? 'Close chat' : 'Open chat'}
+  onclick={() => isChatVisible = !isChatVisible}
+  aria-label={isChatVisible ? 'Close chat' : 'Open chat'}
 >
-  {isChatVisible.value ? '×' : '💬'}
+  {isChatVisible ? '×' : '💬'}
 </button>
 
 <!-- Chat window -->
-{#if isChatVisible.value}
+{#if isChatVisible}
   <div class="chat-window">
-    {#if !isChatStarted.value}
-      <form onsubmit={handleStartChat}> <!-- Updated to use the new 'onsubmit' syntax -->
+    {#if !isChatStarted}
+      <form onsubmit={handleStartChat}>
         <div class="form-group">
           <input type="text" bind:value={userInfo.name} placeholder="Name" />
           {#if errors.name}<span class="error">{errors.name}</span>{/if}
@@ -157,9 +135,10 @@ https://svelte.dev/e/js_parse_error -->
     {:else}
       <div class="chat-container">
         <MessageList {messages} />
-        <ChatToolbar {socket} {roomId} />
+        <ChatToolbar {socket} roomId={roomId} />
         <MessageInput onsend={handleNewMessage} />
       </div>
     {/if}
   </div>
 {/if}
+

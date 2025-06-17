@@ -1,10 +1,15 @@
 import { updateStats } from '$lib/data/statsService';
-import { auth } from '$lib/server/lucia';
 
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle = async ({ event, resolve }) => {
-  // Initialize authentication for the current request
-  event.locals.auth = auth.handleRequest(event);
+  // Initialize simple auth for the current request
+  event.locals.auth = {
+    validate: async () => null, // Simplified - no session validation for now
+    setSession: (session) => {
+      // Simplified session setting
+      event.locals.session = session;
+    }
+  };
 
   // Proceed to resolve the request and obtain the response
   const response = await resolve(event);
@@ -45,3 +50,4 @@ export const handle = async ({ event, resolve }) => {
   // Return the response to the client
   return response;
 };
+

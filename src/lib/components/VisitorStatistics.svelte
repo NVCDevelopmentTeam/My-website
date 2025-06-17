@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import io from 'socket.io-client';
+  import { io } from 'socket.io-client';
 
   let visitsToday = $state(0);
   let totalVisits = $state(0);
@@ -13,7 +13,7 @@
   function initializeSocket() {
     socket = io();
 
-    socket.on('stats', (data) => {
+    socket.on('stats-update', (data) => {
       visitsToday = data.visitsToday;
       totalVisits = data.totalVisits;
       totalVisitors = data.totalVisitors;
@@ -78,3 +78,4 @@
     <li>Tổng số quốc gia: {totalCountries}</li>
   </ul>
 {/if}
+
