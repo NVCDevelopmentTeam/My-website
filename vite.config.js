@@ -20,5 +20,13 @@ export default defineConfig({
     fs: {
       allow: ['.']
     }
+  },
+  resolve: {
+    alias: {
+      '$usecases': './src/usecases',
+      '$services': './src/services',
+      '$stores': './src/stores'
+    }
   }
 });
+

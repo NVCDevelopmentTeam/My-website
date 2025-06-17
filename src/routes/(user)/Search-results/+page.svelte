@@ -1,6 +1,4 @@
 <script>
-  import { run } from 'svelte/legacy';
-
   import { page } from '$app/stores';
   import { siteTitle } from '$lib/data/config';
   import Pagination from '$lib/components/Pagination.svelte';
@@ -14,7 +12,7 @@
   let query = $state('');
 
   // Destructure data object and set local variables
-  run(() => {
+  $effect(() => {
     if (data) {
       posts = data.results || [];
       error = data.error || '';
@@ -52,3 +50,4 @@
     <p>Loading search results...</p>
   {/if}
 </div>
+

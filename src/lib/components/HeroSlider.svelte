@@ -1,6 +1,4 @@
 <script>
-  import { run } from 'svelte/legacy';
-
   import { fade } from 'svelte/transition';
 
   
@@ -19,7 +17,7 @@
       img: '/slides/slide1.jpg'
     },
     {
-      title: 'Gen Z đầy năng lượng',
+      title: 'Gen Z đầy năng lượng',
       subtitle: 'Phong cách trẻ trung & chuyên nghiệp',
       ctaText: 'Liên hệ',
       ctaLink: '/contact',
@@ -36,9 +34,13 @@
 
   // Auto chuyển mỗi 5s
   let timer = $state(setInterval(nextSlide, 5000));
+  
   // Reset timer khi người dùng tự thao tác (nếu sau này anh thêm nút next/prev)
-  run(() => {
-    clearInterval(timer), timer = setInterval(nextSlide, 5000);
+  $effect(() => {
+    clearInterval(timer);
+    timer = setInterval(nextSlide, 5000);
+    
+    return () => clearInterval(timer);
   });
 </script>
 
@@ -64,3 +66,4 @@
 <style>
   section { position: relative; }
 </style>
+

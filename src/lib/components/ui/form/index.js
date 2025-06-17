@@ -1,7 +1,6 @@
 import { Form as FormPrimitive, getFormField } from "formsnap";
 import * as RadioGroupComp from "$lib/components/ui/radio-group";
 import * as SelectComp from "$lib/components/ui/select";
-import type { Writable } from "svelte/store";
 import Item from "./form-item.svelte";
 import Input from "./form-input.svelte";
 import Textarea from "./form-textarea.svelte";
@@ -25,13 +24,6 @@ const SelectLabel = SelectComp.Label;
 const SelectGroup = SelectComp.Group;
 const SelectItem = SelectComp.Item;
 const SelectSeparator = SelectComp.Separator;
-
-export type TextareaGetFormField = Omit<
-	ReturnType<typeof getFormField>,
-	"value"
-> & {
-	value: Writable<string>;
-};
 
 export {
 	Root,
@@ -80,3 +72,4 @@ export {
 	SelectTrigger as FormSelectTrigger,
 	Button as FormButton
 };
+
