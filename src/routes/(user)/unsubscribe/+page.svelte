@@ -1,6 +1,9 @@
 <script>
+import { siteTitle } from "$lib/data/config";
   import { page } from '$app/state';
   import { onMount } from 'svelte';
+const  pageTitle="Unsubscribe";
+const description="Unsubscribe";
 
   let email = $state('');
   let message = $state('');
@@ -35,8 +38,8 @@
 </script>
 
 <svelte:head>
-  <title>Unsubscribe</title>
-  <meta name="description" content="Unsubscribe" />
+  <title>{PageTitle} | {siteTitle}</title>
+  <meta name="description" content={description} />
 </svelte:head>
 
 {#if message}

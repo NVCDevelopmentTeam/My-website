@@ -1,6 +1,12 @@
+<script>
+import { siteTitle } from "$lib/data/config";
+const  pageTitle="About";
+const description="This is about page";
+</script>
+
 <svelte:head>
-	<title>About</title>
-	<meta name="description" content="About this app" />
+	      <title> {pageTitle} | {siteTitle}</title>
+	<meta name="description" content={description} />
 </svelte:head>
 
 <div class="text-column">

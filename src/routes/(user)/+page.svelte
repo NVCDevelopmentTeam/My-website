@@ -7,12 +7,13 @@
 	$effect(() => {
 		console.log('notificationStore', $notificationStore);
 	});
-import { siteTitle, siteDescription } from "$lib/data/config";
-const  pageTitle="home"
+import { siteTitle } from "$lib/data/config";
+const  pageTitle="home";
+const description="This is my website";
 </script>
 <svelte:head>
-	      <title> {pageTitle}| {siteTitle}</title>
-	<meta name="description" content={siteDescription} />
+	      <title> {pageTitle} | {siteTitle}</title>
+	<meta name="description" content={description} />
 </svelte:head>
 <HeroSlider slides={[
   { title:'Hi, anh Cường!', subtitle:'Dev năng động & tester a11y', ctaText:'Xem dự án', ctaLink:'/projects', img:'/slides/1.jpg' },

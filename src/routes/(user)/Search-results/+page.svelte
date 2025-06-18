@@ -6,6 +6,8 @@
   import { goto } from '$app/navigation';
 
   let { data } = $props();
+const pageTitle="Search results for";
+const description="Search results for keyword";
 
   let posts = $state([]);
   let error = $state('');
@@ -30,8 +32,8 @@
 </script>
 
 <svelte:head>
-  <title>Search results for "{query}" - {siteTitle}</title>
-  <meta name="description" content="Search results for keyword '{query}'" />
+  <title>}pageTitle{ "{query}" | {siteTitle}</title>
+  <meta name="description" content={description '{query}'} />
 </svelte:head>
 
 <div class="search-results">
