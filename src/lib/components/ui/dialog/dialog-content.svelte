@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Dialog as DialogPrimitive } from "bits-ui";
 	import * as Dialog from ".";
 	import { cn, flyAndScale } from "$lib/utils";

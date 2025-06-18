@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import * as Button from "$lib/components/ui/button";
 	interface Props {
 		children?: import('svelte').Snippet;

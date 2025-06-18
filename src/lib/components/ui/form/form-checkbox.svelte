@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { getFormField } from "formsnap";
 	import type { Checkbox as CheckboxPrimitive } from "bits-ui";
 	import { Checkbox } from "$lib/components/ui/checkbox";

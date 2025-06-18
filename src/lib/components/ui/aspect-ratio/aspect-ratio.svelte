@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { AspectRatio as AspectRatioPrimitive } from "bits-ui";
 
 	type $$Props = AspectRatioPrimitive.Props;

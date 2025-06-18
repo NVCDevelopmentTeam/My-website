@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Tooltip as TooltipPrimitive } from "bits-ui";
 	import { cn, flyAndScale } from "$lib/utils";
 

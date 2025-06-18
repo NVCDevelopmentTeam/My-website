@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { cn } from "$lib/utils";
 	import type { HTMLThAttributes } from "svelte/elements";
 

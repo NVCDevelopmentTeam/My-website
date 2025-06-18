@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import type { Label as LabelPrimitive } from "bits-ui";
 	import { getFormField } from "formsnap";
 	import { cn } from "$lib/utils";

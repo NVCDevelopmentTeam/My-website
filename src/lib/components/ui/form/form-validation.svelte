@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Form as FormPrimitive } from "formsnap";
 	import { cn } from "$lib/utils";
 	import type { HTMLAttributes } from "svelte/elements";

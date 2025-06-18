@@ -1,20 +1,42 @@
 import { authService } from '$services/auth-service';
 
+/**
+ * @typedef {{ email: string; password: string }} LoginForm
+ * @typedef {{ platform: string; ip_address: string }} Metadata
+ * @typedef {{ email: string; firstName: string; lastName: string; password: string }} SignUpForm
+ */
+
+/**
+ * Class containing authentication use cases.
+ */
 class AuthUseCases {
-	login(
-		formData: { email: string; password: string },
-		metadata: { platform: string; ip_address: string }
-	) {
-		return authService.login(formData, metadata);
-	}
+  /**
+   * Log in the user.
+   * @param {LoginForm} formData
+   * @param {Metadata} metadata
+   * @returns {Promise<any>}
+   */
+  login(formData, metadata) {
+    return authService.login(formData, metadata);
+  }
 
-	async signUp(formData: { email: string; firstName: string; lastName: string; password: string }) {
-		return authService.signUp(formData);
-	}
+  /**
+   * Register a new user.
+   * @param {SignUpForm} formData
+   * @returns {Promise<any>}
+   */
+  async signUp(formData) {
+    return authService.signUp(formData);
+  }
 
-	async logout(userId: string) {
-		await authService.logout(userId);
-	}
+  /**
+   * Log out an existing user.
+   * @param {string} userId
+   * @returns {Promise<void>}
+   */
+  async logout(userId) {
+    await authService.logout(userId);
+  }
 }
 
 export const authUseCases = new AuthUseCases();

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 
 	type $$Props = DropdownMenuPrimitive.RadioGroupProps;

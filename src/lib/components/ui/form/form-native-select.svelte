@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Form as FormPrimitive } from "formsnap";
 	import { buttonVariants } from "$lib/components/ui/button";
 	import { cn } from "$lib/utils";

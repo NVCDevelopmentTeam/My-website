@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { LinkPreview as HoverCardPrimitive } from "bits-ui";
 	import { cn, flyAndScale } from "$lib/utils";
 

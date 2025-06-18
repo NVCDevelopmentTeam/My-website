@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Dialog as SheetPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils";
 

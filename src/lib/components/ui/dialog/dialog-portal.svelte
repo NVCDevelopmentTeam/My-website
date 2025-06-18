@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Dialog as DialogPrimitive } from "bits-ui";
 	interface Props {
 		children?: import('svelte').Snippet;

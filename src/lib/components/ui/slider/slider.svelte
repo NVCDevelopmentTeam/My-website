@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Slider as SliderPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils";
 

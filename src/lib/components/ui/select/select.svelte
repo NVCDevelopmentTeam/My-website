@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Select as SelectPrimitive } from "bits-ui";
 
 	type $$Props = SelectPrimitive.Props;

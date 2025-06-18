@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Accordion as AccordionPrimitive } from "bits-ui";
 	import { ChevronDown } from "lucide-svelte";
 	import { cn } from "$lib/utils";

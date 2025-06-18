@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { AlertDialog as AlertDialogPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils";
 

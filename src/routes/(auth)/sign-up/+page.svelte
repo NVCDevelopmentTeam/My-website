@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import type { PageData } from './$types';
 	import { signUpSchema } from './schema';
 	import * as Form from '$lib/components/ui/form';

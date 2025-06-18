@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { RadioGroup as RadioGroupPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils";
 

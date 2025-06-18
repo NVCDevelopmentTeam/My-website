@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { getFormField } from "formsnap";
 	import type { Switch as SwitchPrimitive } from "bits-ui";
 	import { Switch } from "$lib/components/ui/switch";

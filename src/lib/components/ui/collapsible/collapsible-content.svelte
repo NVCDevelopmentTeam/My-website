@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Collapsible as CollapsiblePrimitive } from "bits-ui";
 	import { slide } from "svelte/transition";
 

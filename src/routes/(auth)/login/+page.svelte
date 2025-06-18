@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	// import { Form } from 'formsnap';
 	import type { PageData } from './$types';
 	import { loginSchema } from './schema';

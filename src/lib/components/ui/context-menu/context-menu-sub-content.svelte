@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { ContextMenu as ContextMenuPrimitive } from "bits-ui";
 	import { cn, flyAndScale } from "$lib/utils";
 

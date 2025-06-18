@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Menubar as MenubarPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils";
 	import { Circle } from "lucide-svelte";

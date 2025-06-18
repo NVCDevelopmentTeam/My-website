@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import type { HTMLAttributes } from "svelte/elements";
 	import { cn } from "$lib/utils";
 	import type { HeadingLevel } from ".";

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils";
 	import { Circle } from "lucide-svelte";

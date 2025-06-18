@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { ContextMenu as ContextMenuPrimitive } from "bits-ui";
 
 	type $$Props = ContextMenuPrimitive.RadioGroupProps;

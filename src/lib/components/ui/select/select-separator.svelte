@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { Select as SelectPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils";
 
