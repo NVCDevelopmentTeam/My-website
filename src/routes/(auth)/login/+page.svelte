@@ -1,16 +1,13 @@
 <script>
-	// import { Form } from 'formsnap';
-	import type { PageData } from './$types';
-	import { loginSchema } from './schema';
+	// Import statements remain the same, but remove TypeScript-specific imports
 	import * as Form from '$lib/components/ui/form';
-	interface Props {
-		data: PageData;
-	}
+	import { loginSchema } from './schema';
 
-	let { data }: Props = $props();
+	// Use plain JavaScript variable declaration without type annotations
+	let data = $props();
 </script>
 
-<Form.Root form={data.form} schema={loginSchema}  debug={true}>
+<Form.Root form={data.form} schema={loginSchema} debug={true}>
 	{#snippet children({ config })}
 		<Form.Field {config} name="email">
 			<Form.Item>

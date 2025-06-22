@@ -1,4 +1,5 @@
 <script>
+import Banner from '$lib/component/Banner.svelte
   import HeroSlider from '$lib/components/HeroSlider.svelte';
 	import * as Accordition from '$lib/components/ui/accordion';
 	import * as Popover from '$lib/components/ui/popover';
@@ -19,7 +20,7 @@ const description="This is my website";
   { title:'Hi, anh Cường!', subtitle:'Dev năng động & tester a11y', ctaText:'Xem dự án', ctaLink:'/projects', img:'/slides/1.jpg' },
   { title:'Mọi thứ mình làm đều tối ưu', subtitle:'Hiệu năng ✨ accessibility', ctaText:'Liên hệ ngay', ctaLink:'/contact', img:'/slides/2.jpg' }
 ]} />
-
+<Banner />
 <section>
 	<h1>
 		to your new<br />SvelteKit app

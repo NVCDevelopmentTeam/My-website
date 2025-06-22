@@ -1,15 +1,13 @@
 <script>
-	import type { PageData } from './$types';
+	// Remove TypeScript-specific import
 	import { signUpSchema } from './schema';
 	import * as Form from '$lib/components/ui/form';
-	interface Props {
-		data: PageData;
-	}
 
-	let { data }: Props = $props();
+	// Use plain JavaScript variable declaration without type annotations
+	let data = $props();
 </script>
 
-<Form.Root form={data.form} schema={signUpSchema}  debug={true}>
+<Form.Root form={data.form} schema={signUpSchema} debug={true}>
 	{#snippet children({ config })}
 		<Form.Field {config} name="email">
 			<Form.Item>
