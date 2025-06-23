@@ -1,5 +1,4 @@
 <script>
-	import * as Form from '$lib/components/ui/form';
   import { onMount } from 'svelte';
 	let data = $props();
   let name = $state('');
