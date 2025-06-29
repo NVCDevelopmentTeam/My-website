@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
 	import { getFormField } from "formsnap";
 	import type { RadioGroup as RadioGroupPrimitive } from "bits-ui";

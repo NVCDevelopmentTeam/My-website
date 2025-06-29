@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
 	import { Checkbox as CheckboxPrimitive } from "bits-ui";
 	import { Check, Minus } from "lucide-svelte";

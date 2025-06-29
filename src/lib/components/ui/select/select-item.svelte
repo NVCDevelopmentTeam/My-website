@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
 	import { Select as SelectPrimitive } from "bits-ui";
 	import { Check } from "lucide-svelte";

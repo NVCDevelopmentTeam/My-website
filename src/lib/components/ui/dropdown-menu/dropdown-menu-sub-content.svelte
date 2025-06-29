@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
 	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 	import { cn, flyAndScale } from "$lib/utils";

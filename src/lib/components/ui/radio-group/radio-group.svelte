@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
 	import { RadioGroup as RadioGroupPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils";

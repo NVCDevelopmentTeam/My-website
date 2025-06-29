@@ -1,12 +1,15 @@
 <script>
-    export let title = "Welcome";
-    export let subtitle = "Explore our website";
-    export let backgroundImage = "";
-    export let backgroundColor = "#1a1a1a";
-    export let textColor = "white";
-    export let showButton = true;
-    export let buttonText = "Learn More";
-    export let buttonLink = "/";
+    /** @type {{title?: string, subtitle?: string, backgroundImage?: string, backgroundColor?: string, textColor?: string, showButton?: boolean, buttonText?: string, buttonLink?: string}} */
+    let {
+        title = "Welcome",
+        subtitle = "Explore our website",
+        backgroundImage = "",
+        backgroundColor = "#1a1a1a",
+        textColor = "white",
+        showButton = true,
+        buttonText = "Learn More",
+        buttonLink = "/"
+    } = $props();
 </script>
 
 <div 

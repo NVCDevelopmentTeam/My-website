@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
 	import type { HTMLAttributes } from "svelte/elements";
 	import { cn } from "$lib/utils";

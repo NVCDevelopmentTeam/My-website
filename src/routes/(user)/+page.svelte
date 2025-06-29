@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
+<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script>
 import Banner from '$lib/component/Banner.svelte
   import HeroSlider from '$lib/components/HeroSlider.svelte';

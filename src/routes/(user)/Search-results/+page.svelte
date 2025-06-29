@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated regular expression -->
+<!-- @migration-task Error while migrating Svelte code: Unterminated regular expression -->
 <script>
   import { page } from '$app/stores';
   import { siteTitle } from '$lib/data/config';

@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
 	import { Collapsible as CollapsiblePrimitive } from "bits-ui";
 	import { slide } from "svelte/transition";
