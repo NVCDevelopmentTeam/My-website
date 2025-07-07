@@ -7,30 +7,33 @@ import { json } from '@sveltejs/kit';
 // export const prerender = true;
 
 export const GET = async ({ params }) => {
-  try {
-    // Parse the page parameter and set default value to 1 if not provided
-    const page = parseInt(params.page) || 1;
+	try {
+		// Parse the page parameter and set default value to 1 if not provided
+		const page = parseInt(params.page) || 1;
 
-    // Calculate offset based on the page number
-    const options = {
-      offset: (page - 1) * postsPerPage,
-      limit: postsPerPage
-    };
+		// Calculate offset based on the page number
+		const options = {
+			offset: (page - 1) * postsPerPage,
+			limit: postsPerPage
+		};
 
-    // Fetch posts based on the calculated options
-    const { posts } = await fetchPosts(options);
+		// Fetch posts based on the calculated options
+		const { posts } = await fetchPosts(options);
 
-    // Return the fetched posts as JSON
-    return json({
-      page,
-      posts
-    });
-  } catch (error) {
-    // Handle any errors that occur during the fetch
-    return json({
-      error: 'Failed to fetch posts'
-    }, {
-      status: 500
-    });
-  }
+		// Return the fetched posts as JSON
+		return json({
+			page,
+			posts
+		});
+	} catch (error) {
+		// Handle any errors that occur during the fetch
+		return json(
+			{
+				error: 'Failed to fetch posts'
+			},
+			{
+				status: 500
+			}
+		);
+	}
 };

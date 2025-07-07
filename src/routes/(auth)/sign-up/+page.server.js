@@ -38,4 +38,3 @@ export const actions = {
 		redirect(301, '/admin');
 	}
 };
-

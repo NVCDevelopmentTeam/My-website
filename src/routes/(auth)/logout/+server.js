@@ -11,4 +11,3 @@ export const GET = async ({ locals }) => {
 	locals.auth.setSession(null);
 	redirect(302, '/login');
 };
-

@@ -1,10 +1,7 @@
 import { auth } from '$lib/server/lucia';
 
 class AuthService {
-	async login(
-		formData,
-		metadata
-	) {
+	async login(formData, metadata) {
 		const { email, password } = formData;
 		const user = await auth.validateUser(email, password);
 		if (!user) {
@@ -35,4 +32,3 @@ class AuthService {
 }
 
 export const authService = new AuthService();
-

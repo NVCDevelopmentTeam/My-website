@@ -25,22 +25,22 @@ let nextId = 1;
  * @param {number} [params.timeout=3000]
  */
 function addMessage({ status, text, timeout = 3000 }) {
-  const id = nextId++;
-  const message = { id, status, text, timeout };
+	const id = nextId++;
+	const message = { id, status, text, timeout };
 
-  // Update store by appending the new message
-  notificationStore.update(state => ({
-    messages: [...state.messages, message]
-  }));
+	// Update store by appending the new message
+	notificationStore.update((state) => ({
+		messages: [...state.messages, message]
+	}));
 
-  // Auto-remove the message after timeout if > 0
-  if (timeout > 0) {
-    setTimeout(() => {
-      notificationStore.update(state => ({
-        messages: state.messages.filter(m => m.id !== id)
-      }));
-    }, timeout);
-  }
+	// Auto-remove the message after timeout if > 0
+	if (timeout > 0) {
+		setTimeout(() => {
+			notificationStore.update((state) => ({
+				messages: state.messages.filter((m) => m.id !== id)
+			}));
+		}, timeout);
+	}
 }
 
 /**
@@ -48,16 +48,16 @@ function addMessage({ status, text, timeout = 3000 }) {
  * @param {number} id
  */
 function removeMessage(id) {
-  notificationStore.update(state => ({
-    messages: state.messages.filter(m => m.id !== id)
-  }));
+	notificationStore.update((state) => ({
+		messages: state.messages.filter((m) => m.id !== id)
+	}));
 }
 
 /** Export convenience methods for each status */
 export const notify = {
-  success: (text, timeout) => addMessage({ status: 'success', text, timeout }),
-  warning: (text, timeout) => addMessage({ status: 'warning', text, timeout }),
-  error:   (text, timeout) => addMessage({ status: 'error', text, timeout }),
-  info:    (text, timeout) => addMessage({ status: 'info', text, timeout }),
-  remove: removeMessage
+	success: (text, timeout) => addMessage({ status: 'success', text, timeout }),
+	warning: (text, timeout) => addMessage({ status: 'warning', text, timeout }),
+	error: (text, timeout) => addMessage({ status: 'error', text, timeout }),
+	info: (text, timeout) => addMessage({ status: 'info', text, timeout }),
+	remove: removeMessage
 };

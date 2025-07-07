@@ -1,16 +1,16 @@
 ---
 title: Tutorial
-categories: 
-- "code" 
-- "blog" 
-- "tutorial"
+categories:
+  - 'code'
+  - 'blog'
+  - 'tutorial'
 date: 2023-03-02
 updated: 2024-01-03
 author: Coding Nguyen
-tags: 
-- "Code" 
-- "program"
-- "blind"
+tags:
+  - 'Code'
+  - 'program'
+  - 'blind'
 ---
 
 # Introduction
@@ -25,7 +25,7 @@ The Zepp OS Screen Reader is a screen reader developed specifically for Zepp OS 
 ## How to Run
 
 To get started, you will need to clone the repository to your local machine and navigate to the project root directory. Then, you can start the compilation preview by running the following command:
-    zeus dev  
+zeus dev  
 Once the compilation preview is started, you can interact with the screen reader by using the following keyboard shortcuts:
 
 - Space - Speak the current item
@@ -36,10 +36,11 @@ Once the compilation preview is started, you can interact with the screen reader
 ## How to Build
 
 To build the application, you can run the following command:  
-    zeus build  
+ zeus build  
 This will create a .zab file in the dist folder. You can then install this file on your Zepp OS device.
 
-## How to Install  
+## How to Install
+
 To install the application on your device, you will need to connect your watch to your phone and open the Zepp app. Then, go to Profile > Amazfit GTS 4 Mini > App Store and select the Zepp OS Screen Reader app. Click on the "Install" button to install the app on your device.
 
 ## How to Enable the Screen Reader

@@ -10,33 +10,33 @@ import { authService } from '$services/auth-service';
  * Class containing authentication use cases.
  */
 class AuthUseCases {
-  /**
-   * Log in the user.
-   * @param {LoginForm} formData
-   * @param {Metadata} metadata
-   * @returns {Promise<any>}
-   */
-  login(formData, metadata) {
-    return authService.login(formData, metadata);
-  }
+	/**
+	 * Log in the user.
+	 * @param {LoginForm} formData
+	 * @param {Metadata} metadata
+	 * @returns {Promise<any>}
+	 */
+	login(formData, metadata) {
+		return authService.login(formData, metadata);
+	}
 
-  /**
-   * Register a new user.
-   * @param {SignUpForm} formData
-   * @returns {Promise<any>}
-   */
-  async signUp(formData) {
-    return authService.signUp(formData);
-  }
+	/**
+	 * Register a new user.
+	 * @param {SignUpForm} formData
+	 * @returns {Promise<any>}
+	 */
+	async signUp(formData) {
+		return authService.signUp(formData);
+	}
 
-  /**
-   * Log out an existing user.
-   * @param {string} userId
-   * @returns {Promise<void>}
-   */
-  async logout(userId) {
-    await authService.logout(userId);
-  }
+	/**
+	 * Log out an existing user.
+	 * @param {string} userId
+	 * @returns {Promise<void>}
+	 */
+	async logout(userId) {
+		await authService.logout(userId);
+	}
 }
 
 export const authUseCases = new AuthUseCases();

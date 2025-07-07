@@ -1,15 +1,15 @@
-import fetchPosts from '$lib/data/fetchPosts'
+import fetchPosts from '$lib/data/fetchPosts';
 
 export const load = async ({ params }) => {
-	const tag = params.tag
-  const page = params.page || 1
-	const options = { tag, limit: -1 }
-	const { posts } = await fetchPosts(options)
+	const tag = params.tag;
+	const page = params.page || 1;
+	const options = { tag, limit: -1 };
+	const { posts } = await fetchPosts(options);
 
-	return { 
+	return {
 		posts,
 		tag,
 		page,
 		total: posts.length
-	}
-}
+	};
+};

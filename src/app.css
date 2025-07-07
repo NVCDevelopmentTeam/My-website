@@ -1,153 +1,159 @@
 /* app.css - Tailwind v4 global stylesheet in routes folder */
 
 /* Import Tailwind base, components, utilities */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Define custom dark variant scoped under .dark class */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* Define CSS variables for light & dark themes */
 @layer base {
-  :root {
-    /* Light mode color palette */
-    --background: 0 0% 100%;
-    --foreground: 224 71.4% 4.1%;
-    /* Additional variables... */
-    --border: 220 13% 91%;
-    --ring: 262.1 83.3% 57.8%;
-  }
+	:root {
+		/* Light mode color palette */
+		--background: 0 0% 100%;
+		--foreground: 224 71.4% 4.1%;
+		/* Additional variables... */
+		--border: 220 13% 91%;
+		--ring: 262.1 83.3% 57.8%;
+	}
 
-  .dark {
-    /* Dark mode overrides */
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
-    /* Additional overrides... */
-    --border: 215 27.9% 16.9%;
-    --ring: 263.4 70% 50.4%;
-  }
+	.dark {
+		/* Dark mode overrides */
+		--background: 224 71.4% 4.1%;
+		--foreground: 210 20% 98%;
+		/* Additional overrides... */
+		--border: 215 27.9% 16.9%;
+		--ring: 263.4 70% 50.4%;
+	}
 }
 
 /* Global styles for borders & background/text colors */
 @layer base {
-  *,
-  *::before,
-  *::after {
-    /* Apply 1px solid border using CSS variable */
-    border: 1px solid hsl(var(--border));
-  }
+	*,
+	*::before,
+	*::after {
+		/* Apply 1px solid border using CSS variable */
+		border: 1px solid hsl(var(--border));
+	}
 
-  body {
-    /* Apply background and text colors using CSS variables */
-    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
-  }
+	body {
+		/* Apply background and text colors using CSS variables */
+		@apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+	}
 }
 
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
 }
 
 /* Focus outline for keyboard users */
 :focus-visible {
-  outline: 2px solid hsl(var(--ring));
-  outline-offset: 2px;
+	outline: 2px solid hsl(var(--ring));
+	outline-offset: 2px;
 }
 
 /* Skip links for screen readers */
 .skip {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
 }
 .skip:focus {
-  position: static;
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  text-decoration: none;
+	position: static;
+	background: hsl(var(--primary));
+	color: hsl(var(--primary-foreground));
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	text-decoration: none;
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  :root {
-    --border: 0 0% 0%;
-    --ring: 0 0% 0%;
-  }
-  .dark {
-    --border: 0 0% 100%;
-    --ring: 0 0% 100%;
-  }
+	:root {
+		--border: 0 0% 0%;
+		--ring: 0 0% 0%;
+	}
+	.dark {
+		--border: 0 0% 100%;
+		--ring: 0 0% 100%;
+	}
 }
 
 /* Responsive font size */
 html {
-  font-size: clamp(1rem, 2.5vw, 1.125rem);
+	font-size: clamp(1rem, 2.5vw, 1.125rem);
 }
 
 /* Interactive element styling */
 button,
-[role="button"] {
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
+[role='button'] {
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
 }
 button:disabled,
-[role="button"][aria-disabled="true"] {
-  cursor: not-allowed;
-  opacity: 0.6;
+[role='button'][aria-disabled='true'] {
+	cursor: not-allowed;
+	opacity: 0.6;
 }
 
 /* Form element focus styling */
 input,
 textarea,
 select {
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	transition:
+		border-color 0.2s ease-in-out,
+		box-shadow 0.2s ease-in-out;
 }
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: hsl(var(--ring));
-  box-shadow: 0 0 0 2px hsl(var(--ring)/0.2);
+	border-color: hsl(var(--ring));
+	box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
 }
 
 /* Shimmer loading effect */
 .loading {
-  position: relative;
-  overflow: hidden;
+	position: relative;
+	overflow: hidden;
 }
 .loading::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  animation: loading 1.5s infinite;
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+	animation: loading 1.5s infinite;
 }
 @keyframes loading {
-  0% { left: -100%; }
-  100% { left: 100%; }
+	0% {
+		left: -100%;
+	}
+	100% {
+		left: 100%;
+	}
 }
 
 /* Print-specific styles */
 @media print {
-  .no-print {
-    display: none !important;
-  }
-  a[href]:after {
-    content: " (" attr(href) ")";
-  }
-  abbr[title]:after {
-    content: " (" attr(title) ")";
-  }
+	.no-print {
+		display: none !important;
+	}
+	a[href]:after {
+		content: ' (' attr(href) ')';
+	}
+	abbr[title]:after {
+		content: ' (' attr(title) ')';
+	}
 }
