@@ -1,8 +1,8 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { ContextMenu as ContextMenuPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils";
+	import { ContextMenu as ContextMenuPrimitive } from 'bits-ui';
+	import { cn } from '$lib/utils';
 
 	type $$Props = ContextMenuPrimitive.ItemProps & {
 		inset?: boolean;
@@ -10,20 +10,19 @@
 	type $$Events = ContextMenuPrimitive.ItemEvents;
 
 	interface Props {
-		class?: $$Props["class"];
-		inset?: $$Props["inset"];
+		class?: $$Props['class'];
+		inset?: $$Props['inset'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let { class: className = undefined, inset = undefined, children, ...rest }: Props = $props();
-	
 </script>
 
 <ContextMenuPrimitive.Item
 	class={cn(
-		"relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-		inset && "pl-8",
+		'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+		inset && 'pl-8',
 		className
 	)}
 	{...rest}

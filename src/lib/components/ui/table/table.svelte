@@ -1,26 +1,22 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { cn } from "$lib/utils";
-	import type { HTMLTableAttributes } from "svelte/elements";
+	import { cn } from '$lib/utils';
+	import type { HTMLTableAttributes } from 'svelte/elements';
 
 	type $$Props = HTMLTableAttributes;
 
 	interface Props {
-		class?: $$Props["class"];
+		class?: $$Props['class'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let { class: className = undefined, children, ...rest }: Props = $props();
-	
 </script>
 
 <div class="w-full overflow-auto">
-	<table
-		class={cn("w-full caption-bottom text-sm", className)}
-		{...rest}
-	>
+	<table class={cn('w-full caption-bottom text-sm', className)} {...rest}>
 		{@render children?.()}
 	</table>
 </div>

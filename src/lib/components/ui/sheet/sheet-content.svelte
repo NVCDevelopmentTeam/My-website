@@ -1,41 +1,34 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { Dialog as SheetPrimitive } from "bits-ui";
-	import {
-		SheetOverlay,
-		SheetPortal,
-		sheetTransitions,
-		sheetVariants,
-		type Side
-	} from ".";
-	import { X } from "lucide-svelte";
-	import { cn } from "$lib/utils";
-	import { fly } from "svelte/transition";
+	import { Dialog as SheetPrimitive } from 'bits-ui';
+	import { SheetOverlay, SheetPortal, sheetTransitions, sheetVariants, type Side } from '.';
+	import { X } from 'lucide-svelte';
+	import { cn } from '$lib/utils';
+	import { fly } from 'svelte/transition';
 
 	type $$Props = SheetPrimitive.ContentProps & {
 		side?: Side;
 	};
 
-	
 	interface Props {
-		class?: $$Props["class"];
-		side?: $$Props["side"];
-		inTransition?: $$Props["inTransition"];
-		inTransitionConfig?: $$Props["inTransitionConfig"];
-		outTransition?: $$Props["outTransition"];
-		outTransitionConfig?: $$Props["outTransitionConfig"];
+		class?: $$Props['class'];
+		side?: $$Props['side'];
+		inTransition?: $$Props['inTransition'];
+		inTransitionConfig?: $$Props['inTransitionConfig'];
+		outTransition?: $$Props['outTransition'];
+		outTransitionConfig?: $$Props['outTransitionConfig'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let {
 		class: className = undefined,
-		side = "right",
+		side = 'right',
 		inTransition = fly,
-		inTransitionConfig = sheetTransitions[side ? side : "right"]["in"],
+		inTransitionConfig = sheetTransitions[side ? side : 'right']['in'],
 		outTransition = fly,
-		outTransitionConfig = sheetTransitions[side ? side : "right"]["out"],
+		outTransitionConfig = sheetTransitions[side ? side : 'right']['out'],
 		children,
 		...rest
 	}: Props = $props();

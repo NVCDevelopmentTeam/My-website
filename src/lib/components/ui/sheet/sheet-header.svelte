@@ -1,24 +1,20 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { cn } from "$lib/utils";
-	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from '$lib/utils';
+	import type { HTMLAttributes } from 'svelte/elements';
 
 	type $$Props = HTMLAttributes<HTMLDivElement>;
 
 	interface Props {
-		class?: $$Props["class"];
+		class?: $$Props['class'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let { class: className = undefined, children, ...rest }: Props = $props();
-	
 </script>
 
-<div
-	class={cn("flex flex-col space-y-2 text-center sm:text-left", className)}
-	{...rest}
->
+<div class={cn('flex flex-col space-y-2 text-center sm:text-left', className)} {...rest}>
 	{@render children?.()}
 </div>

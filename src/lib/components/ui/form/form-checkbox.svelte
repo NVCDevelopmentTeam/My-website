@@ -1,15 +1,15 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { getFormField } from "formsnap";
-	import type { Checkbox as CheckboxPrimitive } from "bits-ui";
-	import { Checkbox } from "$lib/components/ui/checkbox";
+	import { getFormField } from 'formsnap';
+	import type { Checkbox as CheckboxPrimitive } from 'bits-ui';
+	import { Checkbox } from '$lib/components/ui/checkbox';
 	type $$Props = CheckboxPrimitive.Props;
 	type $$Events = CheckboxPrimitive.Events;
 
 	interface Props {
-		onCheckedChange?: $$Props["onCheckedChange"];
-		[key: string]: any
+		onCheckedChange?: $$Props['onCheckedChange'];
+		[key: string]: any;
 	}
 
 	let { onCheckedChange = undefined, ...rest_1 }: Props = $props();
@@ -20,7 +20,7 @@
 
 <Checkbox
 	{...rest}
-	checked={typeof $value === "boolean" ? $value : false}
+	checked={typeof $value === 'boolean' ? $value : false}
 	onCheckedChange={(v) => {
 		onCheckedChange?.(v);
 		setValue(v);

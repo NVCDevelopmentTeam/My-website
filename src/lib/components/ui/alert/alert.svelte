@@ -1,29 +1,24 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { cn } from "$lib/utils";
-	import type { HTMLAttributes } from "svelte/elements";
-	import { alertVariants, type Variant } from ".";
+	import { cn } from '$lib/utils';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import { alertVariants, type Variant } from '.';
 
 	type $$Props = HTMLAttributes<HTMLDivElement> & {
 		variant?: Variant;
 	};
 
 	interface Props {
-		class?: $$Props["class"];
-		variant?: $$Props["variant"];
+		class?: $$Props['class'];
+		variant?: $$Props['variant'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
-	let { class: className = undefined, variant = "default", children, ...rest }: Props = $props();
-	
+	let { class: className = undefined, variant = 'default', children, ...rest }: Props = $props();
 </script>
 
-<div
-	class={cn(alertVariants({ variant }), className)}
-	{...rest}
-	role="alert"
->
+<div class={cn(alertVariants({ variant }), className)} {...rest} role="alert">
 	{@render children?.()}
 </div>

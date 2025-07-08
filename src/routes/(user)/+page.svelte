@@ -1,8 +1,8 @@
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script>
-import Banner from '$lib/components/Banner.svelte';
-  import HeroSlider from '$lib/components/HeroSlider.svelte';
+	import Banner from '$lib/components/Banner.svelte';
+	import HeroSlider from '$lib/components/HeroSlider.svelte';
 	import * as Accordition from '$lib/components/ui/accordion';
 	import * as Popover from '$lib/components/ui/popover';
 	import { notificationStore } from '$stores/notification';
@@ -10,18 +10,33 @@ import Banner from '$lib/components/Banner.svelte';
 	$effect(() => {
 		console.log('notificationStore', $notificationStore);
 	});
-import { siteTitle } from "$lib/data/config";
-const  pageTitle="home";
-const description="This is my website";
+	import { siteTitle } from '$lib/data/config';
+	const pageTitle = 'home';
+	const description = 'This is my website';
 </script>
+
 <svelte:head>
-	      <title> {pageTitle} | {siteTitle}</title>
+	<title>{pageTitle} | {siteTitle}</title>
 	<meta name="description" content={description} />
 </svelte:head>
-<HeroSlider slides={[
-  { title:'Hi, anh Cường!', subtitle:'Dev năng động & tester a11y', ctaText:'Xem dự án', ctaLink:'/projects', img:'/slides/1.jpg' },
-  { title:'Mọi thứ mình làm đều tối ưu', subtitle:'Hiệu năng ✨ accessibility', ctaText:'Liên hệ ngay', ctaLink:'/contact', img:'/slides/2.jpg' }
-]} />
+<HeroSlider
+	slides={[
+		{
+			title: 'Hi, anh Cường!',
+			subtitle: 'Dev năng động & tester a11y',
+			ctaText: 'Xem dự án',
+			ctaLink: '/projects',
+			img: '/slides/1.jpg'
+		},
+		{
+			title: 'Mọi thứ mình làm đều tối ưu',
+			subtitle: 'Hiệu năng ✨ accessibility',
+			ctaText: 'Liên hệ ngay',
+			ctaLink: '/contact',
+			img: '/slides/2.jpg'
+		}
+	]}
+/>
 <Banner />
 <section>
 	<h1>
@@ -31,7 +46,7 @@ const description="This is my website";
 	<h2>
 		try editing <strong>src/routes/+page.svelte</strong>
 	</h2>
-	</section>
+</section>
 <Accordition.Root>
 	<Accordition.Item value="item-1">
 		<Accordition.Trigger>What is SvelteKit CMS?</Accordition.Trigger>
@@ -45,4 +60,3 @@ const description="This is my website";
 	<Popover.Trigger>Open</Popover.Trigger>
 	<Popover.Content>Place content for the popover here.</Popover.Content>
 </Popover.Root>
-

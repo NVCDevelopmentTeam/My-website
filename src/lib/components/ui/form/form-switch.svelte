@@ -1,15 +1,15 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { getFormField } from "formsnap";
-	import type { Switch as SwitchPrimitive } from "bits-ui";
-	import { Switch } from "$lib/components/ui/switch";
+	import { getFormField } from 'formsnap';
+	import type { Switch as SwitchPrimitive } from 'bits-ui';
+	import { Switch } from '$lib/components/ui/switch';
 	type $$Props = SwitchPrimitive.Props;
 	type $$Events = SwitchPrimitive.Events;
 
 	interface Props {
-		onCheckedChange?: $$Props["onCheckedChange"];
-		[key: string]: any
+		onCheckedChange?: $$Props['onCheckedChange'];
+		[key: string]: any;
 	}
 
 	let { onCheckedChange = undefined, ...rest }: Props = $props();
@@ -19,7 +19,7 @@
 
 <Switch
 	{...$attrStore}
-	checked={typeof $value === "boolean" ? $value : false}
+	checked={typeof $value === 'boolean' ? $value : false}
 	onCheckedChange={(v) => {
 		onCheckedChange?.(v);
 		setValue(v);

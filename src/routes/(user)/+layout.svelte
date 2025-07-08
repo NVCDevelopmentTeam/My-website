@@ -10,11 +10,11 @@
 
 	/** @type {Props} */
 	let { children } = $props();
-	</script>
+</script>
 
 <svelte:head>
-<title>{siteTitle}</title>
-<meta name="google-adsense-account" content="ca-pub-3602487920405886">
+	<title>{siteTitle}</title>
+	<meta name="google-adsense-account" content="ca-pub-3602487920405886" />
 	<link rel="stylesheet" href="/css/vars.css" />
 	<link rel="stylesheet" href="/css/root.css" />
 	<link rel="stylesheet" href="/css/fonts.css" />
@@ -35,11 +35,10 @@
 	/>
 </svelte:head>
 
-		<Header />
-  <main id="main">
-
-		{@render children?.()}
-<Sidebar />
- </main>
+<Header />
+<main id="main">
+	{@render children?.()}
+	<Sidebar />
+</main>
 
 <Footer />

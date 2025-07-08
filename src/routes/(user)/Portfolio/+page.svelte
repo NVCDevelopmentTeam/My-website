@@ -1,11 +1,11 @@
 <script>
-import { siteTitle } from "$lib/data/config";
-const  pageTitle="About";
-const description="This is about page";
+	import { siteTitle } from '$lib/data/config';
+	const pageTitle = 'About';
+	const description = 'This is about page';
 </script>
 
 <svelte:head>
-	      <title> {pageTitle} | {siteTitle}</title>
+	<title>{pageTitle} | {siteTitle}</title>
 	<meta name="description" content={description} />
 </svelte:head>
 
@@ -25,7 +25,6 @@ const description="This is about page";
 		the devtools network panel and reloading.
 	</p>
 
-	
 	<!-- <p>
 		The <a href="/sverdle">Sverdle</a> page illustrates SvelteKit's data loading and form handling. Try
 		using it with JavaScript disabled!

@@ -1,31 +1,30 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { Dialog as DialogPrimitive } from "bits-ui";
-	import * as Dialog from ".";
-	import { cn, flyAndScale } from "$lib/utils";
-	import { X } from "lucide-svelte";
+	import { Dialog as DialogPrimitive } from 'bits-ui';
+	import * as Dialog from '.';
+	import { cn, flyAndScale } from '$lib/utils';
+	import { X } from 'lucide-svelte';
 
 	type $$Props = DialogPrimitive.ContentProps;
 
 	interface Props {
-		class?: $$Props["class"];
-		transition?: $$Props["transition"];
-		transitionConfig?: $$Props["transitionConfig"];
+		class?: $$Props['class'];
+		transition?: $$Props['transition'];
+		transitionConfig?: $$Props['transitionConfig'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let {
 		class: className = undefined,
 		transition = flyAndScale,
 		transitionConfig = {
-		duration: 200
-	},
+			duration: 200
+		},
 		children,
 		...rest
 	}: Props = $props();
-	
 </script>
 
 <Dialog.Portal>
@@ -34,7 +33,7 @@
 		{transition}
 		{transitionConfig}
 		class={cn(
-			"fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg sm:rounded-lg md:w-full",
+			'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg sm:rounded-lg md:w-full',
 			className
 		)}
 		{...rest}

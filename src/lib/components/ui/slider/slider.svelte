@@ -1,32 +1,26 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { Slider as SliderPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils";
+	import { Slider as SliderPrimitive } from 'bits-ui';
+	import { cn } from '$lib/utils';
 
 	type $$Props = SliderPrimitive.Props;
 
 	interface Props {
-		class?: $$Props["class"];
-		value?: $$Props["value"];
-		[key: string]: any
+		class?: $$Props['class'];
+		value?: $$Props['value'];
+		[key: string]: any;
 	}
 
 	let { class: className = undefined, value = $bindable([0]), ...rest }: Props = $props();
-	
 </script>
 
 <SliderPrimitive.Root
 	bind:value
-	class={cn(
-		"relative flex w-full touch-none select-none items-center",
-		className
-	)}
+	class={cn('relative flex w-full touch-none select-none items-center', className)}
 	{...rest}
 >
-	<span
-		class="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary"
-	>
+	<span class="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
 		<SliderPrimitive.Range class="absolute h-full bg-primary" />
 	</span>
 	<SliderPrimitive.Thumb

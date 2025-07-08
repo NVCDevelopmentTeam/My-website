@@ -1,11 +1,11 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { getFormField } from "formsnap";
-	import type { HTMLInputAttributes } from "svelte/elements";
-	import { Input, type InputEvents } from "$lib/components/ui/input";
+	import { getFormField } from 'formsnap';
+	import type { HTMLInputAttributes } from 'svelte/elements';
+	import { Input, type InputEvents } from '$lib/components/ui/input';
 	interface Props {
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let { ...rest }: Props = $props();

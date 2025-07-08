@@ -1,15 +1,12 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { getFormField } from "formsnap";
-	import type { HTMLTextareaAttributes } from "svelte/elements";
-	import type { TextareaGetFormField } from ".";
-	import {
-		Textarea,
-		type TextareaEvents
-	} from "$lib/components/ui/textarea";
+	import { getFormField } from 'formsnap';
+	import type { HTMLTextareaAttributes } from 'svelte/elements';
+	import type { TextareaGetFormField } from '.';
+	import { Textarea, type TextareaEvents } from '$lib/components/ui/textarea';
 	interface Props {
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let { ...rest }: Props = $props();

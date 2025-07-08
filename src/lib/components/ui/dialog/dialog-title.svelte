@@ -1,23 +1,22 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { Dialog as DialogPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils";
+	import { Dialog as DialogPrimitive } from 'bits-ui';
+	import { cn } from '$lib/utils';
 
 	type $$Props = DialogPrimitive.TitleProps;
 
 	interface Props {
-		class?: $$Props["class"];
+		class?: $$Props['class'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let { class: className = undefined, children, ...rest }: Props = $props();
-	
 </script>
 
 <DialogPrimitive.Title
-	class={cn("text-lg font-semibold leading-none tracking-tight", className)}
+	class={cn('text-lg font-semibold leading-none tracking-tight', className)}
 	{...rest}
 >
 	{@render children?.()}

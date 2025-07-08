@@ -1,9 +1,9 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { Toggle as TogglePrimitive } from "bits-ui";
-	import { toggleVariants, type Variant, type Size } from ".";
-	import { cn } from "$lib/utils";
+	import { Toggle as TogglePrimitive } from 'bits-ui';
+	import { toggleVariants, type Variant, type Size } from '.';
+	import { cn } from '$lib/utils';
 
 	type $$Props = TogglePrimitive.Props & {
 		variant?: Variant;
@@ -12,23 +12,22 @@
 	type $$Events = TogglePrimitive.Events;
 
 	interface Props {
-		class?: $$Props["class"];
-		variant?: $$Props["variant"];
-		size?: $$Props["size"];
-		pressed?: $$Props["pressed"];
+		class?: $$Props['class'];
+		variant?: $$Props['variant'];
+		size?: $$Props['size'];
+		pressed?: $$Props['pressed'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let {
 		class: className = undefined,
-		variant = "default",
-		size = "default",
+		variant = 'default',
+		size = 'default',
 		pressed = $bindable(undefined),
 		children,
 		...rest
 	}: Props = $props();
-	
 </script>
 
 <TogglePrimitive.Root

@@ -1,18 +1,18 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import { Tooltip as TooltipPrimitive } from "bits-ui";
-	import { cn, flyAndScale } from "$lib/utils";
+	import { Tooltip as TooltipPrimitive } from 'bits-ui';
+	import { cn, flyAndScale } from '$lib/utils';
 
 	type $$Props = TooltipPrimitive.ContentProps;
 
 	interface Props {
-		class?: $$Props["class"];
-		sideOffset?: $$Props["sideOffset"];
-		transition?: $$Props["transition"];
-		transitionConfig?: $$Props["transitionConfig"];
+		class?: $$Props['class'];
+		sideOffset?: $$Props['sideOffset'];
+		transition?: $$Props['transition'];
+		transitionConfig?: $$Props['transitionConfig'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let {
@@ -20,13 +20,12 @@
 		sideOffset = 4,
 		transition = flyAndScale,
 		transitionConfig = {
-		y: 8,
-		duration: 150
-	},
+			y: 8,
+			duration: 150
+		},
 		children,
 		...rest
 	}: Props = $props();
-	
 </script>
 
 <TooltipPrimitive.Content
@@ -34,7 +33,7 @@
 	{transitionConfig}
 	{sideOffset}
 	class={cn(
-		"z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md",
+		'z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md',
 		className
 	)}
 	{...rest}

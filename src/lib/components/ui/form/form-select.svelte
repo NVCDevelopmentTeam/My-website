@@ -1,16 +1,16 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
-	import * as Select from "$lib/components/ui/select";
-	import { getFormField } from "formsnap";
-	import type { Select as SelectPrimitive } from "bits-ui";
+	import * as Select from '$lib/components/ui/select';
+	import { getFormField } from 'formsnap';
+	import type { Select as SelectPrimitive } from 'bits-ui';
 
 	type $$Props = SelectPrimitive.Props;
 	const { setValue, name, value } = getFormField();
 	interface Props {
-		onSelectedChange: $$Props["onSelectedChange"];
+		onSelectedChange: $$Props['onSelectedChange'];
 		children?: import('svelte').Snippet;
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let { onSelectedChange, children, ...rest }: Props = $props();
