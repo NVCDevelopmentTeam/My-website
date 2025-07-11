@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
+
 	import { searchQuery, searchResults, isLoading, noResults, search } from '$lib/data/search';
 	import { browser } from '$app/environment';
 
@@ -9,14 +9,12 @@
 	let recognition;
 	let isListening = $state(false);
 	let query = $state('');
+
+	// Declare these variables
+	let isVoiceSearch = $state(false); // This needs to be reactive
 	let audioContext;
 	let audioBuffers = {};
-	let isVoiceSearch = false; // Flag to indicate voice search usage
 	const audioFilePath = '/src/lib/sounds';
-
-	$effect(() => {
-		query = page?.url?.searchParams?.get('q') || '';
-	});
 
 	onMount(() => {
 		if (browser) {
@@ -25,7 +23,8 @@
 				setupVoiceRecognition();
 			}
 			initializeAudio();
-			if (query) {
+			query = new URLSearchParams(window.location.search).get('q') || '';
+			if (query && browser) {
 				searchQuery.set(query);
 				performSearch(query);
 			}

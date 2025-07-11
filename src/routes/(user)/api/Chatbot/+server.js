@@ -15,7 +15,7 @@ export const POST = async ({ request }) => {
 			message: botResponse,
 			timestamp: new Date().toISOString()
 		});
-	} catch (error) {
+	} catch {
 		return json({ error: 'Internal server error' }, { status: 500 });
 	}
 };

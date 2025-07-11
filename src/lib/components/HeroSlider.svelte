@@ -14,7 +14,7 @@
 				subtitle: 'Web Dev – Accessibility Tester',
 				ctaText: 'Xem dự án',
 				ctaLink: '/projects',
-				img: '/slides/slide1.jpg'
+				img: ''
 			},
 			{
 				title: 'Gen Z đầy năng lượng',
@@ -46,7 +46,7 @@
 </script>
 
 <section class="relative w-full h-screen overflow-hidden">
-	{#each slides as slide, i}
+	{#each slides as slide, i (slide.title)}
 		{#if i === current}
 			<div
 				class="absolute inset-0 bg-cover bg-center"

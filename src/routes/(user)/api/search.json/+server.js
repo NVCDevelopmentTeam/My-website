@@ -19,7 +19,7 @@ const patterns = {
 	inline: /`([^`]*)`/g,
 	heading: /^#{1,6}\s.*$/gm,
 	link: /\[([^\]]+)\]\(([^)]+)\)/g,
-	image: /\!\[.*?\]\(.*?\)/g,
+	image: /!\[.*?\]\(.*?\)/g,
 	blockquote: /> /gm,
 	bold: /\*\*([^*]+)\*\*/g,
 	italic: /\b_([^_]+)_(?!\w)/g,

@@ -87,14 +87,8 @@
 	async function handleNewMessage(content) {
 		try {
 			await sendMessage(socket, roomId, content);
-		} catch (error) {
+		} catch {
 			errors = { ...errors, general: 'Failed to send message' };
-		}
-	}
-
-	function dispatchNotification(title, body) {
-		if (Notification.permission === 'granted') {
-			new Notification(title, { body });
 		}
 	}
 

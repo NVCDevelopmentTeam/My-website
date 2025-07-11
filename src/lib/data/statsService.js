@@ -1,4 +1,4 @@
-import { openDB, logVisit, getVisitStats } from '$lib/data/database';
+import { logVisit, getVisitStats } from '$lib/data/database';
 
 // Function to get statistics from database
 async function getStats() {

@@ -18,7 +18,7 @@ export const GET = async () => {
 		return json({
 			totalResults: Object.keys(posts).length // Count of all available posts
 		});
-	} catch (error) {
+	} catch {
 		// Handle any errors that occur during the import
 		return json(
 			{

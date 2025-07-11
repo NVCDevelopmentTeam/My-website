@@ -1,4 +1,4 @@
-import { openDB, getVisitStats } from '$lib/data/database';
+import { getVisitStats } from '$lib/data/database';
 
 export async function GET() {
 	try {

@@ -24,8 +24,7 @@
 	let pagesAvailable = Math.ceil(totalPosts / postsPerPage);
 
 	// Determine if it's the first or last page
-	let isFirstPage = currentPage === 1;
-	let isLastPage = currentPage === pagesAvailable;
+
 	let hasNextPage = currentPage < pagesAvailable;
 	let hasPreviousPage = currentPage > 1;
 
@@ -58,7 +57,7 @@
 	{#if pagesAvailable > 1}
 		<nav aria-label="Pagination navigation" class="pagination">
 			<ul class="flex gap-2">
-				{#each pages as page}
+				{#each pages as page (page)}
 					<li>
 						<a
 							href={`${basePath}/${page}`}

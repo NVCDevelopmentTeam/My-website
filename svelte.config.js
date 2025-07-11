@@ -15,6 +15,7 @@ const config = {
 	],
 	kit: {
 		adapter: adapter(),
+		prerender: { entries: [] },
 		alias: {
 			$lib: path.resolve('src/lib'),
 			$stores: path.resolve('src/stores'),

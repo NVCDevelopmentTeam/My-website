@@ -1,4 +1,3 @@
-import { postsPerPage } from '$lib/data/config';
 import { writable, derived } from 'svelte/store';
 import FlexSearch from 'flexsearch';
 

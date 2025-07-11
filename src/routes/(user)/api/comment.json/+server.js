@@ -10,7 +10,7 @@ export async function GET() {
 				'Content-Type': 'application/json'
 			}
 		});
-	} catch (error) {
+	} catch {
 		// Handle errors during fetch
 		return new Response(JSON.stringify({ error: 'Failed to fetch comments' }), {
 			status: 500,
@@ -35,7 +35,7 @@ export async function POST({ request }) {
 				'Content-Type': 'application/json'
 			}
 		});
-	} catch (error) {
+	} catch {
 		// Handle errors during comment addition
 		return new Response(JSON.stringify({ error: 'Failed to add comment' }), {
 			status: 500,
@@ -57,7 +57,7 @@ export async function DELETE({ params }) {
 		return new Response(null, {
 			status: 204
 		});
-	} catch (error) {
+	} catch {
 		// Handle errors during comment deletion
 		return new Response(JSON.stringify({ error: 'Failed to delete comment' }), {
 			status: 500

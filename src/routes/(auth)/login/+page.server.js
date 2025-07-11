@@ -1,40 +1,46 @@
-import { superValidate } from 'sveltekit-superforms/server';
+import { superValidate, message } from 'sveltekit-superforms/server'; // validation + flash message helper
+import { zod } from 'sveltekit-superforms/adapters'; // adapter for Zod schemas
 import { loginSchema } from './schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { authUseCases } from '$usecases/auth-usecases';
 
-/** @type {import('./$types').PageServerLoad} */
 export const load = async ({ locals }) => {
 	const session = await locals.auth.validate();
 	if (session) {
+		// Redirect logged-in user immediately
 		redirect(301, '/admin');
 	}
-	const form = await superValidate(loginSchema);
+
+	// Initialize a validated form with schema defaults
+	const form = await superValidate(zod(loginSchema));
 	return { form };
 };
 
-/** @type {import('./$types').Actions} */
 export const actions = {
 	default: async (event) => {
-		const form = await superValidate(event, loginSchema);
+		// Parse and validate form data from incoming request
+		const form = await superValidate(event.request, zod(loginSchema));
+
 		if (!form.valid) {
-			return fail(400, {
-				form
-			});
+			// Return form with validation errors (HTTP 400)
+			return fail(400, { form });
 		}
+
 		try {
-			console.log('event.request', JSON.stringify(event));
+			// Attempt backend login
 			const session = await authUseCases.login(form.data, {
 				platform: 'web',
-				ip_address: '0.0.0.0'
+				ip_address: event.request.headers.get('x-forwarded-for') || '0.0.0.0'
 			});
 			event.locals.auth.setSession(session);
-		} catch (e) {
-			console.error(e);
-			return {
-				form
-			};
+		} catch (error) {
+			console.error('Login error:', error);
+			// Set user-facing error message
+			form.message = 'Login failed — please check your credentials.';
+			return fail(400, { form });
 		}
-		redirect(301, '/admin');
+
+		// On success, attach a success message for client to handle
+		return message(form, 'Login successful! Redirecting...');
 	}
 };

@@ -1,3 +1,4 @@
+export const prerender = false;
 export async function load({ fetch, url }) {
 	const query = url.searchParams.get('q') || '';
 
@@ -15,7 +16,7 @@ export async function load({ fetch, url }) {
 		const total = await totalRes.json();
 
 		const data = await res.json();
-		return { results: data.results };
+		return { results: data.results, total: total.total };
 	} catch (error) {
 		console.error(error);
 		return { results: [], error: error.message };

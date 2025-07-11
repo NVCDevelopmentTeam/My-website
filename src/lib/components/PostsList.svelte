@@ -8,7 +8,7 @@
 
 {#if hasPosts}
 	<ul class="posts-list">
-		{#each posts as post}
+		{#each posts as post (post.slug)}
 			<li class="posts-list__item">
 				<article>
 					<a href={`/blog/${post.slug}`}>
@@ -34,7 +34,7 @@
 						<aside class="post-header">
 							<p>Posted in:</p>
 							<ul class="post-header__categories">
-								{#each post.categories as category}
+								{#each post.categories as category (category)}
 									<li>
 										<a href={`/blog/category/${category}/`}>
 											{category}
@@ -46,6 +46,7 @@
 					{/if}
 					{#if post.preview}
 						<div class="description">
+							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 							{@html post.preview.html}
 						</div>
 					{/if}

@@ -1,4 +1,3 @@
-import { openDB, saveChatMessage, getChatHistory, clearChatHistory } from '$lib/data/database';
 import { io } from 'socket.io-client';
 
 class LiveChat {

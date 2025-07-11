@@ -1,8 +1,6 @@
 <script>
 	import { preventDefault } from 'svelte/legacy';
 
-	import { onMount } from 'svelte';
-
 	let email = $state('');
 	let message = $state('');
 	let loading = $state(false);
@@ -25,7 +23,7 @@
 			} else {
 				message = `Error: ${result.error}`;
 			}
-		} catch (error) {
+		} catch {
 			message = 'An error occurred. Please try again later.';
 		} finally {
 			loading = false;

@@ -1,5 +1,3 @@
-import { dev } from '$app/environment';
-
 // Disable Server-Side Rendering
 export const ssr = false;
 

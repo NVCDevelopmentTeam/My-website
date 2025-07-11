@@ -36,7 +36,7 @@
 		{#if emojiPickerVisible}
 			<div class="emoji-list">
 				<!-- Render a list of emojis -->
-				{#each ['😊', '😂', '😍', '👍', '🎉', '❤️', '😎'] as emoji}
+				{#each ['😊', '😂', '😍', '👍', '🎉', '❤️', '😎'] as emoji (emoji)}
 					<button onclick={() => insertEmoji(emoji)}>{emoji}</button>
 				{/each}
 			</div>

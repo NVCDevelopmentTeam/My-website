@@ -1,6 +1,4 @@
 <script>
-	import { onMount } from 'svelte';
-	let data = $props();
 	let name = $state('');
 	let email = $state('');
 	let title = $state('');

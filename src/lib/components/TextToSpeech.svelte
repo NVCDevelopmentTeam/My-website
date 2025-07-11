@@ -200,7 +200,7 @@
 			</button>
 			{#if isRateMenuOpen}
 				<div class="dropdown-menu">
-					{#each [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] as rate}
+					{#each [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] as rate (rate)}
 						<button onclick={() => handleRateChange(rate)}>{rate}x</button>
 					{/each}
 				</div>
@@ -231,7 +231,7 @@
 			bind:value={selectedVoice}
 			disabled={!responsiveVoiceReady || voices.length === 0}
 		>
-			{#each voices as voice}
+			{#each voices as voice (voice.name)}
 				<option value={voice.name}>{voice.name}</option>
 			{/each}
 		</select>

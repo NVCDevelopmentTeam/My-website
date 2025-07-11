@@ -26,13 +26,7 @@ const addTimezoneOffset = (date) => {
 	return new Date(date.getTime() + offsetInMilliseconds);
 };
 
-export const fetchPosts = async ({
-	offset = 0,
-	limit = postsPerPage,
-	category = '',
-	author = '',
-	tag = ''
-} = {}) => {
+export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '' } = {}) => {
 	try {
 		const postFiles = import.meta.glob('/src/lib/posts/**/*.md', { eager: true });
 

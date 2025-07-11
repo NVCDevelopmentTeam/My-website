@@ -21,6 +21,11 @@ export default defineConfig({
 			allow: ['.']
 		}
 	},
+	build: {
+		rollupOptions: {
+			external: ['tailwind-variants']
+		}
+	},
 	resolve: {
 		alias: {
 			$usecases: './src/usecases',

@@ -1,6 +1,5 @@
 <script>
 	// Props for socket and roomId
-	const { socket, roomId } = $props(); // Use $props() to declare props
 
 	// Reactive state variables
 	let localStream = $state(null); // Tracks the local media stream

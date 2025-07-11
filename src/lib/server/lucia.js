@@ -19,7 +19,7 @@ export const auth = {
 		});
 	},
 
-	async validateUser(email, password) {
+	async validateUser(email) {
 		// This is a simplified version - in production you'd use proper password hashing
 		const user = await client.user.findUnique({
 			where: { email }

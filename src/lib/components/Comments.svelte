@@ -7,7 +7,7 @@
 	let author = writable('');
 	let content = writable('');
 	let replyingTo = writable(null);
-	let replyContent = writable('');
+
 	let currentPage = writable(1);
 
 	const ITEMS_PER_PAGE = 5;
@@ -57,37 +57,10 @@
 		replyingTo.set(comment);
 	}
 
-	function cancelReply() {
-		replyingTo.set(null);
-		replyContent.set('');
-	}
-
-	async function submitReply() {
-		if (!get(replyContent).trim() || !get(replyingTo)) return;
-
-		const reply = {
-			id: Date.now().toString(),
-			author: get(author) || 'Anonymous',
-			content: get(replyContent),
-			date: new Date().toLocaleString()
-		};
-
-		comments.update((c) =>
-			c.map((item) =>
-				item.id === get(replyingTo).id ? { ...item, replies: [...item.replies, reply] } : item
-			)
-		);
-
-		replyingTo.set(null);
-		replyContent.set('');
-	}
-
 	const paginatedComments = derived([comments, currentPage], ([$comments, $currentPage]) => {
 		const start = ($currentPage - 1) * ITEMS_PER_PAGE;
 		return $comments.slice(start, start + ITEMS_PER_PAGE);
 	});
-
-	const totalPages = derived(comments, ($comments) => Math.ceil($comments.length / ITEMS_PER_PAGE));
 
 	onMount(fetchCommentsData);
 </script>

@@ -1,4 +1,5 @@
 <script>
+	import Dialog from './Dialog.svelte';
 	import VoiceCall from './VoiceCall.svelte';
 	import VideoCall from './VideoCall.svelte';
 
@@ -6,13 +7,6 @@
 	let { socket, roomId } = $props();
 
 	let dialog = $state();
-	const openDialog = () => {
-		dialog.showModal();
-		dialog.focus();
-	};
-	const closeDialog = () => {
-		dialog.close();
-	};
 </script>
 
 <!-- Chat Toolbar UI -->

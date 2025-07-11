@@ -25,7 +25,7 @@ export const GET = async ({ params }) => {
 			page,
 			posts
 		});
-	} catch (error) {
+	} catch {
 		// Handle any errors that occur during the fetch
 		return json(
 			{

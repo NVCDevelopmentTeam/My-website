@@ -45,7 +45,7 @@ export async function POST({ request }) {
 		await transporter.sendMail(mailOptions);
 
 		// Save contact data
-		await contact.save(data);
+		await submitions.save(data);
 
 		return json({ success: true, message: 'Thank you for your message!' });
 	} catch (error) {

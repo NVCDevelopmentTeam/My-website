@@ -78,7 +78,7 @@
 		<aside class="post-header">
 			<p>Posted in:</p>
 			<ul class="post-header-categories">
-				{#each categories as category}
+				{#each categories as category (category)}
 					<li><a href={`/blog/category/${category}/`}>{category}</a></li>
 				{/each}
 			</ul>
@@ -99,6 +99,7 @@
 	{:else if typeof PostContent === 'string'}
 		<!-- Handle HTML content safely -->
 		<div bind:this={postElement}>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html PostContent}
 		</div>
 	{:else}
@@ -109,7 +110,7 @@
 		<aside class="post-footer">
 			<p>Tags:</p>
 			<ul class="post-footer-tags">
-				{#each tags as tag}
+				{#each tags as tag (tag)}
 					<li><a href={`/blog/tag/{tag}/`}>{tag}</a></li>
 				{/each}
 			</ul>

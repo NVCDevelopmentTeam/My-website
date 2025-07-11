@@ -3,8 +3,7 @@
 <script>
 	import Banner from '$lib/components/Banner.svelte';
 	import HeroSlider from '$lib/components/HeroSlider.svelte';
-	import * as Accordition from '$lib/components/ui/accordion';
-	import * as Popover from '$lib/components/ui/popover';
+
 	import { notificationStore } from '$stores/notification';
 
 	$effect(() => {
@@ -47,16 +46,3 @@
 		try editing <strong>src/routes/+page.svelte</strong>
 	</h2>
 </section>
-<Accordition.Root>
-	<Accordition.Item value="item-1">
-		<Accordition.Trigger>What is SvelteKit CMS?</Accordition.Trigger>
-		<Accordition.Content>
-			I want to build a CMS in Svelte with SvelteKit. So I just simply name it SvelteKit CMS.
-		</Accordition.Content>
-	</Accordition.Item>
-</Accordition.Root>
-
-<Popover.Root>
-	<Popover.Trigger>Open</Popover.Trigger>
-	<Popover.Content>Place content for the popover here.</Popover.Content>
-</Popover.Root>

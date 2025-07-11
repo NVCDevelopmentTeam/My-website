@@ -30,7 +30,7 @@ export async function GET() {
 				'Content-Type': 'application/json'
 			}
 		});
-	} catch (error) {
+	} catch {
 		// Handle errors during fetch
 		return new Response(JSON.stringify({ error: 'Failed to generate feed' }), {
 			status: 500,
