@@ -25,14 +25,14 @@
 			subtitle: 'Dev năng động & tester a11y',
 			ctaText: 'Xem dự án',
 			ctaLink: '/projects',
-			img: '/slides/1.jpg'
+			img: ''
 		},
 		{
 			title: 'Mọi thứ mình làm đều tối ưu',
 			subtitle: 'Hiệu năng ✨ accessibility',
 			ctaText: 'Liên hệ ngay',
 			ctaLink: '/contact',
-			img: '/slides/2.jpg'
+			img: ''
 		}
 	]}
 />
