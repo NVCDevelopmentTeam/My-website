@@ -4,7 +4,7 @@ import { open } from 'sqlite';
 // Open or create a new SQLite database
 export async function openDB() {
 	return open({
-		filename: './sources/saveDatabase.db',
+		filename: './prisma/saveDatabase.db',
 		driver: sqlite3.Database
 	});
 }
