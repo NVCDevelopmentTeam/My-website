@@ -1,5 +1,9 @@
 import { io } from 'socket.io-client';
 
+const config = {
+	iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }]
+};
+
 class LiveChat {
 	constructor(serverUrl) {
 		this.socket = null;
@@ -18,25 +22,84 @@ class LiveChat {
 				reconnection: true,
 				autoConnect: true
 			});
-			await new Promise((resolve, reject) => {
-				this.socket.on('connect', () => resolve(this.socket));
-				this.socket.on('connect_error', (error) => {
-					console.error('Socket connection error:', error);
-					reject(error);
-				});
-				this.socket.on('callRequest', (data) => {
-					const { callerId, type } = data;
-					this.currentCallData = { callerId, type };
-					this.acceptCall();
-				});
-				this.socket.on('iceCandidate', (data) => {
-					if (this.peerConnection && data.targetId === this.socket.id) {
-						this.peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+
+			this.socket.on('connect', () => {
+				console.log('Socket connected');
+			});
+			this.socket.on('connect_error', (error) => {
+				console.error('Socket connection error:', error);
+			});
+
+			this.socket.on('callRequest', (data) => {
+				const { callerId, type } = data;
+				this.currentCallData = { callerId, type };
+				this.acceptCall();
+			});
+
+			this.socket.on('offer', async (data) => {
+				const { offer, callerId } = data;
+				this.currentCallData = { callerId, type: 'video' }; // Assuming video for offer, adjust if needed
+				await this.handleIncomingOffer(offer, callerId);
+			});
+
+			this.socket.on('answer', async (data) => {
+				const { answer } = data;
+				if (this.peerConnection) {
+					await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+				}
+			});
+
+			this.socket.on('iceCandidate', async (data) => {
+				if (this.peerConnection) {
+					try {
+						await this.peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+					} catch (e) {
+						console.error('Error adding received ICE candidate:', e);
 					}
-				});
+				}
+			});
+
+			this.socket.on('callEnded', () => {
+				console.log('Call ended by remote peer.');
+				this.endCall();
 			});
 		}
 		return this.socket;
+	}
+
+	async handleIncomingOffer(offer, callerId) {
+		try {
+			this.peerConnection = new RTCPeerConnection(config);
+			this.localStream = await this.requestMedia(this.currentCallData.type);
+			this.localStream
+				.getTracks()
+				.forEach((track) => this.peerConnection.addTrack(track, this.localStream));
+
+			this.peerConnection.onicecandidate = (event) => {
+				if (event.candidate) {
+					this.socket.emit('iceCandidate', {
+						targetId: callerId,
+						candidate: event.candidate
+					});
+				}
+			};
+
+			this.peerConnection.ontrack = (event) => {
+				if (!this.remotestream) {
+					this.remotestream = event.streams[0];
+					this.playRemoteStream(this.remotestream);
+				}
+			};
+
+			await this.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+			const answer = await this.peerConnection.createAnswer();
+			await this.peerConnection.setLocalDescription(answer);
+			this.socket.emit('answer', { targetId: callerId, answer });
+			this.inCall = true;
+		} catch (error) {
+			console.error('Error handling incoming offer:', error);
+			this.endCall();
+		}
 	}
 
 	async joinRoom(roomId) {
@@ -115,34 +178,33 @@ class LiveChat {
 
 	async handleCallAccepted(type) {
 		try {
-			this.peerConnection = new RTCPeerConnection();
+			this.peerConnection = new RTCPeerConnection(config);
 			this.localStream = await this.requestMedia(type);
 			this.callType = type;
 			this.localStream
 				.getTracks()
 				.forEach((track) => this.peerConnection.addTrack(track, this.localStream));
+
+			this.peerConnection.onicecandidate = (event) => {
+				if (event.candidate) {
+					this.socket.emit('iceCandidate', {
+						targetId: this.currentCallData.callerId,
+						candidate: event.candidate
+					});
+				}
+			};
+
+			this.peerConnection.ontrack = (event) => {
+				if (!this.remotestream) {
+					this.remotestream = event.streams[0];
+					this.playRemoteStream(this.remotestream);
+				}
+			};
+
 			const offer = await this.peerConnection.createOffer();
 			await this.peerConnection.setLocalDescription(offer);
 			this.socket.emit('offer', { targetId: this.currentCallData.callerId, offer });
-			this.socket.once('answer', async (data) => {
-				const { answer } = data;
-				await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-				this.peerConnection.onicecandidate = (event) => {
-					if (event.candidate) {
-						this.socket.emit('iceCandidate', {
-							targetId: this.currentCallData.callerId,
-							candidate: event.candidate
-						});
-					}
-				};
-				this.peerConnection.ontrack = (event) => {
-					if (!this.remotestream) {
-						this.remotestream = event.streams[0];
-						this.playRemoteStream(this.remotestream);
-					}
-				};
-				this.inCall = true;
-			});
+			this.inCall = true;
 		} catch (error) {
 			console.error('Error handling call acceptance:', error);
 			this.endCall();
@@ -158,31 +220,29 @@ class LiveChat {
 	async handleIncomingCall(data) {
 		const { callerId, type } = data;
 		try {
-			this.peerConnection = new RTCPeerConnection();
+			this.peerConnection = new RTCPeerConnection(config);
 			this.localStream = await this.requestMedia(type);
 			this.callType = type;
 			this.localStream
 				.getTracks()
 				.forEach((track) => this.peerConnection.addTrack(track, this.localStream));
-			this.socket.once('offer', async (data) => {
-				const { offer } = data;
-				await this.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-				const answer = await this.peerConnection.createAnswer();
-				await this.peerConnection.setLocalDescription(answer);
-				this.socket.emit('answer', { targetId: callerId, answer });
-				this.peerConnection.onicecandidate = (event) => {
-					if (event.candidate) {
-						this.socket.emit('iceCandidate', { targetId: callerId, candidate: event.candidate });
-					}
-				};
-				this.peerConnection.ontrack = (event) => {
-					if (!this.remotestream) {
-						this.remotestream = event.streams[0];
-						this.playRemoteStream(this.remotestream);
-					}
-				};
-				this.inCall = true;
-			});
+
+			this.peerConnection.onicecandidate = (event) => {
+				if (event.candidate) {
+					this.socket.emit('iceCandidate', {
+						targetId: callerId,
+						candidate: event.candidate
+					});
+				}
+			};
+
+			this.peerConnection.ontrack = (event) => {
+				if (!this.remotestream) {
+					this.remotestream = event.streams[0];
+					this.playRemoteStream(this.remotestream);
+				}
+			};
+			this.inCall = true;
 		} catch (error) {
 			console.error('Error handling incoming call:', error);
 			this.endCall();
@@ -239,26 +299,17 @@ class LiveChat {
 	}
 
 	playRemoteStream(stream) {
-		let remoteMediaElement =
-			this.callType === 'video'
-				? document.getElementById('remoteVideo')
-				: document.getElementById('remoteAudio');
-		if (!remoteMediaElement) {
-			remoteMediaElement = document.createElement(this.callType === 'video' ? 'video' : 'audio');
-			remoteMediaElement.id = this.callType === 'video' ? 'remoteVideo' : 'remoteAudio';
-			remoteMediaElement.autoplay = true;
-			document.body.appendChild(remoteMediaElement);
-		}
-		remoteMediaElement.srcObject = stream;
-		remoteMediaElement.play();
+		this.remotestream = stream;
 	}
 }
 
 let liveChatInstance = null;
 
-export const initSocket = async (serverUrl) => {
+export const initSocket = async () => {
 	if (!liveChatInstance) {
-		liveChatInstance = new LiveChat(serverUrl);
+		liveChatInstance = new LiveChat(
+			import.meta.env.VITE_PUBLIC_SOCKET_URL || 'http://localhost:3000'
+		);
 	}
 	return liveChatInstance.initSocket();
 };

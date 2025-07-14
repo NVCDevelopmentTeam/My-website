@@ -1,5 +1,6 @@
 import { postsPerPage } from '$lib/data/config';
 import { parse } from 'node-html-parser';
+import { render } from 'svelte/server';
 import readingTime from 'reading-time';
 
 const generateSlug = (filepath) => {
@@ -21,11 +22,6 @@ const formatDate = (date) => {
 	return `${year}-${month}-${day}`;
 };
 
-const addTimezoneOffset = (date) => {
-	const offsetInMilliseconds = new Date().getTimezoneOffset() * 60 * 1000;
-	return new Date(date.getTime() + offsetInMilliseconds);
-};
-
 export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '' } = {}) => {
 	try {
 		const postFiles = import.meta.glob('/src/lib/posts/**/*.md', { eager: true });
@@ -42,32 +38,36 @@ export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = 
 					return null;
 				}
 
-				const html = parse(post.default);
+				const html = parse(render(post.default).html);
 				const previewElement = post.metadata.preview
 					? parse(post.metadata.preview)
-					: html.querySelector('p');
+					: html.querySelector('p') || null;
 				const previewText = previewElement ? previewElement.toString() : '';
 				const structuredText = html.structuredText || '';
 
 				const slug = generateSlug(filepath);
+				const finalSlug = slug || `untitled-post-${Math.random().toString(36).substring(2, 9)}`;
 
 				return {
 					...post.metadata,
-					slug,
+					slug: finalSlug,
 					content: structuredText,
 					preview: {
 						html: previewText,
 						text: previewElement ? previewElement.structuredText || previewText : previewText
 					},
 					readingTime: readingTime(structuredText).text,
-					date: post.metadata.date
-						? formatDate(addTimezoneOffset(new Date(post.metadata.date)))
-						: undefined
+					date: post.metadata.date ? formatDate(new Date(post.metadata.date)) : undefined
 				};
 			})
 		);
 
-		const validPosts = posts.filter((post) => post !== null);
+		let validPosts = posts.filter((post) => {
+			const isPublished = new Date() >= new Date(post.date);
+			const isHidden = !!post.hidden;
+			return post !== null && post.slug !== undefined && isPublished && !isHidden;
+		});
+
 		let sortedPosts = validPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 		if (category) {
@@ -90,14 +90,8 @@ export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = 
 			previous: allPosts[index + 1] ?? null
 		}));
 
-		const filteredPosts = postsWithLinks.filter((post) => {
-			const isPublished = new Date() >= new Date(post.date);
-			const isHidden = !!post.hidden;
-			return isPublished && !isHidden;
-		});
-
 		return {
-			posts: filteredPosts,
+			posts: postsWithLinks,
 			total: validPosts.length
 		};
 	} catch (error) {
@@ -105,5 +99,3 @@ export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = 
 		throw new Error('Error fetching posts');
 	}
 };
-
-export default fetchPosts;

@@ -1,5 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
-<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script>
 	import Banner from '$lib/components/Banner.svelte';
 	import HeroSlider from '$lib/components/HeroSlider.svelte';
@@ -21,28 +19,28 @@
 <HeroSlider
 	slides={[
 		{
-			title: 'Hi, anh Cường!',
-			subtitle: 'Dev năng động & tester a11y',
-			ctaText: 'Xem dự án',
+			title: "Hi, I'm Cuong!",
+			subtitle: 'A passionate developer & a11y tester',
+			ctaText: 'View my projects',
 			ctaLink: '/projects',
 			img: ''
 		},
 		{
-			title: 'Mọi thứ mình làm đều tối ưu',
-			subtitle: 'Hiệu năng ✨ accessibility',
-			ctaText: 'Liên hệ ngay',
+			title: 'I build things for the web',
+			subtitle: 'with a focus on performance & accessibility',
+			ctaText: 'Get in touch',
 			ctaLink: '/contact',
 			img: ''
 		}
 	]}
 />
 <Banner />
-<section>
-	<h1>
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
+<section class="py-16">
+	<div class="container mx-auto px-4">
+		<h1 class="text-4xl font-bold text-center mb-8">Welcome to my website!</h1>
+		<p class="text-lg text-center text-muted-foreground">
+			I\'m a software developer with a passion for creating beautiful and accessible web
+			experiences. I specialize in Svelte, SvelteKit, and Tailwind CSS.
+		</p>
+	</div>
 </section>

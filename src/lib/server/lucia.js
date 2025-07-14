@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
 
 const globalForPrisma = globalThis;
 
@@ -9,21 +10,33 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = client;
 // Simple auth service without Lucia for now
 export const auth = {
 	async createUser(data) {
+		const hashedPassword = await bcrypt.hash(data.key.password, 10);
 		return client.user.create({
 			data: {
 				id: crypto.randomUUID(),
 				email: data.attributes.email,
 				firstName: data.attributes.firstName,
-				lastName: data.attributes.lastName
+				lastName: data.attributes.lastName,
+				hashedPassword: hashedPassword
 			}
 		});
 	},
 
-	async validateUser(email) {
-		// This is a simplified version - in production you'd use proper password hashing
+	async validateUser(email, password) {
 		const user = await client.user.findUnique({
 			where: { email }
 		});
+
+		if (!user) {
+			return null;
+		}
+
+		const isValidPassword = await bcrypt.compare(password, user.hashedPassword);
+
+		if (!isValidPassword) {
+			return null;
+		}
+
 		return user;
 	},
 

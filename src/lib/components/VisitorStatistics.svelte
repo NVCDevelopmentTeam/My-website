@@ -64,17 +64,19 @@
 	});
 </script>
 
-<h2>Thống kê khách truy cập</h2>
+<div class="bg-card p-6 rounded-lg shadow-md">
+	<h2 class="text-xl font-bold mb-4">Thống kê khách truy cập</h2>
 
-{#if loading}
-	<p>Đang tải thống kê...</p>
-{:else if error}
-	<p>Lỗi: {error}</p>
-{:else}
-	<ul>
-		<li>Lượt truy cập hôm nay: {visitsToday}</li>
-		<li>Tổng lượt truy cập: {totalVisits}</li>
-		<li>Tổng số khách truy cập: {totalVisitors}</li>
-		<li>Tổng số quốc gia: {totalCountries}</li>
-	</ul>
-{/if}
+	{#if loading}
+		<p class="text-muted-foreground">Đang tải thống kê...</p>
+	{:else if error}
+		<p class="text-destructive">Lỗi: {error}</p>
+	{:else}
+		<ul class="space-y-2">
+			<li class="text-foreground">Lượt truy cập hôm nay: {visitsToday}</li>
+			<li class="text-foreground">Tổng lượt truy cập: {totalVisits}</li>
+			<li class="text-foreground">Tổng số khách truy cập: {totalVisitors}</li>
+			<li class="text-foreground">Tổng số quốc gia: {totalCountries}</li>
+		</ul>
+	{/if}
+</div>

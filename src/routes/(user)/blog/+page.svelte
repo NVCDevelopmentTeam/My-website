@@ -12,18 +12,20 @@
 	<script src="https://code.responsivevoice.org/responsivevoice.js?key=6BLD3hdr"></script>
 </svelte:head>
 
-<h1>Blog</h1>
-<div class="flex flex-col">
-	<header class="pt-4">
-		<h2 class="text-lg font-medium">
-			This is a page that shares my articles about my experiences in learning programming
-		</h2>
-		<p class="mt-2">{siteDescription}</p>
-	</header>
+<div class="container mx-auto px-4 py-16">
+	<div class="max-w-3xl mx-auto">
+		<header class="text-center mb-8">
+			<h1 class="text-4xl font-bold">Blog</h1>
+			<p class="text-lg text-muted-foreground mt-2">
+				This is a page that shares my articles about my experiences in learning programming
+			</p>
+			<p class="mt-2">{siteDescription}</p>
+		</header>
 
-	<div class="mt-8">
-		<PostsList posts={data.posts} />
+		<div class="mt-8">
+			<PostsList posts={data.posts} />
+		</div>
+
+		<Pagination currentPage={1} totalPosts={data.total} />
 	</div>
-
-	<Pagination currentPage={1} totalPosts={data.total} />
 </div>

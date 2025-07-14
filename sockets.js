@@ -23,8 +23,9 @@ export function attachSockets(httpServer) {
 		handleNewConnection(socket);
 
 		socket.on('chat-message', (data) => handleChatMessage(socket, data));
-		socket.on('call-offer', (offer) => handleCallOffer(socket, offer));
-		socket.on('call-answer', (answer) => handleCallAnswer(socket, answer));
+		socket.on('offer', (offer) => handleOffer(socket, offer));
+		socket.on('answer', (answer) => handleAnswer(socket, answer));
+		socket.on('iceCandidate', (candidate) => handleIceCandidate(socket, candidate));
 		socket.on('disconnect', () => handleDisconnection(socket));
 		socket.on('error', (error) => handleError(socket, error));
 	});
@@ -91,38 +92,38 @@ export function attachSockets(httpServer) {
 	}
 
 	// Function to handle call offers
-	function handleCallOffer(socket, offer) {
-		const { userId } = socket.userData;
-		const { targetUserId } = offer;
-
-		// Find the target socket
-		const targetSocket = [...io.sockets.sockets.values()].find(
-			(s) => s.userData.userType === 'user' && s.userData.userId === targetUserId
+	function handleOffer(socket, { targetId, offer }) {
+		const targetSocket = Array.from(io.sockets.sockets.values()).find(
+			(s) => s.userData && s.userData.userId === targetId
 		);
-
-		// Emit the call offer to the target user
 		if (targetSocket) {
-			targetSocket.emit('call-offer', { offer, from: userId });
+			targetSocket.emit('offer', { offer, callerId: socket.userData.userId });
 		} else {
-			socket.emit('call-error', { error: 'Target user not found or not connected' });
+			socket.emit('call-error', { error: 'Target user not found' });
 		}
 	}
 
 	// Function to handle call answers
-	function handleCallAnswer(socket, answer) {
-		const { userId } = socket.userData;
-		const { targetUserId } = answer;
-
-		// Find the target socket
-		const targetSocket = [...io.sockets.sockets.values()].find(
-			(s) => s.userData.userType === 'user' && s.userData.userId === targetUserId
+	function handleAnswer(socket, { targetId, answer }) {
+		const targetSocket = Array.from(io.sockets.sockets.values()).find(
+			(s) => s.userData && s.userData.userId === targetId
 		);
-
-		// Emit the call answer to the target user
 		if (targetSocket) {
-			targetSocket.emit('call-answer', { answer, from: userId });
+			targetSocket.emit('answer', { answer, answererId: socket.userData.userId });
 		} else {
-			socket.emit('call-error', { error: 'Target user not found or not connected' });
+			socket.emit('call-error', { error: 'Target user not found' });
+		}
+	}
+
+	// Function to handle ICE candidates
+	function handleIceCandidate(socket, { targetId, candidate }) {
+		const targetSocket = Array.from(io.sockets.sockets.values()).find(
+			(s) => s.userData && s.userData.userId === targetId
+		);
+		if (targetSocket) {
+			targetSocket.emit('iceCandidate', { candidate, from: socket.userData.userId });
+		} else {
+			socket.emit('call-error', { error: 'Target user not found for ICE candidate' });
 		}
 	}
 

@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { postsPerPage } from '$lib/data/config';
-import fetchPosts from '$lib/data/fetchPosts';
+import { fetchPosts } from '$lib/data/fetchPosts';
 import { parse } from 'node-html-parser';
 import readingTime from 'reading-time/lib/reading-time.js';
 import { browser } from '$app/environment';

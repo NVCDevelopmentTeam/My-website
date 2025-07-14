@@ -1,16 +1,15 @@
-import { superValidate, message } from 'sveltekit-superforms/server'; // validation + flash message helper
-import { zod } from 'sveltekit-superforms/adapters'; // adapter for Zod schemas
+import { superValidate, message } from 'sveltekit-superforms/server';
+import { zod } from 'sveltekit-superforms/adapters';
 import { loginSchema } from './schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { authUseCases } from '$usecases/auth-usecases';
 
 export const load = async ({ locals }) => {
-	const session = await locals.auth.validate();
+	const session = locals.session;
 	if (session) {
 		// Redirect logged-in user immediately
 		redirect(301, '/admin');
 	}
-
 	// Initialize a validated form with schema defaults
 	const form = await superValidate(zod(loginSchema));
 	return { form };
@@ -18,8 +17,10 @@ export const load = async ({ locals }) => {
 
 export const actions = {
 	default: async (event) => {
+		const { request, cookies, locals } = event;
+
 		// Parse and validate form data from incoming request
-		const form = await superValidate(event.request, zod(loginSchema));
+		const form = await superValidate(request, zod(loginSchema));
 
 		if (!form.valid) {
 			// Return form with validation errors (HTTP 400)
@@ -27,20 +28,35 @@ export const actions = {
 		}
 
 		try {
-			// Attempt backend login
+			// Attempt backend login with validated form data
 			const session = await authUseCases.login(form.data, {
 				platform: 'web',
-				ip_address: event.request.headers.get('x-forwarded-for') || '0.0.0.0'
+				ip_address: request.headers.get('x-forwarded-for') || '0.0.0.0'
 			});
-			event.locals.auth.setSession(session);
+
+			// Set session using your auth system
+			if (locals.auth && locals.auth.setSession) {
+				// If using Lucia with locals.auth
+				locals.auth.setSession(session);
+			} else {
+				// Fallback: Set session cookie manually
+				cookies.set('auth_session', session.sessionId, {
+					path: '/',
+					httpOnly: true,
+					secure: process.env.NODE_ENV === 'production',
+					sameSite: 'strict',
+					maxAge: 60 * 60 * 24 * 30 // 30 days
+				});
+			}
+
+			// On success, attach a success message and redirect
+			return message(form, 'Login successful! Redirecting...');
 		} catch (error) {
 			console.error('Login error:', error);
-			// Set user-facing error message
-			form.message = 'Login failed — please check your credentials.';
+
+			// Set user-facing error message on the form
+			form.message = error.message || 'Login failed — please check your credentials.';
 			return fail(400, { form });
 		}
-
-		// On success, attach a success message for client to handle
-		return message(form, 'Login successful! Redirecting...');
 	}
 };

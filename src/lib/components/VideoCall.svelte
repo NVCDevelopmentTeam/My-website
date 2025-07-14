@@ -130,10 +130,10 @@
 </script>
 
 <!-- Video Call UI -->
-<div class="video-call">
+<div class="p-4 flex flex-col items-center space-y-4">
 	{#if localStream}
 		<video
-			class="local-video"
+			class="w-full h-48 bg-black rounded-md object-cover mb-2"
 			autoplay
 			muted
 			use:streamAction={localStream}
@@ -144,7 +144,7 @@
 	{/if}
 	{#if remoteStream}
 		<video
-			class="remote-video"
+			class="w-full h-48 bg-black rounded-md object-cover mb-2"
 			autoplay
 			use:streamAction={remoteStream}
 			bind:this={remoteVideoElement}
@@ -152,5 +152,9 @@
 			<track kind="captions" />
 		</video>
 	{/if}
-	<button onclick={startCall}>Start Video Call</button>
+	<button
+		onclick={startCall}
+		class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+		>Start Video Call</button
+	>
 </div>

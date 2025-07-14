@@ -46,27 +46,54 @@
 </script>
 
 <form onsubmit={handleSubmit}>
-	<div class="form-group">
+	<div class="mb-4">
 		<label for="name">Name *</label>
-		<input type="text" id="name" bind:value={name} class="form-input" required />
+		<input
+			type="text"
+			id="name"
+			bind:value={name}
+			class="w-full px-4 py-2 border rounded-md bg-input text-foreground focus:ring-primary focus:border-primary"
+			required
+		/>
 	</div>
 
-	<div class="form-group">
+	<div class="mb-4">
 		<label for="email">Email *</label>
-		<input type="email" id="email" bind:value={email} class="form-input" required />
+		<input
+			type="email"
+			id="email"
+			bind:value={email}
+			class="w-full px-4 py-2 border rounded-md bg-input text-foreground focus:ring-primary focus:border-primary"
+			required
+		/>
 	</div>
 
-	<div class="form-group">
+	<div class="mb-4">
 		<label for="title">Title *</label>
-		<input type="text" id="title" bind:value={title} class="form-input" required />
+		<input
+			type="text"
+			id="title"
+			bind:value={title}
+			class="w-full px-4 py-2 border rounded-md bg-input text-foreground focus:ring-primary focus:border-primary"
+			required
+		/>
 	</div>
 
-	<div class="form-group">
+	<div class="mb-4">
 		<label for="message">Message *</label>
-		<textarea id="message" bind:value={message} class="form-input" required></textarea>
+		<textarea
+			id="message"
+			bind:value={message}
+			class="w-full px-4 py-2 border rounded-md bg-input text-foreground focus:ring-primary focus:border-primary"
+			required
+		></textarea>
 	</div>
 
-	<button type="submit" class="form-button">Submit</button>
+	<button
+		type="submit"
+		class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
+		>Submit</button
+	>
 
 	{#if status}
 		<p>{status}</p>

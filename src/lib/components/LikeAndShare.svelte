@@ -73,23 +73,65 @@
 	});
 </script>
 
-<div>
-	<button onclick={incrementLikes}>Like</button>
-	<p>{likes} Likes</p>
+<div class="flex items-center space-x-4">
+	<button
+		onclick={incrementLikes}
+		class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+		>Like</button
+	>
+	<p class="text-lg text-foreground">{likes} Likes</p>
 </div>
 
-<div>
-	<button onclick={openDialog}>Share</button>
+<div class="mt-4">
+	<button
+		onclick={openDialog}
+		class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+		>Share</button
+	>
 
-	<dialog bind:this={dialog} aria-labelledby="dialog-title" aria-modal="true">
-		<h2 id="dialog-title">Share this content</h2>
-		<button onclick={closeDialog} aria-label="Close">X</button>
-		<div>
-			<button role="link" onclick={shareOnFacebook}>Share on Facebook</button>
-			<button role="link" onclick={shareOnZalo}>Share on Zalo</button>
-			<button role="link" onclick={shareOnTwitter}>Share on Twitter</button>
-			<button role="link" onclick={shareOnLinkedIn}>Share on LinkedIn</button>
-			<button role="link" onclick={copyLink}>Copy Link</button>
+	<dialog
+		bind:this={dialog}
+		aria-labelledby="dialog-title"
+		aria-modal="true"
+		class="p-6 rounded-lg shadow-lg backdrop:bg-black/50"
+	>
+		<h2 id="dialog-title" class="text-xl font-bold mb-4">Share this content</h2>
+		<button
+			onclick={closeDialog}
+			aria-label="Close"
+			class="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200">X</button
+		>
+		<div class="grid grid-cols-2 gap-4">
+			<button
+				role="link"
+				onclick={shareOnFacebook}
+				class="px-4 py-2 rounded-md text-white font-semibold transition-colors bg-blue-600 hover:bg-blue-700"
+				>Share on Facebook</button
+			>
+			<button
+				role="link"
+				onclick={shareOnZalo}
+				class="px-4 py-2 rounded-md text-white font-semibold transition-colors bg-blue-400 hover:bg-blue-500"
+				>Share on Zalo</button
+			>
+			<button
+				role="link"
+				onclick={shareOnTwitter}
+				class="px-4 py-2 rounded-md text-white font-semibold transition-colors bg-blue-400 hover:bg-blue-500"
+				>Share on Twitter</button
+			>
+			<button
+				role="link"
+				onclick={shareOnLinkedIn}
+				class="px-4 py-2 rounded-md text-white font-semibold transition-colors bg-blue-700 hover:bg-blue-800"
+				>Share on LinkedIn</button
+			>
+			<button
+				role="link"
+				onclick={copyLink}
+				class="px-4 py-2 rounded-md text-white font-semibold transition-colors bg-gray-500 hover:bg-gray-600"
+				>Copy Link</button
+			>
 		</div>
 	</dialog>
 </div>

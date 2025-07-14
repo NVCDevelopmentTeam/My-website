@@ -36,14 +36,20 @@
 </script>
 
 <!-- Message List UI -->
-<div class="message-list" bind:this={listContainer}>
+<div class="flex-1 overflow-y-auto p-4 space-y-4" bind:this={listContainer}>
 	{#each messages as msg (msg.id)}
-		<div class="message {msg.isMe ? 'outgoing' : 'incoming'}">
-			<div class="message-header">
-				<span class="sender">{msg.sender}</span>
-				<span class="time">{formatTime(msg.timestamp)}</span>
+		<div class="flex flex-col {msg.isMe ? 'items-end' : 'items-start'}">
+			<div class="flex items-center space-x-2 text-xs text-muted-foreground">
+				<span class="font-semibold">{msg.sender}</span>
+				<span class="text-muted-foreground">{formatTime(msg.timestamp)}</span>
 			</div>
-			<div class="message-content">{msg.text}</div>
+			<div
+				class="p-3 rounded-lg {msg.isMe
+					? 'bg-primary text-primary-foreground'
+					: 'bg-secondary text-secondary-foreground'} shadow"
+			>
+				{msg.text}
+			</div>
 		</div>
 	{/each}
 </div>

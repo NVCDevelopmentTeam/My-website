@@ -8,6 +8,6 @@
 	let { children } = $props();
 </script>
 
-<div class="bg-slate-500 h-screen w-screen">
+<div class="min-h-screen bg-background text-foreground flex flex-col">
 	{@render children?.()}
 </div>

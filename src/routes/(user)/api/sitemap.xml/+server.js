@@ -1,4 +1,4 @@
-import fetchPosts from '$lib/data/fetchPosts';
+import { fetchPosts } from '$lib/data/fetchPosts';
 import { siteURL } from '$lib/data/config';
 
 // Export the sitemap.xml file name

@@ -99,7 +99,7 @@
 
 <!-- Chat toggle button -->
 <button
-	class="chat-toggle"
+	class="fixed bottom-4 right-4 bg-primary text-primary-foreground p-4 rounded-full shadow-lg z-50 hover:bg-primary/90 transition-colors"
 	onclick={() => (isChatVisible = !isChatVisible)}
 	aria-label={isChatVisible ? 'Close chat' : 'Open chat'}
 >
@@ -108,26 +108,51 @@
 
 <!-- Chat window -->
 {#if isChatVisible}
-	<div class="chat-window">
+	<div
+		class="fixed bottom-20 right-4 w-80 h-[400px] bg-card rounded-lg shadow-xl flex flex-col z-50"
+	>
 		{#if !isChatStarted}
-			<form onsubmit={handleStartChat}>
-				<div class="form-group">
-					<input type="text" bind:value={userInfo.name} placeholder="Name" />
-					{#if errors.name}<span class="error">{errors.name}</span>{/if}
+			<form onsubmit={handleStartChat} class="p-4 space-y-4">
+				<div class="mb-4">
+					<input
+						type="text"
+						bind:value={userInfo.name}
+						placeholder="Name"
+						class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+					/>
+					{#if errors.name}<span class="text-destructive text-sm">{errors.name}</span>{/if}
 				</div>
-				<div class="form-group">
-					<input type="email" bind:value={userInfo.email} placeholder="Email" />
-					<input type="tel" bind:value={userInfo.phone} placeholder="Phone" />
-					{#if errors.contact}<span class="error">{errors.contact}</span>{/if}
+				<div class="mb-4">
+					<input
+						type="email"
+						bind:value={userInfo.email}
+						placeholder="Email"
+						class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary mb-2"
+					/>
+					<input
+						type="tel"
+						bind:value={userInfo.phone}
+						placeholder="Phone"
+						class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+					/>
+					{#if errors.contact}<span class="text-destructive text-sm">{errors.contact}</span>{/if}
 				</div>
-				<div class="form-group">
-					<textarea bind:value={userInfo.initialMessage} placeholder="Message"></textarea>
-					{#if errors.message}<span class="error">{errors.message}</span>{/if}
+				<div class="mb-4">
+					<textarea
+						bind:value={userInfo.initialMessage}
+						placeholder="Message"
+						class="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary h-24"
+					></textarea>
+					{#if errors.message}<span class="text-destructive text-sm">{errors.message}</span>{/if}
 				</div>
-				<button type="submit">Start Chat</button>
+				<button
+					type="submit"
+					class="w-full bg-primary text-primary-foreground py-2 rounded-md hover:bg-primary/90 transition-colors"
+					>Start Chat</button
+				>
 			</form>
 		{:else}
-			<div class="chat-container">
+			<div class="flex flex-col h-full">
 				<MessageList {messages} />
 				<ChatToolbar {socket} {roomId} />
 				<MessageInput onsend={handleNewMessage} />

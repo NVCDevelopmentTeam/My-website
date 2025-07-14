@@ -36,34 +36,38 @@
 </script>
 
 <div class="flex items-center justify-between pt-16 pb-8">
-	{#if hasPreviousPage}
-		<a
-			href={`${basePath}/1`}
-			data-sveltekit-prefetch
-			class="flex items-center gap-2 font-medium text-zinc-700"
-		>
-			First
-		</a>
-		<a
-			href={`${basePath}/${currentPage - 1}`}
-			data-sveltekit-prefetch
-			class="flex items-center gap-2 font-medium text-zinc-700"
-		>
-			<ArrowLeftIcon class="w-4 h-4" />
-			Previous
-		</a>
-	{/if}
+	<div class="flex items-center gap-4">
+		{#if hasPreviousPage}
+			<a
+				href={`${basePath}/1`}
+				data-sveltekit-prefetch
+				class="flex items-center gap-2 font-medium text-foreground hover:text-primary"
+			>
+				First
+			</a>
+			<a
+				href={`${basePath}/${currentPage - 1}`}
+				data-sveltekit-prefetch
+				class="flex items-center gap-2 font-medium text-foreground hover:text-primary"
+			>
+				<ArrowLeftIcon class="w-4 h-4" />
+				Previous
+			</a>
+		{/if}
+	</div>
 
 	{#if pagesAvailable > 1}
-		<nav aria-label="Pagination navigation" class="pagination">
+		<nav aria-label="Pagination navigation">
 			<ul class="flex gap-2">
 				{#each pages as page (page)}
 					<li>
 						<a
 							href={`${basePath}/${page}`}
 							aria-current={isCurrentPage(page) ? 'page' : undefined}
-							class:active={isCurrentPage(page)}
-							class="px-3 py-1 border rounded-md text-zinc-700 hover:bg-gray-200"
+							class="px-3 py-1 border rounded-md transition-colors"
+							class:bg-primary={isCurrentPage(page)}
+							class:text-primary-foreground={isCurrentPage(page)}
+							class:hover:bg-muted={!isCurrentPage(page)}
 						>
 							{page}
 						</a>
@@ -73,21 +77,23 @@
 		</nav>
 	{/if}
 
-	{#if hasNextPage}
-		<a
-			href={`${basePath}/${currentPage + 1}`}
-			data-sveltekit-prefetch
-			class="flex items-center gap-2 font-medium text-zinc-700"
-		>
-			Next
-			<ArrowRightIcon class="w-4 h-4" />
-		</a>
-		<a
-			href={`${basePath}/${pagesAvailable}`}
-			data-sveltekit-prefetch
-			class="flex items-center gap-2 font-medium text-zinc-700"
-		>
-			Last
-		</a>
-	{/if}
+	<div class="flex items-center gap-4">
+		{#if hasNextPage}
+			<a
+				href={`${basePath}/${currentPage + 1}`}
+				data-sveltekit-prefetch
+				class="flex items-center gap-2 font-medium text-foreground hover:text-primary"
+			>
+				Next
+				<ArrowRightIcon class="w-4 h-4" />
+			</a>
+			<a
+				href={`${basePath}/${pagesAvailable}`}
+				data-sveltekit-prefetch
+				class="flex items-center gap-2 font-medium text-foreground hover:text-primary"
+			>
+				Last
+			</a>
+		{/if}
+	</div>
 </div>

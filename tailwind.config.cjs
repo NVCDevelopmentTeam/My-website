@@ -1,5 +1,3 @@
-const { fontFamily } = require('tailwindcss/defaultTheme');
-
 /** @type {import('tailwindcss').Config} */
 const config = {
 	darkMode: ['class'],
@@ -52,9 +50,6 @@ const config = {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
-			},
-			fontFamily: {
-				sans: [...fontFamily.sans]
 			}
 		}
 	}

@@ -64,59 +64,83 @@
 	{/if}
 </svelte:head>
 
-<article class="post">
-	{#if coverImage}
-		<img class="cover-image" src={coverImage} alt={title} width={coverWidth} height={coverHeight} />
-	{/if}
-	<h1>{title}</h1>
-	<div class="meta">
-		{#if author}<b>Posted by:</b> {author}<br />{/if}
-		{#if date}<b>Published:</b> {formatDate(date)}<br />{/if}
-		{#if updated}<b>Updated:</b> {formatDate(updated)}{/if}
+<div class="container mx-auto px-4 py-16">
+	<article class="max-w-3xl mx-auto">
+		{#if coverImage}
+			<img
+				class="w-full h-auto rounded-lg mb-8"
+				src={coverImage}
+				alt={title}
+				width={coverWidth}
+				height={coverHeight}
+			/>
+		{/if}
+		<h1 class="text-4xl font-bold mb-4">{title}</h1>
+		<div class="text-muted-foreground mb-8">
+			{#if author}<p><b>Posted by:</b> {author}</p>{/if}
+			{#if date}<p><b>Published:</b> {formatDate(date)}</p>{/if}
+			{#if updated}<p><b>Updated:</b> {formatDate(updated)}</p>{/if}
+		</div>
+		{#if categories && categories.length > 0}
+			<aside class="mb-8">
+				<p class="font-medium mb-2">Posted in:</p>
+				<ul class="flex flex-wrap gap-2">
+					{#each categories as category (category)}
+						<li>
+							<a
+								href={`/blog/category/${category}/`}
+								class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-2 py-1 rounded-md text-sm"
+								>{category}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			</aside>
+		{/if}
+
+		<!-- Like and Share component -->
+		<LikeAndShare />
+
+		<!-- Pass title and post content to the TextToSpeech component -->
+		<TextToSpeech {title} {postContent} />
+
+		<div class="prose dark:prose-invert max-w-none mt-8">
+			{#if typeof PostContent === 'function'}
+				<!-- Binding postElement and handling content rendering -->
+				<div bind:this={postElement}>
+					<PostContent />
+				</div>
+			{:else if typeof PostContent === 'string'}
+				<!-- Handle HTML content safely -->
+				<div bind:this={postElement}>
+					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+					{@html PostContent}
+				</div>
+			{:else}
+				<p>Error: Unable to display post content.</p>
+			{/if}
+		</div>
+
+		{#if tags && tags.length > 0}
+			<aside class="mt-8">
+				<p class="font-medium mb-2">Tags:</p>
+				<ul class="flex flex-wrap gap-2">
+					{#each tags as tag (tag)}
+						<li>
+							<a
+								href={`/blog/tag/{tag}/`}
+								class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-2 py-1 rounded-md text-sm"
+								>{tag}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			</aside>
+		{/if}
+	</article>
+
+	<!-- Comments section -->
+	<div class="max-w-3xl mx-auto mt-16">
+		<Comments {comments} />
 	</div>
-	{#if categories && categories.length > 0}
-		<aside class="post-header">
-			<p>Posted in:</p>
-			<ul class="post-header-categories">
-				{#each categories as category (category)}
-					<li><a href={`/blog/category/${category}/`}>{category}</a></li>
-				{/each}
-			</ul>
-		</aside>
-	{/if}
-
-	<!-- Like and Share component -->
-	<LikeAndShare />
-
-	<!-- Pass title and post content to the TextToSpeech component -->
-	<TextToSpeech {title} {postContent} />
-
-	{#if typeof PostContent === 'function'}
-		<!-- Binding postElement and handling content rendering -->
-		<div bind:this={postElement}>
-			<PostContent />
-		</div>
-	{:else if typeof PostContent === 'string'}
-		<!-- Handle HTML content safely -->
-		<div bind:this={postElement}>
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html PostContent}
-		</div>
-	{:else}
-		<p>Error: Unable to display post content.</p>
-	{/if}
-
-	{#if tags && tags.length > 0}
-		<aside class="post-footer">
-			<p>Tags:</p>
-			<ul class="post-footer-tags">
-				{#each tags as tag (tag)}
-					<li><a href={`/blog/tag/{tag}/`}>{tag}</a></li>
-				{/each}
-			</ul>
-		</aside>
-	{/if}
-</article>
-
-<!-- Comments section -->
-<Comments {comments} />
+</div>

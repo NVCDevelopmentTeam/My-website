@@ -31,25 +31,38 @@
 	};
 </script>
 
-<h2>Subscribe to the to receive useful articles from me</h2>
-<form onsubmit={preventDefault(subscribe)} class="subscribe-form">
-	<input
-		type="email"
-		bind:value={email}
-		placeholder="Enter your email"
-		required
-		class="email-input"
-	/>
-	<button type="submit" disabled={loading} class="subscribe-button">
-		{#if loading}
-			Subscribing...
-		{/if}
-		{#if !loading}
-			Subscribe
-		{/if}
-	</button>
-</form>
-
-{#if message}
-	<p class="message">{message}</p>
-{/if}
+<div class="bg-muted p-6 rounded-lg">
+	<h2 class="text-xl font-bold mb-4">Subscribe to my newsletter</h2>
+	<p class="text-muted-foreground mb-4">
+		Get the latest posts and updates delivered to your inbox.
+	</p>
+	<form onsubmit={preventDefault(subscribe)} class="flex items-center gap-2">
+		<input
+			type="email"
+			bind:value={email}
+			placeholder="Enter your email"
+			required
+			class="w-full px-4 py-2 border rounded-md bg-input text-foreground focus:ring-primary focus:border-primary"
+		/>
+		<button
+			type="submit"
+			disabled={loading}
+			class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
+		>
+			{#if loading}
+				Subscribing...
+			{:else}
+				Subscribe
+			{/if}
+		</button>
+	</form>
+	{#if message}
+		<p
+			class="mt-4 text-sm"
+			class:text-destructive={message.startsWith('Error')}
+			class:text-green-500={!message.startsWith('Error')}
+		>
+			{message}
+		</p>
+	{/if}
+</div>

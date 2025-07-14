@@ -51,17 +51,20 @@
 	function announceFontSize(size) {
 		const announcer = document.getElementById('font-size-announcer');
 		announcer.innerText = `Font size is now ${size}px`;
-		setTimeout(() => (announcer.innerText = ''), 1000);
+		setTimeout(() => (announcer.innerText = ''), 3000);
 	}
 
 	function announceMode(mode, isEnabled) {
 		const announcer = document.getElementById('mode-announcer');
 		announcer.innerText = `${mode} is now ${isEnabled ? 'enabled' : 'disabled'}`;
-		setTimeout(() => (announcer.innerText = ''), 1000);
+		setTimeout(() => (announcer.innerText = ''), 3000);
 	}
 
 	onMount(() => {
 		darkMode.subscribe((value) => document.body.classList.toggle('dark', value));
+		fontSize.subscribe((value) => (document.documentElement.style.fontSize = `${value}px`));
+		contrast.subscribe((value) => document.body.classList.toggle('high-contrast', value));
+		colorFilters.subscribe((value) => document.body.classList.toggle('color-filters', value));
 	});
 
 	function handleKeydown(event, action) {
@@ -72,9 +75,9 @@
 	}
 </script>
 
-<nav aria-label="Accessibility menu" class="accessibility-menu">
+<nav aria-label="Accessibility menu" class="relative inline-block text-right">
 	<button
-		role="link"
+		class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 		aria-expanded={$menuOpen}
 		aria-controls="accessibility-options"
 		onclick={() => menuOpen.set(!$menuOpen)}
@@ -88,9 +91,15 @@
 	</button>
 
 	{#if $menuOpen}
-		<div id="accessibility-options" role="menu">
+		<div
+			id="accessibility-options"
+			role="menu"
+			class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+		>
 			<button
-				aria-pressed={$darkMode}
+				class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+				role="menuitemcheckbox"
+				aria-checked={$darkMode}
 				aria-label="Toggle dark mode"
 				onclick={toggleDarkMode}
 				onkeydown={(event) => handleKeydown(event, toggleDarkMode)}
@@ -103,6 +112,8 @@
 			</button>
 
 			<button
+				class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+				role="menuitem"
 				aria-label="Increase font size"
 				onclick={increaseFontSize}
 				onkeydown={(event) => handleKeydown(event, increaseFontSize)}
@@ -111,6 +122,8 @@
 			</button>
 
 			<button
+				class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+				role="menuitem"
 				aria-label="Decrease font size"
 				onclick={decreaseFontSize}
 				onkeydown={(event) => handleKeydown(event, decreaseFontSize)}
@@ -131,7 +144,9 @@
 			></div>
 
 			<button
-				aria-pressed={$contrast}
+				class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+				role="menuitemcheckbox"
+				aria-checked={$contrast}
 				aria-label="Toggle contrast"
 				onclick={toggleContrast}
 				onkeydown={(event) => handleKeydown(event, toggleContrast)}
@@ -144,7 +159,9 @@
 			</button>
 
 			<button
-				aria-pressed={$colorFilters}
+				class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+				role="menuitemcheckbox"
+				aria-checked={$colorFilters}
 				aria-label="Toggle color filters"
 				onclick={toggleColorFilters}
 				onkeydown={(event) => handleKeydown(event, toggleColorFilters)}

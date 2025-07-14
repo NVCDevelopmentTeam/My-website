@@ -8,6 +8,7 @@
 	<title>{siteTitle}</title>
 	<meta name="description" content={siteDescription} />
 </svelte:head>
-<main>
+
+<main class="flex-grow p-4">
 	{@render children?.()}
 </main>

@@ -34,24 +34,26 @@
 </script>
 
 <section class="mb-8 w-full">
-	<h2
-		id="latest"
-		class="mb-6 text-2xl font-bold tracking-tight text-black dark:text-white md:text-4xl"
-	>
+	<h2 id="latest" class="mb-6 text-2xl font-bold tracking-tight text-foreground md:text-4xl">
 		Latest Posts
 	</h2>
-	<ul class="space-y-2">
+	<ul class="space-y-4">
 		{#if posts.length > 0}
 			{#each posts as post (post.slug)}
-				<li class="post-item">
-					<a class="post-title" href="/blog/{post.slug}">{post.title}</a>
-					<span class="post-date">
-						{formatDate(post.date)}
-					</span>
+				<li>
+					<a class="group" href="/blog/{post.slug}">
+						<h3 class="text-lg font-medium group-hover:text-primary">{post.title}</h3>
+						<p class="text-sm text-muted-foreground">{formatDate(post.date)}</p>
+					</a>
 				</li>
 			{/each}
 		{:else}
-			<li class="loading">Loading...</li>
+			{#each Array(5) as i (i)}
+				<li class="animate-pulse">
+					<div class="h-4 bg-muted rounded w-3/4 mb-2"></div>
+					<div class="h-3 bg-muted rounded w-1/2"></div>
+				</li>
+			{/each}
 		{/if}
 	</ul>
 </section>

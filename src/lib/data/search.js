@@ -22,34 +22,7 @@ const index = new FlexSearch.Document({
 	}
 });
 
-let indexInitialized = false;
-
-function addPostsToIndex(posts) {
-	posts.forEach((post) => {
-		index.add(post);
-	});
-	indexInitialized = true;
-}
-
-async function initializeIndex() {
-	if (!indexInitialized) {
-		try {
-			const response = await fetch('/api/search.json');
-			if (!response.ok) {
-				throw new Error(`Failed to fetch posts: ${response.status} ${response.statusText}`);
-			}
-			const data = await response.json();
-			addPostsToIndex(data.results);
-		} catch (error) {
-			console.error('Error initializing search index:', error);
-			throw error;
-		}
-	}
-}
-
 async function searchPosts(query, filters = {}) {
-	await initializeIndex();
-
 	const searchOptions = {
 		limit: 1000, // Set a sensible limit
 		suggest: true,

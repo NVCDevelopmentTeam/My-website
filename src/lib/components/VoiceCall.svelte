@@ -31,9 +31,16 @@
 </script>
 
 <!-- Voice Call UI -->
-<div class="voice-call">
-	<button onclick={startCall}>Start Voice Call</button>
-	<button onclick={toggleMute}>
+<div class="p-4 flex flex-col items-center space-y-4">
+	<button
+		onclick={startCall}
+		class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+		>Start Voice Call</button
+	>
+	<button
+		onclick={toggleMute}
+		class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+	>
 		{isMuted ? 'Unmute' : 'Mute'}
 	</button>
 </div>

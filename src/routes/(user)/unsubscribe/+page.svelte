@@ -41,16 +41,29 @@
 	<meta name="description" content={description} />
 </svelte:head>
 
-{#if message}
-	<p>{message}</p>
-{:else}
-	<p>Do you really want to unsubscribe?</p>
-	<button onclick={confirmUnsubscribe} disabled={loading}>
-		{#if loading}
-			Unsubscribing...
+<div class="container mx-auto px-4 py-16">
+	<div class="max-w-md mx-auto bg-card p-8 rounded-lg shadow-md text-center">
+		{#if message}
+			<p
+				class="text-lg font-medium"
+				class:text-destructive={message.startsWith('Error')}
+				class:text-green-500={!message.startsWith('Error')}
+			>
+				{message}
+			</p>
+		{:else}
+			<p class="text-lg text-foreground mb-4">Do you really want to unsubscribe?</p>
+			<button
+				onclick={confirmUnsubscribe}
+				disabled={loading}
+				class="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md font-semibold disabled:opacity-50"
+			>
+				{#if loading}
+					Unsubscribing...
+				{:else}
+					Yes, Unsubscribe
+				{/if}
+			</button>
 		{/if}
-		{#if !loading}
-			Yes, Unsubscribe
-		{/if}
-	</button>
-{/if}
+	</div>
+</div>

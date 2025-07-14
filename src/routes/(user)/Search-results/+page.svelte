@@ -27,19 +27,21 @@
 	<meta name="description" content={`${description} '${query}'`} />
 </svelte:head>
 
-<div class="search-results">
+<div class="container mx-auto px-4 py-16">
 	{#if error}
-		<p>{error}</p>
+		<p class="text-destructive text-center">{error}</p>
 	{:else if posts.length > 0}
-		<h1>Search results for "{query}"</h1>
+		<h1 class="text-4xl font-bold text-center mb-8">Search results for "{query}"</h1>
 		<div class="mt-8">
 			<PostsList {posts} />
 		</div>
 		<Pagination currentPage={1} totalPosts={data.total} basePath="/Search-results/page" />
 	{:else if query}
-		<h1>Not found</h1>
-		<p>Sorry, there is no content matching your search criteria. Try with other keywords.</p>
+		<h1 class="text-4xl font-bold text-center mb-8">Not found</h1>
+		<p class="text-lg text-center text-muted-foreground">
+			Sorry, there is no content matching your search criteria. Try with other keywords.
+		</p>
 	{:else}
-		<p>Loading search results...</p>
+		<p class="text-lg text-center text-muted-foreground">Loading search results...</p>
 	{/if}
 </div>

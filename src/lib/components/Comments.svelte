@@ -65,30 +65,57 @@
 	onMount(fetchCommentsData);
 </script>
 
-<div>
-	<form onsubmit={handleSubmit}>
-		<h2>Write a comment</h2>
-		<input type="text" bind:value={$author} placeholder="Your name" required />
-		<textarea bind:value={$content} placeholder="Write your comment..." required></textarea>
-		<button type="submit">Submit</button>
+<div class="container mx-auto px-4 py-8">
+	<form onsubmit={handleSubmit} class="mb-8 p-6 bg-card rounded-lg shadow-md">
+		<h2 class="text-2xl font-bold mb-4">Write a comment</h2>
+		<input
+			type="text"
+			bind:value={$author}
+			placeholder="Your name"
+			required
+			class="w-full px-4 py-2 border rounded-md bg-input text-foreground focus:ring-primary focus:border-primary mb-4"
+		/>
+		<textarea
+			bind:value={$content}
+			placeholder="Write your comment..."
+			required
+			class="w-full px-4 py-2 border rounded-md bg-input text-foreground focus:ring-primary focus:border-primary mb-4 h-32"
+		></textarea>
+		<button
+			type="submit"
+			class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
+			>Submit</button
+		>
 	</form>
 
 	{#if $comments.length > 0}
-		<h2>Comments:</h2>
-		<ul>
+		<h2 class="text-2xl font-bold mb-4">Comments:</h2>
+		<ul class="space-y-4">
 			{#each $paginatedComments as comment (comment.id)}
-				<li>
-					<p><strong>{comment.author}</strong> - {comment.date}</p>
-					<p>{comment.content}</p>
-					<button onclick={() => handleReply(comment)}>Reply</button>
-					<button onclick={() => handleDelete(comment.id)}>Delete</button>
+				<li class="bg-card p-4 rounded-lg shadow">
+					<p class="text-sm text-muted-foreground mb-1">
+						<strong>{comment.author}</strong> - {comment.date}
+					</p>
+					<p class="text-foreground mb-2">{comment.content}</p>
+					<div class="flex space-x-2">
+						<button
+							onclick={() => handleReply(comment)}
+							class="text-primary hover:underline text-sm">Reply</button
+						>
+						<button
+							onclick={() => handleDelete(comment.id)}
+							class="text-destructive hover:underline text-sm">Delete</button
+						>
+					</div>
 
 					{#if comment.replies.length > 0}
-						<ul>
+						<ul class="space-y-4">
 							{#each comment.replies as reply (reply.id)}
-								<li>
-									<p><strong>{reply.author}</strong> - {reply.date}</p>
-									<p>{reply.content}</p>
+								<li class="ml-4 p-3 bg-secondary rounded-lg shadow-sm">
+									<p class="text-sm text-muted-foreground mb-1">
+										<strong>{reply.author}</strong> - {reply.date}
+									</p>
+									<p class="text-foreground">{reply.content}</p>
 								</li>
 							{/each}
 						</ul>

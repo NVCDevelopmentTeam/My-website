@@ -1,6 +1,6 @@
 // Import necessary configurations and functions from your library
 import { postsPerPage } from '$lib/data/config';
-import fetchPosts from '$lib/data/fetchPosts';
+import { fetchPosts } from '$lib/data/fetchPosts';
 
 /** @type {import('./$types').LayoutServerLoad} */
 export async function load() {
