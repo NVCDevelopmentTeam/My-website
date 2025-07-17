@@ -9,6 +9,6 @@ export const GET = async () => {
 		limit: postsPerPage
 	};
 
-	const { posts } = await fetchPosts(options);
-	return json(posts);
+	const { posts, total } = await fetchPosts(options);
+	return json({ posts, total });
 };

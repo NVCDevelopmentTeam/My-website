@@ -4,21 +4,16 @@
 	import { postsPerPage } from '$lib/data/config';
 
 	let posts = $state([]);
+	let totalPosts = $state(0);
 
 	// Function to fetch data from API
 	async function fetchPosts() {
 		try {
 			const postRes = await fetch('/api/posts.json');
 			if (!postRes.ok) throw new Error('Network response was not ok');
-			const posts = await postRes.json();
-			console.log('Posts data:', posts); // Debugging
-
-			const totalRes = await fetch('/api/posts/count');
-			if (!totalRes.ok) throw new Error('Network response was not ok');
-			const total = await totalRes.json();
-			console.log('Total count data:', total); // Debugging
-
-			return { posts, total };
+			const data = await postRes.json();
+			console.log('API response data:', data); // Debugging
+			return data;
 		} catch (error) {
 			console.error('Failed to load posts:', error);
 			return { posts: [], total: 0 };
@@ -27,9 +22,19 @@
 
 	// Use onMount to call the fetchPosts function when the component is mounted
 	onMount(async () => {
-		const response = await fetchPosts();
-		posts = response.posts.slice(0, postsPerPage);
-		console.log('Posts in component:', posts); // Debugging
+		try {
+			const response = await fetchPosts();
+			if (Array.isArray(response.posts)) {
+				posts = response.posts.slice(0, postsPerPage);
+			} else {
+				posts = [];
+			}
+			totalPosts = response.total;
+			console.log('Posts in component:', posts); // Debugging
+			console.log('Total posts:', totalPosts); // Debugging
+		} catch (error) {
+			console.error('Error in onMount:', error);
+		}
 	});
 </script>
 
