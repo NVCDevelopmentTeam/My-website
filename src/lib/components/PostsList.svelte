@@ -1,8 +1,13 @@
 <script>
 	import { formatDate } from '$lib/data/utils';
+
+	/**
+	 * An array of post objects to display.
+	 * @type {Array<Object>}
+	 */
 	let { posts = [] } = $props();
 
-	// Check input
+	// A reactive boolean that's true if the posts array is not empty.
 	let hasPosts = $derived(posts.length > 0);
 </script>
 
@@ -11,7 +16,7 @@
 		{#each posts as post (post.slug)}
 			<li class="bg-card text-card-foreground rounded-lg shadow-md overflow-hidden">
 				<article>
-					<a href={`/blog/${post.slug}`}>
+					<a href={`/blog/${post.slug}`} class="block">
 						{#if post.coverImage}
 							<img
 								class="w-full h-48 object-cover"
@@ -19,7 +24,9 @@
 								alt={post.title}
 								width={post.coverWidth || '100%'}
 								height={post.coverHeight || 'auto'}
-								style="aspect-ratio: {post.coverWidth} / {post.coverHeight};"
+								style:aspect-ratio={post.coverWidth && post.coverHeight
+									? `${post.coverWidth} / ${post.coverHeight}`
+									: 'auto'}
 							/>
 						{/if}
 						<div class="p-6">
@@ -53,9 +60,8 @@
 								</ul>
 							</aside>
 						{/if}
-						{#if post.preview}
+						{#if post.preview?.html}
 							<div class="prose dark:prose-invert mt-4">
-								<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 								{@html post.preview.html}
 							</div>
 						{/if}
