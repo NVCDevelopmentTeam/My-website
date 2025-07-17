@@ -2,31 +2,27 @@ import { auth } from '$lib/server/lucia';
 
 class AuthService {
 	async login(formData, metadata = {}) {
-		try {
-			const { email, password } = formData;
+		const { email, password } = formData;
 
-			// Validate input
-			if (!email || !password) {
-				throw new Error('Email and password are required');
-			}
-
-			// Use the correct Lucia method to validate credentials
-			const user = await auth.validateUser(email.toLowerCase(), password);
-
-			if (!user) {
-				throw new Error('Invalid credentials');
-			}
-
-			// Create session with user ID
-			const session = await auth.createSession({
-				userId: user.id,
-				attributes: metadata
-			});
-
-			return session;
-		} catch (error) {
-			throw error;
+		// Validate input
+		if (!email || !password) {
+			throw new Error('Email and password are required');
 		}
+
+		// Use the correct Lucia method to validate credentials
+		const user = await auth.validateUser(email.toLowerCase(), password);
+
+		if (!user) {
+			throw new Error('Invalid credentials');
+		}
+
+		// Create session with user ID
+		const session = await auth.createSession({
+			userId: user.id,
+			attributes: metadata
+		});
+
+		return session;
 	}
 
 	async logout(sessionId) {
