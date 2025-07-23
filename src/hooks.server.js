@@ -2,19 +2,27 @@ import { updateStats } from '$lib/data/statsService';
 import { authService } from '$services/auth-service';
 import { auth } from '$lib/server/lucia';
 
+import { sequence } from '@sveltejs/kit/hooks';
+
+const setAuth = async ({ event, resolve }) => {
+	event.locals.auth = auth;
+	return resolve(event);
+};
+
 /** @type {import('@sveltejs/kit').Handle} */
-export const handle = async ({ event, resolve }) => {
+export const handle = sequence(setAuth, async ({ event, resolve }) => {
 	const sessionId = event.cookies.get('auth_session');
 
-	event.locals.auth = auth; // Set auth object in locals
+	
 
 	if (sessionId) {
 		try {
 			const session = await authService.validateSession(sessionId);
 
-			if (session) {
-				event.locals.session = session;
-				event.locals.user = session.user;
+			if (session && session.user) {
+				// Create a plain JavaScript object from the user session
+				const { id, username, email } = session.user;
+				event.locals.user = { id, username, email };
 			} else {
 				// Session is invalid, clear the cookie
 				event.cookies.delete('auth_session', { path: '/' });
@@ -56,4 +64,4 @@ export const handle = async ({ event, resolve }) => {
 	}
 
 	return response;
-};
+});

@@ -84,11 +84,7 @@ export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = 
 			sortedPosts = sortedPosts.slice(0, limit);
 		}
 
-		const postsWithLinks = sortedPosts.map((post, index, allPosts) => ({
-			...post,
-			next: allPosts[index - 1] ?? null,
-			previous: allPosts[index + 1] ?? null
-		}));
+		const postsWithLinks = sortedPosts.map((post) => ({ ...post }));
 
 		return {
 			posts: postsWithLinks,
