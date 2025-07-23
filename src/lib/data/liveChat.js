@@ -14,57 +14,130 @@ class LiveChat {
 		this.inCall = false;
 		this.currentCallData = null;
 		this.SOCKET_URL = serverUrl;
+		this.connectionState = 'disconnected';
+		this.connectionAttempts = 0;
+		this.maxRetries = 3;
+		this.events = new EventTarget();
 	}
 
 	async initSocket() {
-		if (!this.socket) {
-			this.socket = io(this.SOCKET_URL, {
-				reconnection: true,
-				autoConnect: true
-			});
-
-			this.socket.on('connect', () => {
-				console.log('Socket connected');
-			});
-			this.socket.on('connect_error', (error) => {
-				console.error('Socket connection error:', error);
-			});
-
-			this.socket.on('callRequest', (data) => {
-				const { callerId, type } = data;
-				this.currentCallData = { callerId, type };
-				this.acceptCall();
-			});
-
-			this.socket.on('offer', async (data) => {
-				const { offer, callerId } = data;
-				this.currentCallData = { callerId, type: 'video' }; // Assuming video for offer, adjust if needed
-				await this.handleIncomingOffer(offer, callerId);
-			});
-
-			this.socket.on('answer', async (data) => {
-				const { answer } = data;
-				if (this.peerConnection) {
-					await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-				}
-			});
-
-			this.socket.on('iceCandidate', async (data) => {
-				if (this.peerConnection) {
-					try {
-						await this.peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-					} catch (e) {
-						console.error('Error adding received ICE candidate:', e);
-					}
-				}
-			});
-
-			this.socket.on('callEnded', () => {
-				console.log('Call ended by remote peer.');
-				this.endCall();
-			});
+		if (this.connectionState === 'connecting') {
+			throw new Error('Connection already in progress');
 		}
-		return this.socket;
+
+		this.connectionState = 'connecting';
+		
+		try {
+			if (!this.socket) {
+				this.socket = io(this.SOCKET_URL, {
+					reconnection: true,
+					reconnectionAttempts: this.maxRetries,
+					timeout: 10000,
+					autoConnect: true,
+					transports: ['websocket', 'polling']
+				});
+
+				this.setupSocketListeners();
+			}
+
+			return new Promise((resolve, reject) => {
+				const timeout = setTimeout(() => {
+					this.connectionState = 'failed';
+					reject(new Error('Connection timeout'));
+				}, 15000);
+
+				this.socket.once('connect', () => {
+					clearTimeout(timeout);
+					this.connectionState = 'connected';
+					this.connectionAttempts = 0;
+					resolve(this.socket);
+				});
+
+				this.socket.once('connect_error', (error) => {
+					clearTimeout(timeout);
+					this.connectionState = 'failed';
+					this.connectionAttempts++;
+					reject(error);
+				});
+			});
+		} catch (error) {
+			this.connectionState = 'failed';
+			throw error;
+		}
+	}
+
+	setupSocketListeners() {
+		this.socket.on('disconnect', () => {
+			this.connectionState = 'disconnected';
+			this.events.dispatchEvent(new CustomEvent('connectionStateChange', {
+				detail: { state: 'disconnected' }
+			}));
+		});
+
+		this.socket.on('error', (error) => {
+			console.error('Socket error:', error);
+			this.events.dispatchEvent(new CustomEvent('error', {
+				detail: { error }
+			}));
+		});
+
+		this.socket.io.on('reconnect_attempt', () => {
+			this.connectionState = 'connecting';
+			this.events.dispatchEvent(new CustomEvent('connectionStateChange', {
+				detail: { state: 'connecting' }
+			}));
+		});
+
+		this.socket.on('connect', () => {
+			console.log('Socket connected');
+		});
+		this.socket.on('connect_error', (error) => {
+			console.error('Socket connection error:', error);
+		});
+
+		this.socket.on('callRequest', (data) => {
+			const { callerId, type } = data;
+			this.currentCallData = { callerId, type };
+			this.acceptCall();
+		});
+
+		this.socket.on('offer', async (data) => {
+			const { offer, callerId } = data;
+			this.currentCallData = { callerId, type: 'video' }; // Assuming video for offer, adjust if needed
+			await this.handleIncomingOffer(offer, callerId);
+		});
+
+		this.socket.on('answer', async (data) => {
+			const { answer } = data;
+			if (this.peerConnection) {
+				await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+			}
+		});
+
+		this.socket.on('iceCandidate', async (data) => {
+			if (this.peerConnection) {
+				try {
+					await this.peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+				} catch (e) {
+					console.error('Error adding received ICE candidate:', e);
+				}
+			}
+		});
+
+		this.socket.on('callEnded', () => {
+			console.log('Call ended by remote peer.');
+			this.endCall();
+		});
+	}
+
+	cleanup() {
+		if (this.socket) {
+			this.socket.removeAllListeners();
+			this.socket.disconnect();
+			this.socket = null;
+		}
+		this.connectionState = 'disconnected';
+		this.connectionAttempts = 0;
 	}
 
 	async handleIncomingOffer(offer, callerId) {
@@ -127,6 +200,26 @@ class LiveChat {
 				callback(data);
 			}
 		});
+	}
+
+	async fetchChatBot(chatData) {
+		try {
+			const response = await fetch('/api/ChatBot', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json'
+				},
+				body: JSON.stringify(chatData)
+			});
+
+			const result = await response.json();
+			if (response.ok && result.success) {
+				// status = result.message || 'Success';
+			}
+		} catch (error) {
+			console.error('Error fetching chat bot response:', error);
+		}
 	}
 
 	async fetchChatHistory(roomId) {
@@ -300,6 +393,18 @@ class LiveChat {
 
 	playRemoteStream(stream) {
 		this.remotestream = stream;
+	}
+
+	getConnectionState() {
+		return this.connectionState;
+	}
+
+	addEventListener(event, callback) {
+		this.events.addEventListener(event, callback);
+	}
+
+	removeEventListener(event, callback) {
+		this.events.removeEventListener(event, callback);
 	}
 }
 

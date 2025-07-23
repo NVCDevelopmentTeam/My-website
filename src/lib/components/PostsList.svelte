@@ -31,41 +31,41 @@
 						{/if}
 						<div class="p-6">
 							<h2 class="text-2xl font-bold mb-2">{post.title}</h2>
+
+							{#if post.author}
+								<p class="text-sm text-muted-foreground mb-2">Posted by: {post.author}</p>
+							{/if}
+							{#if post.date}
+								<p class="text-sm text-muted-foreground mb-2">
+									Published on: {formatDate(post.date)}
+								</p>
+							{/if}
+							<span class="text-sm text-muted-foreground">{post.readingTime}</span>
+
+							{#if post.categories && post.categories.length > 0}
+								<aside class="mt-4">
+									<p class="text-sm font-medium mb-2">Posted in:</p>
+									<ul class="flex flex-wrap gap-2">
+										{#each post.categories as category (category)}
+											<li>
+												<span
+													class="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm"
+												>
+													{category}
+												</span>
+											</li>
+										{/each}
+									</ul>
+								</aside>
+							{/if}
+
+							{#if post.preview?.html}
+								<div class="prose dark:prose-invert mt-4">
+									{@html post.preview.html}
+								</div>
+							{/if}
 						</div>
 					</a>
-					<div class="p-6 pt-0">
-						{#if post.author}
-							<p class="text-sm text-muted-foreground mb-2">Posted by: {post.author}</p>
-						{/if}
-						{#if post.date}
-							<p class="text-sm text-muted-foreground mb-2">
-								Published on: {formatDate(post.date)}
-							</p>
-						{/if}
-						<span class="text-sm text-muted-foreground">{post.readingTime}</span>
-						{#if post.categories && post.categories.length > 0}
-							<aside class="mt-4">
-								<p class="text-sm font-medium mb-2">Posted in:</p>
-								<ul class="flex flex-wrap gap-2">
-									{#each post.categories as category (category)}
-										<li>
-											<a
-												href={`/blog/category/${category}/`}
-												class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-2 py-1 rounded-md text-sm"
-											>
-												{category}
-											</a>
-										</li>
-									{/each}
-								</ul>
-							</aside>
-						{/if}
-						{#if post.preview?.html}
-							<div class="prose dark:prose-invert mt-4">
-								{@html post.preview.html}
-							</div>
-						{/if}
-					</div>
 				</article>
 			</li>
 		{/each}

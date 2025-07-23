@@ -2,31 +2,64 @@ import { postsPerPage } from '$lib/data/config';
 import { fetchPosts } from '$lib/data/fetchPosts';
 import { json, error } from '@sveltejs/kit';
 
-// Remove prerender for dynamic API routes
-// export const prerender = true;
+// Rate limiting setup
+const RATE_LIMIT_WINDOW = 60000; // 1 minute
+const MAX_REQUESTS = 30;
+const requestLog = new Map();
+
+// Simple cache implementation
+const cache = new Map();
+const CACHE_TTL = 300000; // 5 minutes
+
+function checkRateLimit(ip) {
+    const now = Date.now();
+    const userRequests = requestLog.get(ip) || [];
+    const recentRequests = userRequests.filter(time => now - time < RATE_LIMIT_WINDOW);
+    
+    if (recentRequests.length >= MAX_REQUESTS) {
+        return false;
+    }
+    
+    requestLog.set(ip, [...recentRequests, now]);
+    return true;
+}
+
+function getCacheKey(params) {
+    return `posts-${JSON.stringify(params)}`;
+}
 
 /**
  * GET endpoint for fetching posts
  * Endpoint: /api/posts.json
  */
 export const GET = async ({ url, request }) => {
-    console.log('🚀 API Route: GET /api/posts.json called');
+    const startTime = performance.now();
+    const clientIP = request.headers.get('x-forwarded-for') || 'unknown';
     
     try {
-        // Validate postsPerPage configuration
-        if (!postsPerPage || typeof postsPerPage !== 'number' || postsPerPage <= 0) {
-            console.error('❌ Invalid postsPerPage configuration:', postsPerPage);
-            throw error(500, 'Invalid posts per page configuration');
+        // Rate limiting check
+        if (!checkRateLimit(clientIP)) {
+            throw error(429, 'Too many requests');
         }
 
-        console.log('📊 Posts per page:', postsPerPage);
+        // Validate and parse query parameters
+        const page = Math.max(1, parseInt(url.searchParams.get('page')) || 1);
+        const category = url.searchParams.get('category')?.slice(0, 50);
+        const tag = url.searchParams.get('tag')?.slice(0, 50);
+        const search = url.searchParams.get('search')?.slice(0, 100);
 
-        // Parse query parameters for additional options
-        const searchParams = url.searchParams;
-        const page = parseInt(searchParams.get('page')) || 1;
-        const category = searchParams.get('category');
-        const tag = searchParams.get('tag');
-        const search = searchParams.get('search');
+        // Check cache
+        const cacheKey = getCacheKey({ page, category, tag, search });
+        const cached = cache.get(cacheKey);
+        if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+            return json(cached.data, {
+                headers: {
+                    'Cache-Control': 'public, max-age=300',
+                    'X-Cache': 'HIT',
+                    'X-Response-Time': `${Math.round(performance.now() - startTime)}ms`
+                }
+            });
+        }
 
         // Build options object
         const options = {
@@ -37,91 +70,53 @@ export const GET = async ({ url, request }) => {
             ...(search && { search })
         };
 
-        console.log('🔧 Fetch options:', options);
+        // Fetch with timeout and abort controller
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
 
-        // Validate fetchPosts function exists
-        if (typeof fetchPosts !== 'function') {
-            console.error('❌ fetchPosts is not a function');
-            throw error(500, 'fetchPosts function not available');
-        }
+        const result = await fetchPosts(options);
+        clearTimeout(timeout);
 
-        // Fetch posts with timeout
-        const fetchPromise = fetchPosts(options);
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Request timeout')), 10000); // 10 second timeout
-        });
-
-        const result = await Promise.race([fetchPromise, timeoutPromise]);
-        
-        console.log('📝 fetchPosts result type:', typeof result);
-        console.log('📝 fetchPosts result keys:', result ? Object.keys(result) : 'null');
-
-        // Validate result structure
-        if (!result || typeof result !== 'object') {
-            console.error('❌ Invalid result from fetchPosts:', result);
-            throw error(500, 'Invalid response from fetchPosts');
-        }
-
-        const { posts, total } = result;
-
-        // Validate posts data
-        if (!Array.isArray(posts)) {
-            console.error('❌ Posts is not an array:', posts);
-            throw error(500, 'Invalid posts data structure');
-        }
-
-        // Validate total count
-        if (typeof total !== 'number' || total < 0) {
-            console.error('❌ Invalid total count:', total);
-            throw error(500, 'Invalid total count');
-        }
-
-        console.log('✅ Successfully fetched posts:', {
-            postsCount: posts.length,
-            total,
-            page,
-            hasNextPage: (page * postsPerPage) < total
-        });
-
-        // Add pagination metadata
         const response = {
-            posts,
-            total,
+            posts: result.posts,
+            total: result.total,
             page,
             postsPerPage,
-            totalPages: Math.ceil(total / postsPerPage),
-            hasNextPage: (page * postsPerPage) < total,
+            totalPages: Math.ceil(result.total / postsPerPage),
+            hasNextPage: (page * postsPerPage) < result.total,
             hasPreviousPage: page > 1
         };
 
-        // Set appropriate cache headers
-        const headers = {
-            'Cache-Control': 'public, max-age=300', // 5 minutes cache
-            'Content-Type': 'application/json'
-        };
-
-        return json(response, { headers });
-
-    } catch (err) {
-        console.error('💥 Error in API route:', err);
-        
-        // Log detailed error information
-        console.error('Error details:', {
-            name: err.name,
-            message: err.message,
-            stack: err.stack,
-            cause: err.cause
+        // Update cache
+        cache.set(cacheKey, {
+            data: response,
+            timestamp: Date.now()
         });
 
-        // Return appropriate error response
-        if (err.status) {
-            // Already a SvelteKit error
-            throw err;
-        } else if (err.message === 'Request timeout') {
-            throw error(504, 'Request timeout - please try again');
-        } else {
-            throw error(500, 'Internal server error while fetching posts');
-        }
+        return json(response, {
+            headers: {
+                'Cache-Control': 'public, max-age=300',
+                'X-Cache': 'MISS',
+                'X-Response-Time': `${Math.round(performance.now() - startTime)}ms`
+            }
+        });
+
+    } catch (err) {
+        console.error('API Error:', {
+            path: url.pathname,
+            query: Object.fromEntries(url.searchParams),
+            ip: clientIP,
+            error: err.message,
+            stack: err.stack
+        });
+
+        const status = err.status || 
+                      (err.name === 'AbortError' ? 504 : 500);
+
+        throw error(status, {
+            message: err.message || 'Internal server error',
+            code: err.code || 'UNKNOWN_ERROR'
+        });
     }
 };
 

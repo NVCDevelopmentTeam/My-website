@@ -1,89 +1,148 @@
 <script>
 	import { formatDate } from '$lib/data/utils';
 	import { postsPerPage } from '$lib/data/config';
+	import { onDestroy, onMount } from 'svelte';
+	import { browser } from '$app/environment';
 
-	// State management with proper runes
+	// State management
 	let posts = $state([]);
-	let totalPosts = $state(0);
 	let loading = $state(true);
 	let error = $state(null);
+	let retryCount = $state(0);
+	let controller = $state(null);
 
-	// Function to fetch data from API
-	async function fetchPosts() {
+	// Cache configuration
+	const CACHE_KEY = 'latest-posts-cache';
+	const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+	// Function to fetch data from the API
+	async function fetchPosts(useCache = true) {
+		if (!browser) {
+			loading = false;
+			return;
+		}
+
+		// Cancel any existing request
+		controller?.abort();
+		controller = new AbortController();
+
 		try {
 			loading = true;
 			error = null;
-			
-			const postRes = await fetch('/api/posts.json');
+
+			// Check cache first
+			if (useCache) {
+				const cached = sessionStorage.getItem(CACHE_KEY);
+				if (cached) {
+					const { data: cachedData, timestamp } = JSON.parse(cached);
+					if (Date.now() - timestamp < CACHE_TTL) {
+						posts = cachedData.posts || [];
+						loading = false;
+						return;
+					}
+				}
+			}
+
+			// Set a timeout for the fetch request
+			const timeoutId = setTimeout(() => controller?.abort(), 10000); // 10-second timeout
+
+			const postRes = await fetch('/api/posts.json', {
+				signal: controller.signal,
+				headers: { 'Cache-Control': 'no-cache' }
+			});
+
+			clearTimeout(timeoutId);
+
 			if (!postRes.ok) {
 				throw new Error(`HTTP error! status: ${postRes.status}`);
 			}
-			
+
 			const data = await postRes.json();
-			console.log('API response data:', data); // Debugging
-			
-			// Validate response structure
-			if (!data || typeof data !== 'object') {
-				throw new Error('Invalid response format');
+
+			// Validate the structure of the response data
+			if (!data || !Array.isArray(data.posts)) {
+				throw new Error('Invalid response format from server.');
 			}
 			
-			// Update state
-			if (Array.isArray(data.posts)) {
-				posts = data.posts.slice(0, postsPerPage);
+			// Update cache with fresh data
+			sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+				data,
+				timestamp: Date.now()
+			}));
+
+			posts = data.posts.slice(0, postsPerPage);
+			retryCount = 0; // Reset retry count on success
+
+		} catch (err) {
+			if (err.name === 'AbortError') {
+				console.log('Fetch request was aborted.');
 			} else {
-				posts = [];
-				if (!error) {
-					error = 'No posts found in response';
+				error = err.message || 'Failed to load posts.';
+				console.error('Failed to load posts:', err);
+				
+				// Retry with exponential backoff
+				if (retryCount < 3) {
+					retryCount++;
+					const backoffTime = Math.min(1000 * Math.pow(2, retryCount), 8000);
+					setTimeout(() => fetchPosts(false), backoffTime);
 				}
 			}
-			
-			totalPosts = typeof data.total === 'number' ? data.total : 0;
-			
-			console.log('Posts in component:', posts); // Debugging
-			console.log('Total posts:', totalPosts); // Debugging
-			
-		} catch (err) {
-			console.error('Failed to load posts:', err);
-			error = err.message || 'Failed to load posts';
-			posts = [];
-			totalPosts = 0;
 		} finally {
 			loading = false;
+			controller = null;
 		}
 	}
 
-	// Use $effect to run the fetch on component initialization
-	$effect(() => {
-		// This runs once when the component mounts
+	// Fetch posts when the component mounts
+	onMount(() => {
 		fetchPosts();
 	});
 
-	// Derived state for better reactivity
+	// Abort fetch if the component is destroyed
+	onDestroy(() => {
+		controller?.abort();
+	});
+
+	// Derived state for the template
 	let displayPosts = $derived(posts || []);
 	let hasError = $derived(error !== null);
 	let isEmpty = $derived(!loading && displayPosts.length === 0 && !hasError);
 </script>
 
 <section class="mb-8 w-full">
-	<h2 id="latest" class="mb-6 text-2xl font-bold tracking-tight text-foreground md:text-4xl">
-		Latest Posts
-	</h2>
+	<div class="flex justify-between items-center mb-6">
+		<h2 id="latest" class="text-2xl font-bold tracking-tight text-foreground md:text-4xl">
+			Latest Posts
+		</h2>
+	</div>
 	
 	{#if hasError}
 		<div class="p-4 mb-4 text-red-700 bg-red-100 border border-red-300 rounded">
 			<p class="font-medium">Error loading posts:</p>
 			<p class="text-sm">{error}</p>
-			<button 
-				class="mt-2 px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-				onclick={fetchPosts}
-			>
-				Try Again
-			</button>
+			<div class="mt-2 space-x-2">
+				<button
+					class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+					onclick={() => fetchPosts(false)}
+					disabled={loading}
+				>
+					{loading ? 'Retrying...' : 'Try Again'}
+				</button>
+				<button
+					class="px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+					onclick={() => {
+						sessionStorage.removeItem(CACHE_KEY);
+						fetchPosts(false);
+					}}
+					disabled={loading}
+				>
+					Clear Cache & Retry
+				</button>
+			</div>
 		</div>
 	{:else}
 		<ul class="space-y-4">
 			{#if loading}
-				<!-- Loading skeleton -->
 				{#each Array(5) as _, i (i)}
 					<li class="animate-pulse">
 						<div class="h-4 bg-muted rounded w-3/4 mb-2"></div>
@@ -91,20 +150,24 @@
 					</li>
 				{/each}
 			{:else if isEmpty}
-				<!-- Empty state -->
 				<li class="py-8 text-center text-muted-foreground">
 					<p>No posts available at the moment.</p>
+					<button
+						class="mt-2 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+						onclick={() => fetchPosts(false)}
+					>
+						Refresh Posts
+					</button>
 				</li>
 			{:else}
-				<!-- Posts list -->
-				{#each displayPosts as post (post.slug)}
+				{#each displayPosts as post, index (post.slug || index)}
 					<li>
 						<a class="group block" href="/blog/{post.slug}">
 							<h3 class="text-lg font-medium group-hover:text-primary transition-colors">
-								{post.title}
+								{post.title || 'Untitled Post'}
 							</h3>
 							<p class="text-sm text-muted-foreground">
-								{formatDate(post.date)}
+								{post.date ? formatDate(post.date) : 'No date'}
 							</p>
 						</a>
 					</li>
