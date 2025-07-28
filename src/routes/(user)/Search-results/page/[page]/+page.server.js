@@ -20,7 +20,7 @@ export const load = async ({ url, params, fetch }) => {
 	const total = await totalPostsRes.json();
 
 	// Fetch the posts for the current page
-	const { posts } = await fetchPosts({ offset, page });
+	const { posts } = await fetchPosts({ offset, limit: postsPerPage });
 
 	return {
 		posts,

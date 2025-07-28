@@ -17,7 +17,7 @@ export const load = async ({ url, fetch }) => {
 		});
 	});
 
-	const sortedUniqueTags = Object.values(uniqueTags).sort((a, b) => a.title > b.title);
+	const sortedUniqueTags = Object.values(uniqueTags).sort((a, b) => a.title.localeCompare(b.title));
 
 	return {
 		uniqueTags: sortedUniqueTags

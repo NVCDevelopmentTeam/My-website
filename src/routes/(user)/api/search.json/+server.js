@@ -105,7 +105,7 @@ export async function GET({ url }) {
 					matchesAuthor
 				);
 			})
-			.sort((a, b) => new Date(b.date) - new Date(a.date))
+			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 			.slice(offset, limit);
 
 		// Return the filtered search results as JSON

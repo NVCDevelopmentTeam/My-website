@@ -9,7 +9,6 @@
 	/**
 	 * Handles sending the message.
 	 * Ensures the message is not empty before dispatching.
-	 * @param {string} messageContent - The content of the message to send.
 	 */
 	function handleSend() {
 		if (message.trim()) {

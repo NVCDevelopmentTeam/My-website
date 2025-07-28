@@ -11,6 +11,7 @@ export function formatDate(dateString) {
 		throw new Error(`Invalid date string: ${dateString}`);
 	}
 
+	/** @type {Intl.DateTimeFormatOptions} */
 	const options = { year: 'numeric', month: 'long', day: 'numeric' };
 	return date.toLocaleDateString(undefined, options);
 }

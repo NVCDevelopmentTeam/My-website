@@ -4,6 +4,7 @@
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { siteDescription, postsPerPage } from '$lib/data/config';
 
+	/** @type {{ data: import("./$types").PageData }} */
 	let { data } = $props();
 	const { page, category, totalPosts, posts } = data;
 

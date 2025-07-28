@@ -58,9 +58,7 @@ export async function GET({ request }) {
 		// Get chat history with timeout
 		const history = await Promise.race([
 			getChatHistory(roomId),
-			new Promise((_, reject) =>
-				setTimeout(() => reject(new Error('Request timeout')), TIMEOUT_MS)
-			)
+			new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), TIMEOUT_MS))
 		]);
 
 		if (!history) {

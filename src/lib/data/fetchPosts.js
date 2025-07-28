@@ -3,6 +3,28 @@ import { parse } from 'node-html-parser';
 import { render } from 'svelte/server';
 import readingTime from 'reading-time';
 
+/**
+ * @typedef {Object} Post
+ * @property {string} slug
+ * @property {string} title
+ * @property {string} author
+ * @property {string} date
+ * @property {string[]} categories
+ * @property {string[]} [tags]
+ * @property {string} [updated]
+ * @property {boolean} [published]
+ * @property {boolean} [hidden]
+ * @property {string} [preview]
+ * @property {string} [content]
+ * @property {Object} [readingTime]
+ */
+
+/**
+ * @typedef {Object} PostModule
+ * @property {Post} metadata
+ * @property {any} default
+ */
+
 const generateSlug = (filepath) => {
 	return filepath
 		.replace(/^\/src\/lib\/posts\//, '')
@@ -22,7 +44,13 @@ const formatDate = (date) => {
 	return `${year}-${month}-${day}`;
 };
 
-export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = '' } = {}) => {
+export const fetchPosts = async ({
+	offset = 0,
+	limit = postsPerPage,
+	category = '',
+	tag = '',
+	author = ''
+} = {}) => {
 	try {
 		const postFiles = import.meta.glob('/src/lib/posts/**/*.md', { eager: true });
 
@@ -32,7 +60,8 @@ export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = 
 		}
 
 		const posts = await Promise.all(
-			Object.entries(postFiles).map(async ([filepath, post]) => {
+			Object.entries(postFiles).map(async ([filepath, postModule]) => {
+				const post = /** @type {PostModule} */ (postModule);
 				if (!post.metadata || !post.default) {
 					console.error(`Invalid post rendering for ${filepath}`);
 					return null;
@@ -63,17 +92,28 @@ export const fetchPosts = async ({ offset = 0, limit = postsPerPage, category = 
 		);
 
 		let validPosts = posts.filter((post) => {
+			if (!post || !post.date) return false;
 			const isPublished = new Date() >= new Date(post.date);
 			const isHidden = !!post.hidden;
-			return post !== null && post.slug !== undefined && isPublished && !isHidden;
+			return post.slug !== undefined && isPublished && !isHidden;
 		});
 
-		let sortedPosts = validPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+		let sortedPosts = validPosts.sort(
+			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+		);
 
 		if (category) {
 			sortedPosts = sortedPosts.filter(
 				(post) => post.categories && post.categories.includes(category)
 			);
+		}
+
+		if (tag) {
+			sortedPosts = sortedPosts.filter((post) => post.tags && post.tags.includes(tag));
+		}
+
+		if (author) {
+			sortedPosts = sortedPosts.filter((post) => post.author && post.author.includes(author));
 		}
 
 		if (offset > 0) {

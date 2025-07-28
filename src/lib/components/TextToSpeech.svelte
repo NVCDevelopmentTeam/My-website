@@ -2,6 +2,12 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 
+	/**
+	 * @typedef {Window & typeof globalThis & {
+	 *   responsiveVoice: any;
+	 * }}
+	 */
+
 	const { title, postContent } = $props();
 
 	let isSpeaking = $state(false);
@@ -186,7 +192,7 @@
 	}
 </script>
 
-<svelte:window on:click={handleClickOutsideRateMenu} />
+<svelte:window onclick={handleClickOutsideRateMenu} />
 
 <!-- UI Components -->
 <div class="p-4 bg-card rounded-lg shadow-md space-y-4">

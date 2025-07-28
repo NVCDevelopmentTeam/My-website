@@ -7,14 +7,7 @@
 	 * @typedef {Object} Props
 	 * @property {number} [currentPage]
 	 * @property {number} [totalPosts]
-	 * @property {string} [basePath]
-	 */
-
-	/**
-	 * @typedef {Object} Props
-	 * @property {Props} [currentPage]
-	 * @property {number} [totalPosts]
-	 * @property {string} [basePath]
+	 * @property {string} [path]
 	 */
 
 	/** @type {Props} */

@@ -1,34 +1,58 @@
-import prettier from 'eslint-config-prettier';
+import { defineConfig } from 'eslint/config';
 import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
-import svelte from 'eslint-plugin-svelte';
-import svelteParser from 'svelte-eslint-parser';
+import eslintPluginSvelte from 'eslint-plugin-svelte';
+import prettierConfig from 'eslint-config-prettier';
 import globals from 'globals';
-import { fileURLToPath } from 'node:url';
+import svelteParser from 'svelte-eslint-parser';
 import svelteConfig from './svelte.config.js';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
 
-const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+// Resolve full absolute path to `.gitignore`
+const gitignorePath = resolve(__dirname, '.gitignore');
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
+/** @type {import('eslint').Linter.FlatConfig[]} */
+export default defineConfig([
+	// 1. Load ignore patterns from .gitignore using absolute path
 	includeIgnoreFile(gitignorePath),
+
+	// 2. JS + Svelte + Prettier recommended configs
 	js.configs.recommended,
-	...svelte.configs.recommended,
-	prettier,
-	...svelte.configs.prettier,
+	...eslintPluginSvelte.configs['flat/recommended'],
+	prettierConfig,
+	...eslintPluginSvelte.configs['flat/prettier'],
+
+	// 3. Set global browser + node globals
 	{
 		languageOptions: {
-			globals: { ...globals.browser, ...globals.node }
+			globals: {
+				...globals.browser,
+				...globals.node
+			},
+			ecmaVersion: 'latest',
+			sourceType: 'module'
 		}
 	},
+
+	// 4. Specific overrides for `.svelte` files
 	{
 		files: ['**/*.svelte', '**/*.svelte.js'],
 		languageOptions: {
 			parser: svelteParser,
-			parserOptions: { svelteConfig, ecmaVersion: 2022, sourceType: 'module' }
+			parserOptions: {
+				svelteConfig
+			}
 		},
 		rules: {
 			'svelte/no-parsing-error': 'off'
 		}
+	},
+
+	// 5. Additional ignore patterns
+	{
+		ignores: ['dist/**', '**/*.config.js']
 	}
-];
+]);

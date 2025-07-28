@@ -4,6 +4,7 @@
 	import Pagination from '$lib/components/Pagination.svelte';
 	import PostsList from '$lib/components/PostsList.svelte';
 
+	/** @type {{ data: import("./$types").PageData }} */
 	let { data } = $props();
 	const pageTitle = 'Search results for';
 	const description = 'Search results for keyword';

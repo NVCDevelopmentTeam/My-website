@@ -1,4 +1,4 @@
 /** @type {import('./$types').LayoutLoad} */
-export function load({ page }) {
-	return { page };
+export function load({ url }) {
+	return { url: url.pathname };
 }

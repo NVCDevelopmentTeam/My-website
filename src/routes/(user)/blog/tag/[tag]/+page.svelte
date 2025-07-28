@@ -3,9 +3,10 @@
 	import PostsList from '$lib/components/PostsList.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 
+	/** @type {{ data: import("./$types").PageData }} */
 	let { data } = $props();
 
-	const { page, posts, tag, total } = data;
+	const { posts, tag, total } = data;
 </script>
 
 <svelte:head>
@@ -16,7 +17,7 @@
 
 {#if posts.length}
 	<PostsList {posts} />
-	<Pagination currentPage={page} totalPosts={total} path="/blog/tag/{tag}/page" />
+	<Pagination totalPosts={total} path="/blog/tag/{tag}/page" />
 {:else}
 	<p><strong>Ope!</strong> Sorry, couldn't find any posts in the tag "{tag}".</p>
 

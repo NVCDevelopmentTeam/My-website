@@ -21,8 +21,6 @@
 		tags
 	} = data.meta;
 
-	
-
 	// Reference to post content element
 	let postElement = $state();
 	let postContent = $state(''); // Initialize postContent to an empty string
@@ -103,24 +101,24 @@
 		<!-- Pass title and post content to the TextToSpeech component -->
 		<TextToSpeech {title} {postContent} />
 
-		{#await import(`../../../../lib/posts/${data.meta.slug}.md`) then { default: PostContent } }
-		<div class="prose dark:prose-invert max-w-none mt-8">
-			{#if typeof PostContent === 'function'}
-				<!-- Binding postElement and handling content rendering -->
-				<div bind:this={postElement}>
-					<PostContent />
-				</div>
-			{:else if typeof PostContent === 'string'}
-				<!-- Handle HTML content safely -->
-				<div bind:this={postElement}>
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html PostContent}
-				</div>
-			{:else}
-				<p>Error: Unable to display post content.</p>
-			{/if}
-		</div>
-	{/await}
+		{#await import(`../../../../lib/posts/${data.meta.slug}.md`) then { default: PostContent }}
+			<div class="prose dark:prose-invert max-w-none mt-8">
+				{#if typeof PostContent === 'function'}
+					<!-- Binding postElement and handling content rendering -->
+					<div bind:this={postElement}>
+						<PostContent />
+					</div>
+				{:else if typeof PostContent === 'string'}
+					<!-- Handle HTML content safely -->
+					<div bind:this={postElement}>
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html PostContent}
+					</div>
+				{:else}
+					<p>Error: Unable to display post content.</p>
+				{/if}
+			</div>
+		{/await}
 
 		{#if tags && tags.length > 0}
 			<aside class="mt-8">

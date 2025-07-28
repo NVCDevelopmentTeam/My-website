@@ -3,12 +3,23 @@
 
 	/**
 	 * An array of post objects to display.
-	 * @type {Array<Object>}
+	 * @type {import("$lib/data/fetchPosts").Post[]}
 	 */
 	let { posts = [] } = $props();
+	/** @type {import("$lib/data/fetchPosts").Post[]} */
+	posts;
 
 	// A reactive boolean that's true if the posts array is not empty.
 	let hasPosts = $derived(posts.length > 0);
+
+	function setInnerHTML(node, html) {
+		node.innerHTML = html;
+		return {
+			update(html) {
+				node.innerHTML = html;
+			}
+		};
+	}
 </script>
 
 {#if hasPosts}
@@ -60,9 +71,10 @@
 							{/if}
 
 							{#if post.preview?.html}
-								<div class="prose dark:prose-invert mt-4">
-									{@html post.preview.html}
-								</div>
+								<div
+									class="prose dark:prose-invert mt-4"
+									use:setInnerHTML={post.preview.html}
+								></div>
 							{/if}
 						</div>
 					</a>

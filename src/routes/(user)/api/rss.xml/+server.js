@@ -1,15 +1,31 @@
 import { siteTitle, siteDescription, siteURL, siteLink } from '$lib/data/config';
 
+/**
+ * @typedef {Object} Post
+ * @property {string} slug
+ * @property {string} title
+ * @property {string} author
+ * @property {string} date
+ * @property {string} excerpt
+ */
+
+/**
+ * @typedef {Object} PostModule
+ * @property {Post} metadata
+ * @property {any} default
+ */
+
 export async function GET() {
 	const data = await Promise.all(
-		Object.entries(import.meta.glob('$lib/posts/*.md')).map(async ([path, page]) => {
-			const { metadata } = await page();
+		Object.entries(import.meta.glob('$lib/posts/*.md')).map(async ([path, pageModule]) => {
+			const page = /** @type {PostModule} */ (await pageModule());
+			const { metadata } = page;
 			const slug = path.split('/').pop().split('.').shift();
 			return { ...metadata, slug };
 		})
 	);
 
-	const posts = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+	const posts = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 	const rss = `
     <rss version="2.0">

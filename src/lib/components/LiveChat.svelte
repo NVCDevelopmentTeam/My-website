@@ -10,7 +10,7 @@
 	let isChatStarted = $state(false);
 	let messages = $state([]);
 	let roomId = $state(null);
-	let errors = $state({ name: '', contact: '', message: '' });
+	let errors = $state({ name: '', contact: '', message: '', general: '' });
 
 	// Component state
 	let userInfo = $state({
@@ -49,7 +49,7 @@
 
 	function validateForm() {
 		let valid = true;
-		const newErrors = { name: '', contact: '', message: '' };
+		const newErrors = { name: '', contact: '', message: '', general: '' };
 
 		if (!userInfo.name.trim()) {
 			newErrors.name = 'Please enter your name';
@@ -75,7 +75,7 @@
 
 		try {
 			const newRoomId = `room-${Date.now()}`;
-			await joinRoom(socket, newRoomId);
+			await joinRoom(newRoomId);
 			roomId = newRoomId;
 			await sendMessage(socket, newRoomId, userInfo.initialMessage);
 			isChatStarted = true;
@@ -155,7 +155,7 @@
 			<div class="flex flex-col h-full">
 				<MessageList {messages} />
 				<ChatToolbar {socket} {roomId} />
-				<MessageInput onsend={handleNewMessage} />
+				<MessageInput onsend={(content) => handleNewMessage(content)} />
 			</div>
 		{/if}
 	</div>

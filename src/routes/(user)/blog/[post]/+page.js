@@ -23,7 +23,7 @@ export const load = async ({ params }) => {
 		return {
 			meta
 		};
-	} catch (e) {
+	} catch {
 		// Pass a serializable error message instead of the whole error object.
 		error(404, { message: `Could not load post: ${params.post}` });
 	}

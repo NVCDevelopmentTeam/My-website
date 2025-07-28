@@ -21,7 +21,7 @@
 			<summary class="font-medium cursor-pointer text-gray-700">Error details</summary>
 			<pre class="mt-2 text-sm text-red-600 bg-gray-100 p-2 rounded overflow-x-auto">
 {page.error.message}
-{page.error.stack}
+{#if page.error.stack}{page.error.stack}{/if}
       </pre>
 		</details>
 	{/if}

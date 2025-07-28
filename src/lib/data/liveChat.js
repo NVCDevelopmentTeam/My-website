@@ -26,7 +26,7 @@ class LiveChat {
 		}
 
 		this.connectionState = 'connecting';
-		
+
 		try {
 			if (!this.socket) {
 				this.socket = io(this.SOCKET_URL, {
@@ -69,23 +69,29 @@ class LiveChat {
 	setupSocketListeners() {
 		this.socket.on('disconnect', () => {
 			this.connectionState = 'disconnected';
-			this.events.dispatchEvent(new CustomEvent('connectionStateChange', {
-				detail: { state: 'disconnected' }
-			}));
+			this.events.dispatchEvent(
+				new CustomEvent('connectionStateChange', {
+					detail: { state: 'disconnected' }
+				})
+			);
 		});
 
 		this.socket.on('error', (error) => {
 			console.error('Socket error:', error);
-			this.events.dispatchEvent(new CustomEvent('error', {
-				detail: { error }
-			}));
+			this.events.dispatchEvent(
+				new CustomEvent('error', {
+					detail: { error }
+				})
+			);
 		});
 
 		this.socket.io.on('reconnect_attempt', () => {
 			this.connectionState = 'connecting';
-			this.events.dispatchEvent(new CustomEvent('connectionStateChange', {
-				detail: { state: 'connecting' }
-			}));
+			this.events.dispatchEvent(
+				new CustomEvent('connectionStateChange', {
+					detail: { state: 'connecting' }
+				})
+			);
 		});
 
 		this.socket.on('connect', () => {
@@ -368,7 +374,7 @@ class LiveChat {
 					? document.getElementById('remoteVideo')
 					: document.getElementById('remoteAudio');
 			if (remoteMediaElement) {
-				remoteMediaElement.srcObject = null;
+				/** @type {HTMLVideoElement | HTMLAudioElement} */ (remoteMediaElement).srcObject = null;
 			}
 			this.remotestream = null;
 		}

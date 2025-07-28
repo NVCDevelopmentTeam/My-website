@@ -58,7 +58,7 @@
 			playAudio('error');
 
 			// If no results were found and search was via voice
-			if (!searchResults.length && !noResults) {
+			if (!$searchResults.length && !noResults) {
 				playAudio('error');
 			}
 			isVoiceSearch = false;

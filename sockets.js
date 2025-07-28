@@ -1,4 +1,4 @@
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 // Function to attach sockets to the HTTP server
 export function attachSockets(httpServer) {
@@ -19,19 +19,22 @@ export function attachSockets(httpServer) {
 	};
 
 	// Handle new socket connections
-	io.on('connection', (socket) => {
-		handleNewConnection(socket);
+	io.on(
+		'connection',
+		/** @type {Socket} */ (socket) => {
+			handleNewConnection(socket, io, stats);
 
-		socket.on('chat-message', (data) => handleChatMessage(socket, data));
-		socket.on('offer', (offer) => handleOffer(socket, offer));
-		socket.on('answer', (answer) => handleAnswer(socket, answer));
-		socket.on('iceCandidate', (candidate) => handleIceCandidate(socket, candidate));
-		socket.on('disconnect', () => handleDisconnection(socket));
-		socket.on('error', (error) => handleError(socket, error));
-	});
+			socket.on('chat-message', (data) => handleChatMessage(socket, data, io));
+			socket.on('offer', (offer) => handleOffer(socket, offer, io));
+			socket.on('answer', (answer) => handleAnswer(socket, answer, io));
+			socket.on('iceCandidate', (candidate) => handleIceCandidate(socket, candidate, io));
+			socket.on('disconnect', () => handleDisconnection(socket, io, stats));
+			socket.on('error', (error) => handleError(socket, error));
+		}
+	);
 
 	// Function to handle new connections
-	function handleNewConnection(socket) {
+	function handleNewConnection(socket, io, stats) {
 		const { userType, userId, country = 'Unknown' } = socket.handshake.auth;
 
 		// Validate userType and userId
@@ -54,7 +57,7 @@ export function attachSockets(httpServer) {
 
 		// Send appropriate messages based on userType
 		if (userType === 'admin') {
-			socket.emit('stats-update', getFormattedStats());
+			socket.emit('stats-update', getFormattedStats(stats));
 		} else if (userType === 'user') {
 			const roomId = userId;
 			socket.join(roomId);
@@ -65,11 +68,11 @@ export function attachSockets(httpServer) {
 		}
 
 		// Broadcast updated stats to all clients
-		io.emit('stats-update', getFormattedStats());
+		io.emit('stats-update', getFormattedStats(stats));
 	}
 
 	// Function to handle chat messages
-	function handleChatMessage(socket, data) {
+	function handleChatMessage(socket, data, io) {
 		const { userType, userId } = socket.userData;
 		const { roomId, message, sender } = data;
 
@@ -92,7 +95,7 @@ export function attachSockets(httpServer) {
 	}
 
 	// Function to handle call offers
-	function handleOffer(socket, { targetId, offer }) {
+	function handleOffer(socket, { targetId, offer }, io) {
 		const targetSocket = Array.from(io.sockets.sockets.values()).find(
 			(s) => s.userData && s.userData.userId === targetId
 		);
@@ -104,7 +107,7 @@ export function attachSockets(httpServer) {
 	}
 
 	// Function to handle call answers
-	function handleAnswer(socket, { targetId, answer }) {
+	function handleAnswer(socket, { targetId, answer }, io) {
 		const targetSocket = Array.from(io.sockets.sockets.values()).find(
 			(s) => s.userData && s.userData.userId === targetId
 		);
@@ -116,7 +119,7 @@ export function attachSockets(httpServer) {
 	}
 
 	// Function to handle ICE candidates
-	function handleIceCandidate(socket, { targetId, candidate }) {
+	function handleIceCandidate(socket, { targetId, candidate }, io) {
 		const targetSocket = Array.from(io.sockets.sockets.values()).find(
 			(s) => s.userData && s.userData.userId === targetId
 		);
@@ -128,7 +131,7 @@ export function attachSockets(httpServer) {
 	}
 
 	// Function to handle disconnections
-	function handleDisconnection(socket) {
+	function handleDisconnection(socket, io, stats) {
 		const { userId, userType } = socket.userData;
 
 		// Remove the client from connectedClients
@@ -136,7 +139,7 @@ export function attachSockets(httpServer) {
 		console.log(`${userType} disconnected: ${userId}`);
 
 		// Broadcast updated stats to all clients
-		io.emit('stats-update', getFormattedStats());
+		io.emit('stats-update', getFormattedStats(stats));
 	}
 
 	// Function to handle errors
@@ -145,7 +148,7 @@ export function attachSockets(httpServer) {
 	}
 
 	// Function to get formatted statistics
-	function getFormattedStats() {
+	function getFormattedStats(stats) {
 		return {
 			visitsToday: stats.visitsToday,
 			totalVisits: stats.totalVisits,
@@ -158,7 +161,7 @@ export function attachSockets(httpServer) {
 
 	// Periodically broadcast stats to all clients
 	setInterval(() => {
-		io.emit('stats-update', getFormattedStats());
+		io.emit('stats-update', getFormattedStats(stats));
 	}, 10000);
 
 	return io;

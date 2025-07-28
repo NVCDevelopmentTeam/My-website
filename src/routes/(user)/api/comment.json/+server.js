@@ -46,10 +46,16 @@ export async function POST({ request }) {
 	}
 }
 
-export async function DELETE({ params }) {
+export async function DELETE({ request }) {
 	try {
-		// Extract comment ID from the params
-		const { id } = params;
+		const url = new URL(request.url);
+		const id = url.searchParams.get('id');
+
+		if (!id) {
+			return new Response(JSON.stringify({ error: 'Comment ID is required' }), {
+				status: 400
+			});
+		}
 
 		// Delete the comment with the specified ID
 		await deleteComment(Number(id));
@@ -57,7 +63,8 @@ export async function DELETE({ params }) {
 		return new Response(null, {
 			status: 204
 		});
-	} catch {
+	} catch (error) {
+		console.error('Error deleting comment:', error);
 		// Handle errors during comment deletion
 		return new Response(JSON.stringify({ error: 'Failed to delete comment' }), {
 			status: 500

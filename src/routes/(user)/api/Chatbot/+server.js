@@ -12,7 +12,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 export const POST = async ({ request }) => {
 	try {
 		const { message } = await request.json();
-		
+
 		// Enhanced input validation
 		if (!message || typeof message !== 'string') {
 			return json({ error: 'Message must be a non-empty string' }, { status: 400 });
@@ -34,11 +34,8 @@ export const POST = async ({ request }) => {
 		);
 
 		// Generate response using Gemini AI with timeout
-		const botResponse = await Promise.race([
-			generateGeminiResponse(message),
-			timeoutPromise
-		]);
-		
+		const botResponse = await Promise.race([generateGeminiResponse(message), timeoutPromise]);
+
 		return json({
 			id: uuidv4(),
 			message: botResponse,
@@ -46,9 +43,8 @@ export const POST = async ({ request }) => {
 		});
 	} catch (error) {
 		console.error('Error in chatbot API:', error.message);
-		const errorMessage = error.message === 'Request timeout' 
-			? 'Request timed out' 
-			: 'Internal server error';
+		const errorMessage =
+			error.message === 'Request timeout' ? 'Request timed out' : 'Internal server error';
 		return json({ error: errorMessage }, { status: 500 });
 	}
 };
@@ -56,7 +52,7 @@ export const POST = async ({ request }) => {
 async function generateGeminiResponse(message) {
 	try {
 		const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-		
+
 		// Add safety settings and generation config
 		const result = await model.generateContent({
 			contents: [{ role: 'user', parts: [{ text: message }] }],
@@ -64,7 +60,7 @@ async function generateGeminiResponse(message) {
 				temperature: 0.7,
 				topK: 40,
 				topP: 0.95,
-				maxOutputTokens: 1024,
+				maxOutputTokens: 1024
 			}
 		});
 
@@ -86,7 +82,10 @@ function generateFallbackResponse(message) {
 		'how are you': "I'm doing well, thank you for asking!",
 		bye: 'Goodbye! Have a great day!'
 	};
-	
+
 	const normalizedMessage = message.toLowerCase().trim();
-	return responses[normalizedMessage] || "I'm experiencing some technical difficulties. Please try again later.";
+	return (
+		responses[normalizedMessage] ||
+		"I'm experiencing some technical difficulties. Please try again later."
+	);
 }

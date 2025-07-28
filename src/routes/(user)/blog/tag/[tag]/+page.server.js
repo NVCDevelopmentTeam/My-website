@@ -2,14 +2,11 @@ import { fetchPosts } from '$lib/data/fetchPosts';
 
 export const load = async ({ params }) => {
 	const tag = params.tag;
-	const page = params.page || 1;
-	const options = { tag, limit: -1 };
-	const { posts } = await fetchPosts(options);
+	const { posts, total } = await fetchPosts({ tag, limit: -1 });
 
 	return {
 		posts,
 		tag,
-		page,
-		total: posts.length
+		total
 	};
 };

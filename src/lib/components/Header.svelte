@@ -1,5 +1,5 @@
 <script>
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import logo from '$lib/images/logo.png';
 	import Search from './Search.svelte';
@@ -160,11 +160,11 @@
 						<a
 							href={link.href}
 							role="menuitem"
-							aria-current={$page.url.pathname === link.href ? 'page' : undefined}
+							aria-current={page.url.pathname === link.href ? 'page' : undefined}
 							class="block px-4 py-2 text-foreground hover:bg-muted rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
-							class:bg-muted={$page.url.pathname === link.href}
-							class:font-medium={$page.url.pathname === link.href}
-							class:text-primary={$page.url.pathname === link.href}
+							class:bg-muted={page.url.pathname === link.href}
+							class:font-medium={page.url.pathname === link.href}
+							class:text-primary={page.url.pathname === link.href}
 						>
 							{link.label}
 						</a>

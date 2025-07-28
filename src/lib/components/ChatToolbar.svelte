@@ -17,7 +17,7 @@
 			class="px-3 py-1 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80"
 			>Voice call</button
 		>
-		<Dialog bind:dialog on:close={() => console.log('closed')}>
+		<Dialog bind:dialog>
 			<VoiceCall {socket} {roomId} />
 		</Dialog>
 	</div>
@@ -27,7 +27,7 @@
 			class="px-3 py-1 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80"
 			>Video call</button
 		>
-		<Dialog bind:dialog on:close={() => console.log('closed')}>
+		<Dialog bind:dialog>
 			<VideoCall {socket} {roomId} />
 		</Dialog>
 	</div>

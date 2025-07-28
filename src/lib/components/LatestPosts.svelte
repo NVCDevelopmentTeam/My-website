@@ -63,23 +63,25 @@
 			if (!data || !Array.isArray(data.posts)) {
 				throw new Error('Invalid response format from server.');
 			}
-			
+
 			// Update cache with fresh data
-			sessionStorage.setItem(CACHE_KEY, JSON.stringify({
-				data,
-				timestamp: Date.now()
-			}));
+			sessionStorage.setItem(
+				CACHE_KEY,
+				JSON.stringify({
+					data,
+					timestamp: Date.now()
+				})
+			);
 
 			posts = data.posts.slice(0, postsPerPage);
 			retryCount = 0; // Reset retry count on success
-
 		} catch (err) {
 			if (err.name === 'AbortError') {
 				console.log('Fetch request was aborted.');
 			} else {
 				error = err.message || 'Failed to load posts.';
 				console.error('Failed to load posts:', err);
-				
+
 				// Retry with exponential backoff
 				if (retryCount < 3) {
 					retryCount++;
@@ -115,7 +117,7 @@
 			Latest Posts
 		</h2>
 	</div>
-	
+
 	{#if hasError}
 		<div class="p-4 mb-4 text-red-700 bg-red-100 border border-red-300 rounded">
 			<p class="font-medium">Error loading posts:</p>
@@ -143,7 +145,7 @@
 	{:else}
 		<ul class="space-y-4">
 			{#if loading}
-				{#each Array(5) as _, i (i)}
+				{#each Array(5) as i (i)}
 					<li class="animate-pulse">
 						<div class="h-4 bg-muted rounded w-3/4 mb-2"></div>
 						<div class="h-3 bg-muted rounded w-1/2"></div>
