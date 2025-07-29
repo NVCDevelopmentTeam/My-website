@@ -10,13 +10,13 @@ import readingTime from 'reading-time';
  * @property {string} author
  * @property {string} date
  * @property {string[]} categories
- * @property {string[]} [tags]
+ * @property {string[]} tags
  * @property {string} [updated]
  * @property {boolean} [published]
  * @property {boolean} [hidden]
- * @property {string} [preview]
- * @property {string} [content]
- * @property {Object} [readingTime]
+ * @property {{html: string, text: string}} preview
+ * @property {string} content
+ * @property {Object} readingTime
  */
 
 /**
@@ -69,7 +69,7 @@ export const fetchPosts = async ({
 
 				const html = parse(render(post.default).html);
 				const previewElement = post.metadata.preview
-					? parse(post.metadata.preview)
+					? parse(post.metadata.preview.html)
 					: html.querySelector('p') || null;
 				const previewText = previewElement ? previewElement.toString() : '';
 				const structuredText = html.structuredText || '';
@@ -79,6 +79,7 @@ export const fetchPosts = async ({
 
 				return {
 					...post.metadata,
+					tags: post.metadata.tags || [],
 					slug: finalSlug,
 					content: structuredText,
 					preview: {

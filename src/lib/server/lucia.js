@@ -63,5 +63,28 @@ export const auth = {
 		return client.session.deleteMany({
 			where: { user_id: userId }
 		});
+	},
+
+	async handleRequest(event) {
+		const { cookies } = event;
+		const sessionId = cookies.get('session_id');
+
+		if (!sessionId) {
+			return { user: null, session: null };
+		}
+
+		const session = await client.session.findUnique({
+			where: { id: sessionId }
+		});
+
+		if (!session) {
+			return { user: null, session: null };
+		}
+
+		const user = await client.user.findUnique({
+			where: { id: session.user_id }
+		});
+
+		return { user, session };
 	}
 };

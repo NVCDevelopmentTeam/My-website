@@ -3,13 +3,9 @@ import { auth } from '$lib/server/lucia';
 
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle = async ({ event, resolve }) => {
-	event.locals.auth = auth.handleRequest(event);
-	const { session } = await event.locals.auth.validateUser();
+	const { user, session } = await auth.handleRequest(event);
+	event.locals.user = user;
 	event.locals.session = session;
-
-	if (session) {
-		event.locals.user = session.user;
-	}
 
 	const response = await resolve(event);
 
