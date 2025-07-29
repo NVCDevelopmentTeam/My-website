@@ -4,12 +4,12 @@
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { siteDescription, postsPerPage } from '$lib/data/config';
 
-	/** @type {{ data: import("./$types").PageData }} */
+	/** @type {{ data: { posts: import("$lib/data/fetchPosts").Post[], tag: string, total: number, page: number } }} */
 	let { data } = $props();
-	const { page, tag, totalPosts, posts } = data;
+	const { page, tag, total, posts } = data;
 
 	let lowerBound = $derived(page * postsPerPage - (postsPerPage - 1) || 1);
-	let upperBound = $derived(Math.min(page * postsPerPage, totalPosts));
+	let upperBound = $derived(Math.min(page * postsPerPage, total));
 </script>
 
 <svelte:head>
@@ -22,13 +22,13 @@
 	<h1>
 		Tag: {tag}
 		<br />
-		<small>Posts {lowerBound}–{upperBound} of {totalPosts}</small>
+		<small>Posts {lowerBound}–{upperBound} of {total}</small>
 	</h1>
-	<Pagination currentPage={page} {totalPosts} path="/blog/tag/{tag}/page" />
+	<Pagination currentPage={page} totalPosts={total} path="/blog/tag/{tag}/page" />
 
 	<PostsList {posts} />
 
-	<Pagination currentPage={page} {totalPosts} path="/blog/tag/{tag}/page" />
+	<Pagination currentPage={page} totalPosts={total} path="/blog/tag/{tag}/page" />
 {:else}
 	<h1>Oops!</h1>
 

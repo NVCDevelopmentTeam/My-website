@@ -155,7 +155,7 @@
 			<div class="flex flex-col h-full">
 				<MessageList {messages} />
 				<ChatToolbar {socket} {roomId} />
-				<MessageInput onsend={(content) => handleNewMessage(content)} />
+				<MessageInput on:send={(e) => handleNewMessage(e.detail)} />
 			</div>
 		{/if}
 	</div>

@@ -11,7 +11,7 @@
 	 */
 
 	/** @type {Props} */
-	let { currentPage = 1, totalPosts = 0, basePath = '/blog/page' } = $props();
+	let { currentPage = 1, totalPosts = 0, path = '/blog/page' } = $props();
 
 	// Calculate the number of available pages
 	let pagesAvailable = Math.ceil(totalPosts / postsPerPage);
@@ -32,14 +32,14 @@
 	<div class="flex items-center gap-4">
 		{#if hasPreviousPage}
 			<a
-				href={`${basePath}/1`}
+				href={`${path}/1`}
 				data-sveltekit-prefetch
 				class="flex items-center gap-2 font-medium text-foreground hover:text-primary"
 			>
 				First
 			</a>
 			<a
-				href={`${basePath}/${currentPage - 1}`}
+				href={`${path}/${currentPage - 1}`}
 				data-sveltekit-prefetch
 				class="flex items-center gap-2 font-medium text-foreground hover:text-primary"
 			>
@@ -55,7 +55,7 @@
 				{#each pages as page (page)}
 					<li>
 						<a
-							href={`${basePath}/${page}`}
+							href={`${path}/${page}`}
 							aria-current={isCurrentPage(page) ? 'page' : undefined}
 							class="px-3 py-1 border rounded-md transition-colors"
 							class:bg-primary={isCurrentPage(page)}
@@ -73,7 +73,7 @@
 	<div class="flex items-center gap-4">
 		{#if hasNextPage}
 			<a
-				href={`${basePath}/${currentPage + 1}`}
+				href={`${path}/${currentPage + 1}`}
 				data-sveltekit-prefetch
 				class="flex items-center gap-2 font-medium text-foreground hover:text-primary"
 			>
@@ -81,7 +81,7 @@
 				<ArrowRightIcon class="w-4 h-4" />
 			</a>
 			<a
-				href={`${basePath}/${pagesAvailable}`}
+				href={`${path}/${pagesAvailable}`}
 				data-sveltekit-prefetch
 				class="flex items-center gap-2 font-medium text-foreground hover:text-primary"
 			>

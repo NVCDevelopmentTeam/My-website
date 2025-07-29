@@ -2,12 +2,12 @@
 	import { formatDate } from '$lib/data/utils';
 
 	/**
-	 * An array of post objects to display.
-	 * @type {import("$lib/data/fetchPosts").Post[]}
+	 * @typedef {import('../types/global.d.ts').FormattedPostWithPreview} FormattedPostWithPreview
+	 * @property {FormattedPostWithPreview[]} [posts]
 	 */
+
+	/** @type {{posts: FormattedPostWithPreview[]}} */
 	let { posts = [] } = $props();
-	/** @type {import("$lib/data/fetchPosts").Post[]} */
-	posts;
 
 	// A reactive boolean that's true if the posts array is not empty.
 	let hasPosts = $derived(posts.length > 0);

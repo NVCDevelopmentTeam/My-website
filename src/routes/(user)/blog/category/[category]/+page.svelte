@@ -3,7 +3,7 @@
 	import PostsList from '$lib/components/PostsList.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 
-	/** @type {{ data: import("./$types").PageData & { posts: import("$lib/data/fetchPosts").Post[], category: string, total: number } }} */
+	/** @type {{ data: { posts: import("$lib/data/fetchPosts").Post[], category: string, total: number } }} */
 	let { data } = $props();
 
 	const { posts, category, total } = data;

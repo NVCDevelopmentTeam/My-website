@@ -4,7 +4,7 @@
 	import Pagination from '$lib/components/Pagination.svelte';
 	import PostsList from '$lib/components/PostsList.svelte';
 
-	/** @type {{ data: import("./$types").PageData }} */
+	/** @type {{ data: { results: import("$lib/data/fetchPosts").Post[], currentPage: number, total: number, error: string } }} */
 	let { data } = $props();
 	const pageTitle = 'Search results for';
 	const description = 'Search results for keyword';
@@ -39,7 +39,7 @@
 		<Pagination
 			currentPage={data.currentPage}
 			totalPosts={data.total}
-			basePath="/Search-results/page"
+			path="/Search-results/page"
 		/>
 	{:else if query}
 		<h1 class="text-4xl font-bold text-center mb-8">Not found</h1>

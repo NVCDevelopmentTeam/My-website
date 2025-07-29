@@ -1,5 +1,5 @@
 <script>
-	import { page } from '$app/state';
+	import { page } from '$app/stores';
 </script>
 
 <svelte:head>
@@ -16,12 +16,11 @@
 		or <a href="/contact" class="text-blue-600 hover:underline">contact us</a>.
 	</p>
 
-	{#if page.error}
+	{#if $page.status != 200}
 		<details class="bg-white p-4 rounded shadow mb-6 max-w-md w-full">
 			<summary class="font-medium cursor-pointer text-gray-700">Error details</summary>
 			<pre class="mt-2 text-sm text-red-600 bg-gray-100 p-2 rounded overflow-x-auto">
-{page.error.message}
-{#if page.error.stack}{page.error.stack}{/if}
+				{$page.error.message}
       </pre>
 		</details>
 	{/if}

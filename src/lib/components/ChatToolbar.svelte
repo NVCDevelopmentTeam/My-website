@@ -18,7 +18,7 @@
 			>Voice call</button
 		>
 		<Dialog bind:dialog>
-			<VoiceCall {socket} {roomId} />
+			<VoiceCall />
 		</Dialog>
 	</div>
 	<div>

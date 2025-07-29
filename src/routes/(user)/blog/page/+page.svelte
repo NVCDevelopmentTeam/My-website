@@ -3,7 +3,7 @@
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { siteDescription, siteTitle } from '$lib/data/config';
 
-	/** @type {{ data: import("./$types").PageData }} */
+	/** @type {{ data: { posts: import("$lib/data/fetchPosts").Post[], currentPage: number, total: number } }} */
 	let { data } = $props();
 </script>
 
