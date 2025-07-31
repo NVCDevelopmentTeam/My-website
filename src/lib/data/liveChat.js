@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 
 const socket = io('http://localhost:3000', {
 	reconnectionAttempts: 5,
-	reconnectionDelay: 1000,
+	reconnectionDelay: 1000
 });
 
 socket.on('connect', () => {
@@ -22,4 +22,3 @@ export function onMessage(callback) {
 }
 
 export default socket;
-
