@@ -8,7 +8,7 @@
 export const siteTitle = 'Coding Nguyễn';
 export const siteDescription = 'Built with the SvelteKit Static Blog Starter';
 export const siteURL = 'codingnguyen.com';
-export const siteLink = '';
+export const siteLink = 'https://github.com/NVCDevelopmentTeam/My-website';
 export const siteAuthor = 'Coding Nguyễn';
 
 // Controls how many posts are shown per page on the main blog index pages
