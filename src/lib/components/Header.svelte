@@ -2,6 +2,7 @@
 	import { fly } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 	import Search from './Search.svelte';
+import AccessibilityProvider from './AccessibilityProvider.svelte';
 	import AccessibilityMenu from './AccessibilityMenu.svelte';
 	import { config } from '$lib/data/config';
 	import { isMenuOpen, toggleMenu } from '$lib/data/openMenu';
@@ -14,12 +15,7 @@
 			<span class="font-bold text-xl">{config.title}</span>
 		</a>
 	</div>
-	<a
-		href="#main"
-		class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-4 focus:left-4 focus:m-4 focus:p-4 focus:bg-white focus:shadow-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-		>Skip to main content</a
-	>
-
+<AccessibilityProvider />
 	<div class="flex items-center space-x-4">
 		<AccessibilityMenu />
 		<Search />

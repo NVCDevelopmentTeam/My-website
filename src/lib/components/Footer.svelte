@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { siteAuthor } from '$lib/data/config';
 	import LiveChat from './LiveChat.svelte';
+import BackToTop from './BackToTop.svelte';
 	import { onMount } from 'svelte';
 
 	let year = $state(new Date().getFullYear());
@@ -34,7 +35,7 @@
 		</nav>
 		<div class="flex flex-col md:flex-row md:justify-between items-center">
 			<span class="text-sm">&copy; {year} {siteAuthor}. All rights reserved.</span>
-			<a href="#top" class="mt-2 md:mt-0 text-sm text-primary hover:underline">Back to top</a>
+<BackToTop />
 		</div>
 	</div>
 	<LiveChat />

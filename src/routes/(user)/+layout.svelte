@@ -24,7 +24,7 @@
 </svelte:head>
 
 <Header />
-<main id="main">
+<main>
 	{@render children?.()}
 	<Sidebar />
 </main>
