@@ -53,5 +53,4 @@
 				</nav>
 			</div>
 		{/if}
-	</AccessibilityProvider>
 </header>

@@ -1,4 +1,6 @@
 <script>
+import error.mp3, no-results.mp3, search-results.mp3, start-search.mp3 from "$lib/sounds";
+?? add sounds and voice search Like Google Search
 	import { preventDefault } from 'svelte/legacy';
 
 	import {
@@ -26,6 +28,7 @@
 			class="border rounded-full px-4 py-2 w-64"
 			aria-label="Search"
 		/>
+<Add voice search feature>
 		<button
 			type="submit"
 			class="absolute right-2 top-1/2 -translate-y-1/2"

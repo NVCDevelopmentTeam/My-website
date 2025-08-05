@@ -1,5 +1,6 @@
 <script>
-	// This component should fetch latest posts from an API
+
+// add api 	// This component should fetch latest posts from an API
 	// For now, we'll use static data
 	const posts = [
 		{ id: 1, title: 'Getting Started with SvelteKit', slug: 'getting-started-with-sveltekit' },
