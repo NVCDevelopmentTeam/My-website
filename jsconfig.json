@@ -4,8 +4,7 @@
 		"allowJs": true,
 		"checkJs": true,
 		"moduleResolution": "bundler"
-	},
-	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.svelte", "src/lib/types/global.d.ts"]
+	}
 	// Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias
 	// except $lib which is handled by https://svelte.dev/docs/kit/configuration#files
 	//

@@ -17,17 +17,17 @@ export const load = async ({ url, fetch }) => {
 };
 
 export const actions = {
-	create: async ({ request }) => {
+	create: async ({ request, url }) => {
 		try {
 			const formData = await request.formData();
 			const title = formData.get('title');
 			const summary = formData.get('summary');
-			const url = formData.get('url');
+			const postUrl = formData.get('url');
 
-			const response = await fetch('/api/new-post', {
+			const response = await fetch(`${url.origin}/api/new-post`, {
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({ title, summary, url })
+				body: JSON.stringify({ title, summary, url: postUrl })
 			});
 
 			if (!response.ok) {

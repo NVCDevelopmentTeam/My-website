@@ -1,5 +1,15 @@
 <script>
-	let query = '';
+	import { preventDefault } from 'svelte/legacy';
+
+	import {
+		searchQuery,
+		searchResults,
+		isLoading,
+		noResults,
+		totalResults,
+		searchFilters
+	} from '$lib/data/search.js';
+	let query = $state('');
 
 	function handleSearch() {
 		// Implement search logic here
@@ -8,7 +18,7 @@
 </script>
 
 <div class="relative">
-	<form on:submit|preventDefault={handleSearch} class="relative">
+	<form onsubmit={preventDefault(handleSearch)} class="relative">
 		<input
 			type="search"
 			bind:value={query}

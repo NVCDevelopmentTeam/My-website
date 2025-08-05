@@ -8,3 +8,10 @@ declare namespace App {
 		session: import('lucia').Session | null;
 	}
 }
+
+declare global {
+	interface Window {
+		gtag: (...args: any[]) => void;
+		dataLayer: any[];
+	}
+}

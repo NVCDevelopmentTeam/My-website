@@ -1,4 +1,5 @@
 import { Server, Socket } from 'socket.io';
+import { saveChatMessage, clearChatHistory } from './src/lib/data/database.js';
 
 // Function to attach sockets to the HTTP server
 export function attachSockets(httpServer) {
@@ -39,6 +40,7 @@ export function attachSockets(httpServer) {
 
 		// Validate userType and userId
 		if (!['admin', 'user'].includes(userType) || !userId) {
+			console.error('Invalid connection attempt:', { userType, userId });
 			socket.disconnect(true);
 			return;
 		}
@@ -47,7 +49,9 @@ export function attachSockets(httpServer) {
 		stats.visitsToday++;
 		stats.totalVisits++;
 		stats.totalVisitors++;
-		stats.totalCountries.add(country.toLowerCase());
+		if (country && typeof country === 'string') {
+			stats.totalCountries.add(country.toLowerCase());
+		}
 		stats.connectedClients.set(userId, { userType, country });
 
 		// Attach user data to the socket
@@ -91,7 +95,7 @@ export function attachSockets(httpServer) {
 		// Emit the chat message to the specified room
 		io.to(roomId).emit('chat-message', { sender: sender || userId, message });
 		// Implement saveChatMessage function to persist chat messages if needed
-		// saveChatMessage(roomId, sender || userId, message);
+		saveChatMessage(roomId, { sender: sender || userId, message });
 	}
 
 	// Function to handle call offers
@@ -137,6 +141,9 @@ export function attachSockets(httpServer) {
 		// Remove the client from connectedClients
 		stats.connectedClients.delete(userId);
 		console.log(`${userType} disconnected: ${userId}`);
+
+		// Clear chat history
+		clearChatHistory(userId);
 
 		// Broadcast updated stats to all clients
 		io.emit('stats-update', getFormattedStats(stats));

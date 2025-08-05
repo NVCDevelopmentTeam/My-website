@@ -3,7 +3,7 @@
 	import { quintOut } from 'svelte/easing';
 	import { preferences } from '$lib/utils/accessibility.js';
 
-	let isOpen = false;
+	let isOpen = $state(false);
 
 	function toggleMenu() {
 		isOpen = !isOpen;
@@ -24,7 +24,7 @@
 
 <div class="relative">
 	<button
-		on:click={toggleMenu}
+		onclick={toggleMenu}
 		class="p-2 rounded-full hover:bg-gray-200"
 		aria-label="Accessibility Menu"
 	>
@@ -39,23 +39,31 @@
 			<h3 class="font-bold text-lg mb-2">Accessibility</h3>
 
 			<div class="mb-4">
-				<label id="font-size-label" class="block text-sm font-medium text-gray-700">Font Size</label
+				<label
+					id="font-size-label"
+					class="block text-sm font-medium text-gray-700"
+					for="font-size-group">Font Size</label
 				>
-				<div class="flex space-x-2 mt-1" role="group" aria-labelledby="font-size-label">
+				<div
+					id="font-size-group"
+					class="flex space-x-2 mt-1"
+					role="group"
+					aria-labelledby="font-size-label"
+				>
 					<button
-						on:click={() => updatePreference('font-size', '14px')}
+						onclick={() => updatePreference('font-size', '14px')}
 						class:active={$preferences['font-size'] === '14px'}>Small</button
 					>
 					<button
-						on:click={() => updatePreference('font-size', '16px')}
+						onclick={() => updatePreference('font-size', '16px')}
 						class:active={$preferences['font-size'] === '16px'}>Normal</button
 					>
 					<button
-						on:click={() => updatePreference('font-size', '18px')}
+						onclick={() => updatePreference('font-size', '18px')}
 						class:active={$preferences['font-size'] === '18px'}>Large</button
 					>
 					<button
-						on:click={() => updatePreference('font-size', '20px')}
+						onclick={() => updatePreference('font-size', '20px')}
 						class:active={$preferences['font-size'] === '20px'}>Extra Large</button
 					>
 				</div>
@@ -66,7 +74,7 @@
 				<input
 					type="checkbox"
 					id="high-contrast"
-					on:change={(e) => updatePreference('high-contrast', e.currentTarget.checked)}
+					onchange={(e) => updatePreference('high-contrast', e.currentTarget.checked)}
 					checked={$preferences['high-contrast']}
 				/>
 			</div>
@@ -76,27 +84,17 @@
 				<input
 					type="checkbox"
 					id="reduce-motion"
-					on:change={(e) => updatePreference('reduce-motion', e.currentTarget.checked)}
+					onchange={(e) => updatePreference('reduce-motion', e.currentTarget.checked)}
 					checked={$preferences['reduce-motion']}
 				/>
 			</div>
 
 			<div class="border-t pt-4">
-				<button on:click={resetPreferences} class="w-full text-sm text-red-600 hover:underline"
+				<button onclick={resetPreferences} class="w-full text-sm text-red-600 hover:underline"
 					>Reset to Default</button
 				>
 			</div>
-
-			<div class="mt-4">
-				<h4 class="font-bold">Keyboard Shortcuts</h4>
-				<ul class="text-sm list-disc list-inside">
-					<li>Tab / Shift+Tab: Navigate</li>
-					<li>Enter / Space: Activate</li>
-					<li>Esc: Close Menu</li>
-				</ul>
-			</div>
-
-			<button on:click={toggleMenu} class="mt-4 w-full text-center py-2 bg-gray-200 rounded"
+			<button onclick={toggleMenu} class="mt-4 w-full text-center py-2 bg-gray-200 rounded"
 				>Close Menu</button
 			>
 		</div>

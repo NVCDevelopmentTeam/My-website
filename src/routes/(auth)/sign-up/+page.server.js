@@ -20,9 +20,9 @@ const signUpSchema = z
 	});
 
 /** @type {import('./$types').PageServerLoad} */
-export const load = async ({ locals }) => {
+export const load = async (event) => {
 	try {
-		const { session } = await locals.auth.validateUser();
+		const { session } = await auth.handleRequest(event);
 		if (session) {
 			redirect(302, '/admin');
 		}
@@ -43,7 +43,7 @@ export const load = async ({ locals }) => {
 /** @type {import('./$types').Actions} */
 export const actions = {
 	default: async (event) => {
-		const { locals } = event;
+		const { cookies } = event;
 		const form = await superValidate(event, zod(signUpSchema));
 
 		if (!form.valid) {
@@ -66,8 +66,11 @@ export const actions = {
 					lastName
 				}
 			});
-			const session = await auth.createSession(user.userId);
-			locals.auth.setSession(session);
+			const session = await auth.createSession({
+				userId: user.id,
+				attributes: { platform: 'email', ip_address: event.getClientAddress() }
+			});
+			cookies.set('session_id', session.id, { path: '/' });
 		} catch (error) {
 			if (error instanceof Response) {
 				throw error;

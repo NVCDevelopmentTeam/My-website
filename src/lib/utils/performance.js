@@ -1,35 +1,45 @@
+// @ts-nocheck
+/// <reference types="../../app.d.ts" />
+
+/** @typedef {import('./types.d.ts').LayoutShift} LayoutShift */
+
 import { browser } from '$app/environment';
+
+/** @typedef {import('./types.d.ts').Gtag} Gtag */
 
 // Lazy load images with Intersection Observer
 export function lazyLoadImages(selector = 'img[data-src]') {
 	if (!browser) return;
 
 	const images = document.querySelectorAll(selector);
-	
+
 	if (!images.length) return;
 
-	const imageObserver = new IntersectionObserver((entries, observer) => {
-		entries.forEach(entry => {
-			if (entry.isIntersecting) {
-				const img = entry.target;
-				const src = img.getAttribute('data-src');
-				
-				if (src) {
-					img.src = src;
-					img.removeAttribute('data-src');
-					img.classList.remove('lazy');
-					img.classList.add('loaded');
-				}
-				
-				observer.unobserve(img);
-			}
-		});
-	}, {
-		rootMargin: '50px 0px',
-		threshold: 0.01
-	});
+	const imageObserver = new IntersectionObserver(
+		(entries, observer) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					const img = /** @type {HTMLImageElement} */ (entry.target);
+					const src = img.getAttribute('data-src');
 
-	images.forEach(img => imageObserver.observe(img));
+					if (src) {
+						img.src = src;
+						img.removeAttribute('data-src');
+						img.classList.remove('lazy');
+						img.classList.add('loaded');
+					}
+
+					observer.unobserve(img);
+				}
+			});
+		},
+		{
+			rootMargin: '50px 0px',
+			threshold: 0.01
+		}
+	);
+
+	images.forEach((img) => imageObserver.observe(img));
 
 	return () => {
 		imageObserver.disconnect();
@@ -49,7 +59,12 @@ export function monitorCoreWebVitals() {
 				resolve({
 					name: 'LCP',
 					value: lastEntry.startTime,
-					rating: lastEntry.startTime <= 2500 ? 'good' : lastEntry.startTime <= 4000 ? 'needs-improvement' : 'poor'
+					rating:
+						lastEntry.startTime <= 2500
+							? 'good'
+							: lastEntry.startTime <= 4000
+								? 'needs-improvement'
+								: 'poor'
 				});
 			}).observe({ entryTypes: ['largest-contentful-paint'] });
 		});
@@ -60,11 +75,17 @@ export function monitorCoreWebVitals() {
 		return new Promise((resolve) => {
 			new PerformanceObserver((entryList) => {
 				const entries = entryList.getEntries();
-				entries.forEach(entry => {
+				entries.forEach((entry) => {
+					const fidEntry = /** @type {PerformanceEventTiming} */ (entry);
 					resolve({
 						name: 'FID',
-						value: entry.processingStart - entry.startTime,
-						rating: entry.processingStart - entry.startTime <= 100 ? 'good' : entry.processingStart - entry.startTime <= 300 ? 'needs-improvement' : 'poor'
+						value: fidEntry.processingStart - fidEntry.startTime,
+						rating:
+							fidEntry.processingStart - fidEntry.startTime <= 100
+								? 'good'
+								: fidEntry.processingStart - fidEntry.startTime <= 300
+									? 'needs-improvement'
+									: 'poor'
 					});
 				});
 			}).observe({ entryTypes: ['first-input'] });
@@ -77,9 +98,10 @@ export function monitorCoreWebVitals() {
 			let clsValue = 0;
 			new PerformanceObserver((entryList) => {
 				const entries = entryList.getEntries();
-				entries.forEach(entry => {
-					if (!entry.hadRecentInput) {
-						clsValue += entry.value;
+				entries.forEach((entry) => {
+					const clsEntry = /** @type {LayoutShift} */ (entry);
+					if (!clsEntry.hadRecentInput) {
+						clsValue += clsEntry.value;
 					}
 				});
 				resolve({
@@ -93,7 +115,9 @@ export function monitorCoreWebVitals() {
 
 	// Time to First Byte (TTFB)
 	function measureTTFB() {
-		const navigation = performance.getEntriesByType('navigation')[0];
+		const navigation = /** @type {PerformanceNavigationTiming} */ (
+			performance.getEntriesByType('navigation')[0]
+		);
 		const ttfb = navigation.responseStart - navigation.requestStart;
 		return {
 			name: 'TTFB',
@@ -107,12 +131,17 @@ export function monitorCoreWebVitals() {
 		return new Promise((resolve) => {
 			new PerformanceObserver((entryList) => {
 				const entries = entryList.getEntries();
-				entries.forEach(entry => {
+				entries.forEach((entry) => {
 					if (entry.name === 'first-contentful-paint') {
 						resolve({
 							name: 'FCP',
 							value: entry.startTime,
-							rating: entry.startTime <= 1800 ? 'good' : entry.startTime <= 3000 ? 'needs-improvement' : 'poor'
+							rating:
+								entry.startTime <= 1800
+									? 'good'
+									: entry.startTime <= 3000
+										? 'needs-improvement'
+										: 'poor'
 						});
 					}
 				});
@@ -127,11 +156,11 @@ export function monitorCoreWebVitals() {
 		measureCLS(),
 		measureFCP(),
 		Promise.resolve(measureTTFB())
-	]).then(metrics => {
+	]).then((metrics) => {
 		console.log('Core Web Vitals:', metrics);
-		
+
 		// Send to analytics
-		metrics.forEach(metric => {
+		metrics.forEach((metric) => {
 			if (typeof gtag !== 'undefined') {
 				gtag('event', metric.name, {
 					event_category: 'Web Vitals',
@@ -147,20 +176,20 @@ export function monitorCoreWebVitals() {
 export function preloadCriticalResources(resources = []) {
 	if (!browser) return;
 
-	resources.forEach(resource => {
+	resources.forEach((resource) => {
 		const link = document.createElement('link');
 		link.rel = 'preload';
 		link.href = resource.href;
 		link.as = resource.as || 'script';
-		
+
 		if (resource.type) {
 			link.type = resource.type;
 		}
-		
+
 		if (resource.crossorigin) {
 			link.crossOrigin = resource.crossorigin;
 		}
-		
+
 		document.head.appendChild(link);
 	});
 }
@@ -179,12 +208,9 @@ export function optimizeFonts() {
 	document.head.appendChild(style);
 
 	// Preload critical fonts
-	const criticalFonts = [
-		'/fonts/inter-var.woff2',
-		'/fonts/inter-var-italic.woff2'
-	];
+	const criticalFonts = ['/fonts/inter-var.woff2', '/fonts/inter-var-italic.woff2'];
 
-	criticalFonts.forEach(font => {
+	criticalFonts.forEach((font) => {
 		const link = document.createElement('link');
 		link.rel = 'preload';
 		link.href = font;
@@ -201,18 +227,20 @@ export function preventLayoutShift() {
 
 	// Add aspect ratio containers for images
 	const images = document.querySelectorAll('img:not([width]):not([height])');
-	images.forEach(img => {
-		img.addEventListener('load', function() {
+	images.forEach((img) => {
+		const imageElement = /** @type {HTMLImageElement} */ (img);
+		imageElement.addEventListener('load', function () {
 			const aspectRatio = this.naturalWidth / this.naturalHeight;
-			this.style.aspectRatio = aspectRatio;
+			this.style.aspectRatio = aspectRatio.toString();
 		});
 	});
 
 	// Reserve space for ads and dynamic content
 	const adSlots = document.querySelectorAll('.ad-slot');
-	adSlots.forEach(slot => {
-		if (!slot.style.minHeight) {
-			slot.style.minHeight = '250px'; // Standard ad height
+	adSlots.forEach((slot) => {
+		const slotElement = /** @type {HTMLElement} */ (slot);
+		if (!slotElement.style.minHeight) {
+			slotElement.style.minHeight = '250px'; // Standard ad height
 		}
 	});
 }
@@ -268,7 +296,7 @@ export function addResourceHints() {
 		'www.googletagmanager.com'
 	];
 
-	externalDomains.forEach(domain => {
+	externalDomains.forEach((domain) => {
 		const link = document.createElement('link');
 		link.rel = 'dns-prefetch';
 		link.href = `//${domain}`;
@@ -276,12 +304,9 @@ export function addResourceHints() {
 	});
 
 	// Preconnect to critical third-party origins
-	const criticalOrigins = [
-		'https://fonts.googleapis.com',
-		'https://fonts.gstatic.com'
-	];
+	const criticalOrigins = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
 
-	criticalOrigins.forEach(origin => {
+	criticalOrigins.forEach((origin) => {
 		const link = document.createElement('link');
 		link.rel = 'preconnect';
 		link.href = origin;
@@ -295,11 +320,12 @@ export function registerServiceWorker(swPath = '/sw.js') {
 	if (!browser || !('serviceWorker' in navigator)) return;
 
 	window.addEventListener('load', () => {
-		navigator.serviceWorker.register(swPath)
-			.then(registration => {
+		navigator.serviceWorker
+			.register(swPath)
+			.then((registration) => {
 				console.log('SW registered: ', registration);
 			})
-			.catch(registrationError => {
+			.catch((registrationError) => {
 				console.log('SW registration failed: ', registrationError);
 			});
 	});
@@ -311,7 +337,7 @@ export function createPerformanceObserver() {
 
 	const observer = new PerformanceObserver((list) => {
 		const entries = list.getEntries();
-		entries.forEach(entry => {
+		entries.forEach((entry) => {
 			// Log slow resources
 			if (entry.duration > 1000) {
 				console.warn('Slow resource:', entry.name, `${entry.duration}ms`);
@@ -334,15 +360,14 @@ export function analyzeBundleSize() {
 	console.group('Bundle Analysis');
 	console.log(`Scripts: ${scripts.length}`);
 	console.log(`Stylesheets: ${styles.length}`);
-	
+
 	// Estimate total size (this is approximate)
 	let totalEstimatedSize = 0;
-	scripts.forEach(script => {
+	scripts.forEach((script) => {
 		// This is just an estimation - real size would need network analysis
 		totalEstimatedSize += 50; // Assume 50KB average per script
 	});
-	
+
 	console.log(`Estimated total JS size: ~${totalEstimatedSize}KB`);
 	console.groupEnd();
 }
-

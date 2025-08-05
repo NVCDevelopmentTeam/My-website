@@ -2,9 +2,9 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { fly } from 'svelte/transition';
 
-	export let slides = [];
+	let { slides = [] } = $props();
 
-	let currentSlide = 0;
+	let currentSlide = $state(0);
 	let timer;
 
 	function nextSlide() {
@@ -44,7 +44,7 @@
 	<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
 		{#each slides as _, i}
 			<button
-				on:click={() => (currentSlide = i)}
+				onclick={() => (currentSlide = i)}
 				class:bg-white={i === currentSlide}
 				class:bg-gray-400={i !== currentSlide}
 				class="w-3 h-3 rounded-full"

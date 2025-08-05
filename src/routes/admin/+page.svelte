@@ -94,7 +94,11 @@
 			<div class="flex items-center">
 				<div class="p-2 bg-blue-100 rounded-lg">
 					<svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-						<path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+						<path
+							fill-rule="evenodd"
+							d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 				</div>
 				<div class="ml-4">
@@ -109,7 +113,11 @@
 				<div class="p-2 bg-green-100 rounded-lg">
 					<svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
 						<path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" />
-						<path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" />
+						<path
+							fill-rule="evenodd"
+							d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 				</div>
 				<div class="ml-4">
@@ -123,7 +131,11 @@
 			<div class="flex items-center">
 				<div class="p-2 bg-yellow-100 rounded-lg">
 					<svg class="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-						<path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+						<path
+							fill-rule="evenodd"
+							d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 				</div>
 				<div class="ml-4">
@@ -137,7 +149,9 @@
 			<div class="flex items-center">
 				<div class="p-2 bg-purple-100 rounded-lg">
 					<svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-						<path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+						<path
+							d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"
+						/>
 					</svg>
 				</div>
 				<div class="ml-4">
@@ -152,7 +166,11 @@
 				<div class="p-2 bg-red-100 rounded-lg">
 					<svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
 						<path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-						<path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.522 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+						<path
+							fill-rule="evenodd"
+							d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.522 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 				</div>
 				<div class="ml-4">
@@ -302,8 +320,18 @@
 				href="/admin/posts/new"
 				class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
 			>
-				<svg class="w-8 h-8 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+				<svg
+					class="w-8 h-8 text-blue-600 mr-3"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 4v16m8-8H4"
+					/>
 				</svg>
 				<div>
 					<h4 class="text-sm font-medium text-gray-900">Tạo bài viết mới</h4>
@@ -315,8 +343,18 @@
 				href="/admin/pages/new"
 				class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
 			>
-				<svg class="w-8 h-8 text-green-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+				<svg
+					class="w-8 h-8 text-green-600 mr-3"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+					/>
 				</svg>
 				<div>
 					<h4 class="text-sm font-medium text-gray-900">Tạo trang mới</h4>
@@ -328,8 +366,18 @@
 				href="/admin/media"
 				class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
 			>
-				<svg class="w-8 h-8 text-purple-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+				<svg
+					class="w-8 h-8 text-purple-600 mr-3"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+					/>
 				</svg>
 				<div>
 					<h4 class="text-sm font-medium text-gray-900">Tải lên media</h4>
@@ -341,9 +389,24 @@
 				href="/admin/settings"
 				class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
 			>
-				<svg class="w-8 h-8 text-gray-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+				<svg
+					class="w-8 h-8 text-gray-600 mr-3"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+					/>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+					/>
 				</svg>
 				<div>
 					<h4 class="text-sm font-medium text-gray-900">Cài đặt</h4>
@@ -353,4 +416,3 @@
 		</div>
 	</div>
 </div>
-

@@ -42,8 +42,9 @@ export const actions = {
 				select: {
 					id: true,
 					email: true,
-					password: true,
-					name: true,
+					firstName: true,
+					lastName: true,
+					hashedPassword: true,
 					role: true,
 					isActive: true,
 					emailVerified: true,
@@ -53,26 +54,29 @@ export const actions = {
 
 			if (!user) {
 				return fail(400, {
-					error: 'Email hoặc mật khẩu không chính xác'
+					error: 'Email hoặc mật khẩu không chính xác',
+					errors: {}
 				});
 			}
 
 			// Check if account is active
 			if (!user.isActive) {
 				return fail(400, {
-					error: 'Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ quản trị viên.'
+					error: 'Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ quản trị viên.',
+					errors: {}
 				});
 			}
 
 			// Check if email is verified
 			if (!user.emailVerified) {
 				return fail(400, {
-					error: 'Vui lòng xác thực email trước khi đăng nhập.'
+					error: 'Vui lòng xác thực email trước khi đăng nhập.',
+					errors: {}
 				});
 			}
 
 			// Verify password
-			const passwordMatch = await bcrypt.compare(password, user.password);
+			const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
 			if (!passwordMatch) {
 				return fail(400, {
 					error: 'Email hoặc mật khẩu không chính xác'
@@ -114,11 +118,11 @@ export const actions = {
 				user: {
 					id: user.id,
 					email: user.email,
-					name: user.name,
+					firstName: user.firstName,
+					lastName: user.lastName,
 					role: user.role
 				}
 			};
-
 		} catch (error) {
 			console.error('Login error:', error);
 			return fail(500, {
@@ -127,4 +131,3 @@ export const actions = {
 		}
 	}
 };
-

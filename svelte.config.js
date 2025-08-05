@@ -1,3 +1,4 @@
+import sveltePreprocess from 'svelte-preprocess';
 import adapter from '@sveltejs/adapter-node';
 import { mdsvex } from 'mdsvex';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -8,6 +9,7 @@ import path from 'path';
 const config = {
 	extensions: ['.svelte', '.md'],
 	preprocess: [
+		sveltePreprocess({ postcss: true }),
 		mdsvex({
 			extensions: ['.md'],
 			rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings]

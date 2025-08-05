@@ -45,6 +45,21 @@ export async function createTables() {
     message TEXT,
     sent_at TEXT
   )`);
+
+	// Table to store notifications
+	await db.exec(`CREATE TABLE IF NOT EXISTS notifications (
+    id TEXT PRIMARY KEY,
+    type TEXT,
+    meta TEXT,
+    created_at INTEGER
+  )`);
+
+	// Table to store subscribers
+	await db.exec(`CREATE TABLE IF NOT EXISTS subscribers (
+    email TEXT PRIMARY KEY,
+    subscribed_at TEXT,
+    unsubscribe_token TEXT
+  )`);
 }
 
 createTables();
@@ -117,15 +132,12 @@ export async function saveContact(name, email, message) {
 	const submittedAt = new Date().toISOString();
 
 	await db.run(
-		`INSERT INTO contacts (name, email, message, submitted_at) VALUES (?, ?, ?)`,
+		`INSERT INTO contacts (name, email, message, submitted_at) VALUES (?, ?, ?, ?)`,
 		name,
 		email,
 		message,
 		submittedAt
 	);
-
-	// Delete all contact information to prevent data accumulation
-	await db.run(`DELETE FROM contacts`);
 }
 
 // Function to save chat messages

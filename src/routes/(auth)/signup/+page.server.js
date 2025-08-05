@@ -3,11 +3,16 @@ import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { fail, redirect } from '@sveltejs/kit';
+import { auth } from '$lib/server/lucia';
+import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
 // Email configuration
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
 	host: process.env.SMTP_HOST || 'smtp.gmail.com',
 	port: process.env.SMTP_PORT || 587,
 	secure: false,
@@ -138,9 +143,10 @@ export const actions = {
 			// Create user with pending verification
 			const user = await prisma.user.create({
 				data: {
-					name,
+					firstName: name.split(' ')[0],
+					lastName: name.split(' ').slice(1).join(' '),
 					email,
-					password: hashedPassword,
+					hashedPassword,
 					role: 'ADMIN', // First user is admin
 					isActive: false, // Will be activated after email verification
 					emailVerified: false,
@@ -157,10 +163,9 @@ export const actions = {
 				otpSent: true,
 				message: 'Tài khoản đã được tạo. Vui lòng kiểm tra email để xác thực.'
 			};
-
 		} catch (error) {
 			console.error('Registration error:', error);
-			
+
 			// Handle specific Prisma errors
 			if (error.code === 'P2002') {
 				return fail(400, {
@@ -238,7 +243,6 @@ export const actions = {
 				success: true,
 				message: 'Tài khoản đã được xác thực thành công. Bạn có thể đăng nhập ngay bây giờ.'
 			};
-
 		} catch (error) {
 			console.error('OTP verification error:', error);
 			return fail(500, {
@@ -247,4 +251,3 @@ export const actions = {
 		}
 	}
 };
-

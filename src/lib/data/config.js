@@ -4,7 +4,7 @@
  *
  * PLEASE BE SURE TO UPDATE THEM ALL! Thank you!
  **/
-
+import logo from '$lib/images/logo.png';
 export const siteTitle = 'Coding Nguyễn';
 export const siteDescription = 'Built with the SvelteKit Static Blog Starter';
 export const siteURL = 'codingnguyen.com';
@@ -31,7 +31,7 @@ export const navItems = [
 ];
 export const config = {
 	title: 'Coding Nguyễn',
-	logo: '/logo.png', // Path to your logo
+	logo: { logo }, // Path to your logo
 	navLinks: [
 		{ title: 'Trang chủ', href: '/' },
 		{ title: 'Giới thiệu', href: '/about' },

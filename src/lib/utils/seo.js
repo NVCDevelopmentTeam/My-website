@@ -1,4 +1,12 @@
-import { browser } from 
+// @ts-nocheck
+/// <reference types="../../app.d.ts" />
+
+import { browser } from '$app/environment';
+
+/**
+ * @typedef {import('./types.d.ts').Gtag} Gtag
+ * @typedef {import('./types.d.ts').DataLayer} DataLayer
+ */
 
 // Generate dynamic meta tags
 export function generateMetaTags(data) {
@@ -106,19 +114,21 @@ export function generateSitemap(pages) {
 	const baseUrl = 'https://codingNguyen.com';
 	const currentDate = new Date().toISOString().split('T')[0];
 
-	const urls = pages.map(page => {
-		const priority = page.priority || (page.url === '/' ? '1.0' : '0.8');
-		const changefreq = page.changefreq || 'weekly';
-		const lastmod = page.lastmod || currentDate;
+	const urls = pages
+		.map((page) => {
+			const priority = page.priority || (page.url === '/' ? '1.0' : '0.8');
+			const changefreq = page.changefreq || 'weekly';
+			const lastmod = page.lastmod || currentDate;
 
-		return `
+			return `
 		<url>
 			<loc>${baseUrl}${page.url}</loc>
 			<lastmod>${lastmod}</lastmod>
 			<changefreq>${changefreq}</changefreq>
 			<priority>${priority}</priority>
 		</url>`;
-	}).join('');
+		})
+		.join('');
 
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -139,13 +149,13 @@ export function generateRobotsTxt(options = {}) {
 	let robotsTxt = `User-agent: ${userAgent}\n`;
 
 	if (disallow.length > 0) {
-		disallow.forEach(path => {
+		disallow.forEach((path) => {
 			robotsTxt += `Disallow: ${path}\n`;
 		});
 	}
 
 	if (allow.length > 0) {
-		allow.forEach(path => {
+		allow.forEach((path) => {
 			robotsTxt += `Allow: ${path}\n`;
 		});
 	}
@@ -241,7 +251,7 @@ export function generateSlug(text) {
 	return text
 		.toLowerCase()
 		.normalize('NFD')
-		.replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+		.replace(/[̀-ͯ]/g, '') // Remove diacritics
 		.replace(/[^a-z0-9\s-]/g, '') // Remove special characters
 		.trim()
 		.replace(/\s+/g, '-') // Replace spaces with hyphens
@@ -264,4 +274,3 @@ export function extractExcerpt(content, maxLength = 160) {
 	}
 	return plainText.substring(0, maxLength).trim() + '...';
 }
-
