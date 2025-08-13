@@ -1,12 +1,10 @@
-import { fail } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
+import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { fail, redirect } from '@sveltejs/kit';
-import { auth } from '$lib/server/lucia';
 import { z } from 'zod';
 
 const prisma = new PrismaClient();
