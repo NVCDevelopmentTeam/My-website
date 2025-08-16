@@ -1,89 +1,124 @@
 <script>
-	import { accessibilityStore } from '$stores/accessibility';
-
-	let isOpen = $state(false);
-
-	function toggleMenu() {
-		isOpen = !isOpen;
-	}
-
-	function updateSetting(key, value) {
-		accessibilityStore.update((settings) => ({
-			...settings,
-			[key]: value
-		}));
-	}
+	import {
+		menuOpen,
+		darkMode,
+		contrast,
+		colorFilters,
+		toggleDarkMode,
+		toggleContrast,
+		toggleColorFilters,
+		handleKeydown
+	} from '$lib/utils/accessibility.js';
 </script>
 
 <div class="relative">
 	<button
-		onclick={toggleMenu}
-		class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-		aria-label="Accessibility settings"
+		onclick={() => menuOpen.set(!$menuOpen)}
+		onkeydown={(e) => handleKeydown(e, () => menuOpen.set(!$menuOpen))}
+		aria-expanded={$menuOpen}
+		aria-controls="accessibility-options"
+		class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 	>
-		<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<svg
+			class="w-6 h-6 text-gray-600 dark:text-gray-300"
+			fill="none"
+			stroke="currentColor"
+			viewBox="0 0 24 24"
+			xmlns="http://www.w3.org/2000/svg"
+		>
 			<path
-				strokeLinecap="round"
-				strokeLinejoin="round"
-				strokeWidth="2"
-				d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-			/>
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+			></path>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+			></path>
 		</svg>
+		<span class="sr-only">Open accessibility menu</span>
 	</button>
 
-	{#if isOpen}
+	{#if $menuOpen}
 		<div
-			class="absolute right-0 mt-2 w-64 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+			id="accessibility-options"
+			role="menu"
+			class="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-20"
 		>
 			<div class="p-4 space-y-4">
-				<div>
-					<h3 class="text-sm font-medium text-gray-900">Font Size</h3>
-					<div class="mt-2 space-x-2">
-						{#each ['normal', 'large', 'xl'] as size}
-							<button
-								class="px-3 py-1 rounded"
-								class:bg-blue-500={$accessibilityStore.fontSize === size}
-								class:text-white={$accessibilityStore.fontSize === size}
-								onclick={() => updateSetting('fontSize', size)}
-							>
-								{size}
-							</button>
-						{/each}
-					</div>
+				<h3 class="text-lg font-semibold text-gray-800 dark:text-white">Accessibility Settings</h3>
+
+				<!-- Dark Mode -->
+				<div class="flex items-center justify-between">
+					<label for="dark-mode-toggle" class="text-gray-600 dark:text-gray-300">Dark Mode</label>
+					<button
+						id="dark-mode-toggle"
+						aria-pressed={$darkMode}
+						onclick={toggleDarkMode}
+						onkeydown={(e) => handleKeydown(e, toggleDarkMode)}
+						class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+						class:bg-indigo-600={$darkMode}
+						class:bg-gray-200={!$darkMode}
+						aria-label="Toggle dark mode"
+					>
+						<span
+							class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform"
+							class:translate-x-6={$darkMode}
+							class:translate-x-1={!$darkMode}
+						></span>
+					</button>
 				</div>
 
-				<div>
-					<h3 class="text-sm font-medium text-gray-900">Contrast</h3>
-					<div class="mt-2 space-x-2">
-						{#each ['normal', 'high'] as contrast}
-							<button
-								class="px-3 py-1 rounded"
-								class:bg-blue-500={$accessibilityStore.contrast === contrast}
-								class:text-white={$accessibilityStore.contrast === contrast}
-								onclick={() => updateSetting('contrast', contrast)}
-							>
-								{contrast}
-							</button>
-						{/each}
-					</div>
+				<!-- High Contrast -->
+				<div class="flex items-center justify-between">
+					<label for="contrast-toggle" class="text-gray-600 dark:text-gray-300">High Contrast</label
+					>
+					<button
+						id="contrast-toggle"
+						aria-pressed={$contrast}
+						onclick={toggleContrast}
+						onkeydown={(e) => handleKeydown(e, toggleContrast)}
+						class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+						class:bg-indigo-600={$contrast}
+						class:bg-gray-200={!$contrast}
+						aria-label="Toggle high contrast"
+					>
+						<span
+							class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform"
+							class:translate-x-6={$contrast}
+							class:translate-x-1={!$contrast}
+						></span>
+					</button>
 				</div>
 
-				<div>
-					<h3 class="text-sm font-medium text-gray-900">Cursor Size</h3>
-					<div class="mt-2 space-x-2">
-						{#each ['normal', 'large'] as cursor}
-							<button
-								class="px-3 py-1 rounded"
-								class:bg-blue-500={$accessibilityStore.cursor === cursor}
-								class:text-white={$accessibilityStore.cursor === cursor}
-								onclick={() => updateSetting('cursor', cursor)}
-							>
-								{cursor}
-							</button>
-						{/each}
-					</div>
+				<!-- Color Filters -->
+				<div class="flex items-center justify-between">
+					<label for="color-filters-toggle" class="text-gray-600 dark:text-gray-300"
+						>Color Filters</label
+					>
+					<button
+						id="color-filters-toggle"
+						aria-pressed={$colorFilters}
+						onclick={toggleColorFilters}
+						onkeydown={(e) => handleKeydown(e, toggleColorFilters)}
+						class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+						class:bg-indigo-600={$colorFilters}
+						class:bg-gray-200={!$colorFilters}
+						aria-label="Toggle color filters"
+					>
+						<span
+							class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform"
+							class:translate-x-6={$colorFilters}
+							class:translate-x-1={!$colorFilters}
+						></span>
+					</button>
 				</div>
 			</div>
 		</div>
 	{/if}
 </div>
+
+<div id="mode-announcer" aria-live="assertive" class="sr-only"></div>

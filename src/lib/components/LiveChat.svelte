@@ -1,6 +1,6 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
-	import socket, { sendMessage, onMessage } from '$lib/data/liveChat';
+	import LiveChatManager from '$lib/data/liveChat';
 	import MessageInput from './MessageInput.svelte';
 	import MessageList from './MessageList.svelte';
 	import ChatToolbar from './ChatToolbar.svelte';
@@ -20,26 +20,29 @@
 		initialMessage: ''
 	});
 
+	let liveChat;
+
 	onMount(() => {
-		onMessage((msg) => {
+		liveChat = new LiveChatManager();
+		liveChat.onMessage((msg) => {
 			messages = [...messages, msg];
 		});
 
 		return () => {
-			socket.disconnect();
+			liveChat.disconnect();
 		};
 	});
 
 	async function handleNewMessage(event) {
 		try {
-			sendMessage(event.detail);
+			liveChat.sendMessage(event.detail);
 		} catch {
 			errors = { ...errors, general: 'Failed to send message' };
 		}
 	}
 
 	onDestroy(() => {
-		socket?.disconnect();
+		liveChat?.disconnect();
 	});
 </script>
 

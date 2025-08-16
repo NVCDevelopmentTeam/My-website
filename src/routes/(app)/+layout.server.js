@@ -2,6 +2,8 @@
 import { postsPerPage } from '$lib/data/config';
 import { fetchPosts } from '$lib/data/fetchPosts';
 
+export const prerender = true;
+
 /** @type {import('./$types').LayoutServerLoad} */
 export async function load() {
 	try {

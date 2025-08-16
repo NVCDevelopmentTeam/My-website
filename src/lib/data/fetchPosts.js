@@ -43,12 +43,12 @@ export const fetchPosts = async ({
 
 		const posts = await Promise.all(
 			Object.entries(postFiles).map(async ([filepath, post]) => {
-				if (!post.default || typeof post.default.render !== 'function') {
+				if (!post.metadata || !post.default) {
 					console.error(`Invalid post rendering for ${filepath}`);
 					return null;
 				}
 
-				const html = parse(post.default.render().html);
+				const html = parse(post.default);
 				const previewElement = post.metadata.preview
 					? parse(post.metadata.preview)
 					: html.querySelector('p');

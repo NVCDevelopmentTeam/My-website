@@ -32,7 +32,12 @@ function getCacheKey(params) {
  * GET endpoint for fetching posts
  * Endpoint: /api/posts.json
  */
+import { browser } from '$app/environment';
+
 export const GET = async ({ url, request }) => {
+	if (!browser) {
+		return json({ posts: [], total: 0, page: 1, postsPerPage: 10, totalPages: 1, hasNextPage: false, hasPreviousPage: false });
+	}
 	const startTime = performance.now();
 	const clientIP = request.headers.get('x-forwarded-for') || 'unknown';
 

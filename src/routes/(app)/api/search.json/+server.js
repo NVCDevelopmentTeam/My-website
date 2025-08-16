@@ -55,6 +55,9 @@ function stripMarkdown(markdown) {
 }
 
 export async function GET({ url }) {
+	if (!browser) {
+		return json({ results: [], count: 0 });
+	}
 	const query = url.searchParams.get('q') || '';
 	const category = url.searchParams.get('category') || '';
 	const tag = url.searchParams.get('tag') || '';

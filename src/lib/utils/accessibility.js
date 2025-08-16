@@ -1,108 +1,83 @@
 import { writable } from 'svelte/store';
 import { onMount } from 'svelte';
 
-// Initialize stores
+/**
+ * @typedef {import('svelte/store').Writable<boolean>} WritableBoolean
+ * @typedef {import('svelte/store').Writable<number>} WritableNumber
+ */
+
+/** @type {WritableBoolean} */
 export const darkMode = writable(false);
-export const fontSize = writable(16);
+
+/** @type {WritableBoolean} */
 export const contrast = writable(false);
+
+/** @type {WritableBoolean} */
 export const colorFilters = writable(false);
+
+/** @type {WritableBoolean} */
 export const menuOpen = writable(false);
 
-export const ACCESSIBILITY_SETTINGS = {
-	fontSize: 'normal',
-	contrast: 'normal',
-	colorFilters: false
-};
-
-export function getStoredSettings() {
-	try {
-		const stored = localStorage.getItem('accessibility');
-		return stored ? JSON.parse(stored) : ACCESSIBILITY_SETTINGS;
-	} catch {
-		return ACCESSIBILITY_SETTINGS;
-	}
-}
-
-export function updateAccessibilitySettings(settings) {
-	localStorage.setItem('accessibility', JSON.stringify(settings));
-}
-
-// Accessibility functions
+/**
+ * Toggles dark mode on and off.
+ */
 export function toggleDarkMode() {
 	darkMode.update((value) => {
-		document.body.classList.toggle('dark', !value);
-		announceMode('Dark mode', !value);
-		return !value;
+		const isDark = !value;
+		if (typeof document !== 'undefined') {
+			document.body.classList.toggle('dark', isDark);
+			announceMode('Dark mode', isDark);
+		}
+		return isDark;
 	});
 }
 
-export function increaseFontSize() {
-	fontSize.update((size) => {
-		const newSize = Math.min(size + 2, 20); // Add upper limit
-		document.documentElement.style.fontSize = `${newSize}px`;
-		announceFontSize(newSize);
-		updateAccessibilitySettings({
-			...getStoredSettings(),
-			fontSize: newSize >= 18 ? 'large' : 'normal'
-		});
-		return newSize;
-	});
-}
-
-export function decreaseFontSize() {
-	fontSize.update((size) => {
-		const newSize = Math.max(size - 2, 14); // Add lower limit
-		document.documentElement.style.fontSize = `${newSize}px`;
-		announceFontSize(newSize);
-		updateAccessibilitySettings({
-			...getStoredSettings(),
-			fontSize: newSize >= 18 ? 'large' : 'normal'
-		});
-		return newSize;
-	});
-}
-
+/**
+ * Toggles high contrast mode.
+ */
 export function toggleContrast() {
 	contrast.update((value) => {
-		document.body.classList.toggle('high-contrast', !value);
-		announceMode('High contrast mode', !value);
-		updateAccessibilitySettings({
-			...getStoredSettings(),
-			contrast: !value ? 'high' : 'normal'
-		});
-		return !value;
+		const hasContrast = !value;
+		if (typeof document !== 'undefined') {
+			document.body.classList.toggle('high-contrast', hasContrast);
+			announceMode('High contrast mode', hasContrast);
+		}
+		return hasContrast;
 	});
 }
 
+/**
+ * Toggles color filters for accessibility.
+ */
 export function toggleColorFilters() {
 	colorFilters.update((value) => {
-		document.body.classList.toggle('color-filters', !value);
-		announceMode('Color filters', !value);
-		updateAccessibilitySettings({
-			...getStoredSettings(),
-			colorFilters: !value
-		});
-		return !value;
+		const hasFilters = !value;
+		if (typeof document !== 'undefined') {
+			document.body.classList.toggle('color-filters', hasFilters);
+			announceMode('Color filters', hasFilters);
+		}
+		return hasFilters;
 	});
 }
 
-// Helper functions
-function announceFontSize(size) {
-	announceChange('font-size-announcer', `Font size is now ${size}px`);
-}
-
+/**
+ * Announces mode changes to screen readers.
+ * @param {string} mode The mode being changed.
+ * @param {boolean} isEnabled Whether the mode is enabled or disabled.
+ */
 function announceMode(mode, isEnabled) {
-	announceChange('mode-announcer', `${mode} is now ${isEnabled ? 'enabled' : 'disabled'}`);
-}
-
-function announceChange(announcerId, message) {
-	const announcer = document.getElementById(announcerId);
+	const announcer = document.getElementById('mode-announcer');
 	if (announcer) {
-		announcer.innerText = message;
+		announcer.innerText = `${mode} is now ${isEnabled ? 'enabled' : 'disabled'}`;
 		setTimeout(() => (announcer.innerText = ''), 1000);
 	}
 }
 
+/**
+ * Handles keydown events for accessibility, triggering an action on Enter or Space.
+ * @param {KeyboardEvent} event
+ * @param {() => void} action
+ */
 export function handleKeydown(event, action) {
 	if (event.key === 'Enter' || event.key === ' ') {
 		event.preventDefault();
@@ -110,13 +85,41 @@ export function handleKeydown(event, action) {
 	}
 }
 
-// Initialize settings on mount
-if (typeof window !== 'undefined') {
+/**
+ * Initializes accessibility features on component mount.
+ */
+export function initializeAccessibility() {
 	onMount(() => {
-		const stored = getStoredSettings();
-		fontSize.set(stored.fontSize === 'large' ? 18 : 16);
-		contrast.set(stored.contrast === 'high');
-		colorFilters.set(stored.colorFilters);
-		darkMode.subscribe((value) => document.body.classList.toggle('dark', value));
+		const unsubscribeDarkMode = darkMode.subscribe((value) => {
+			if (typeof document !== 'undefined') {
+				document.body.classList.toggle('dark', value);
+			}
+		});
+
+		return () => {
+			unsubscribeDarkMode();
+		};
 	});
+}
+
+/**
+ * Sets up skip links for keyboard navigation.
+ */
+export function setupSkipLinks() {
+	// This function can be expanded to dynamically add skip links if needed.
+	// For now, it's a placeholder if the links are already in the markup.
+}
+
+/**
+ * Creates a live region for screen reader announcements.
+ */
+export function createLiveRegion() {
+	if (typeof document !== 'undefined' && !document.getElementById('live-region')) {
+		const liveRegion = document.createElement('div');
+		liveRegion.id = 'live-region';
+		liveRegion.setAttribute('aria-live', 'polite');
+		liveRegion.setAttribute('aria-atomic', 'true');
+		liveRegion.className = 'sr-only';
+		document.body.appendChild(liveRegion);
+	}
 }

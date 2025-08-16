@@ -1,3 +1,4 @@
+import { browser } from '$app/environment';
 import { updateStats } from '$lib/data/statsService';
 import { auth } from '$lib/server/lucia';
 
@@ -9,7 +10,7 @@ export const handle = async ({ event, resolve }) => {
 
 	const response = await resolve(event);
 
-	if (!event.request.headers.get('x-sveltekit-prerender')) {
+	if (browser && !event.request.headers.get('x-sveltekit-prerender')) {
 		const clientIP = event.request.headers.get('x-forwarded-for') || event.getClientAddress();
 
 		let country = 'unknown';

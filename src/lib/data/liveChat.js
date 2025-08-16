@@ -102,6 +102,9 @@ class LiveChatManager {
 
 	// Initialize chat connection with user info
 	async initializeChat(userInfo) {
+		if (browser) {
+			await this.initializeSoundEffects();
+		}
 		const validation = this.validateUserInfo(userInfo);
 		if (!validation.isValid) {
 			throw new Error('Thông tin không hợp lệ: ' + Object.values(validation.errors).join(', '));

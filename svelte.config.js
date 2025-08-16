@@ -18,7 +18,17 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		prerender: {
-			entries: [],
+			entries: [
+				'/',
+				'/about',
+				'/accessibility-statement',
+				'/portfolio',
+				'/privacy-policy',
+				'/project',
+				'/blog',
+				'/blog/category',
+				'/blog/tag'
+			],
 			handleHttpError: 'warn'
 		},
 		alias: {

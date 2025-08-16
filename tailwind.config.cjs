@@ -2,7 +2,13 @@
 const config = {
 	darkMode: ['class'],
 	content: ['./src/**/*.{html,js,svelte,ts}'],
+	plugins: [require('@tailwindcss/typography')],
 	theme: {
+		extend: {},
+		backgroundImage: {
+			'custom-background': "url('/background.jpg')"
+			// Add other custom wallpapers here
+		},
 		container: {
 			center: true,
 			padding: '2rem',

@@ -1,7 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import FlexSearch from 'flexsearch';
 
-// Stores
+// --- Stores ---
 export const searchQuery = writable('');
 export const searchResults = writable([]);
 export const isLoading = writable(false);
@@ -13,30 +13,63 @@ export const searchFilters = writable({
 	author: ''
 });
 
-// FlexSearch index configuration
+// --- FlexSearch Index ---
+
+/**
+ * @type {import('flexsearch').Document<any, any>}
+ */
 const index = new FlexSearch.Document({
 	document: {
 		id: 'slug',
 		index: ['title', 'content', 'author'],
 		store: ['title', 'author', 'date', 'categories', 'tags', 'preview', 'readingTime', 'slug']
-	}
+	},
+	tokenize: 'forward'
 });
 
+/**
+ * Populates the search index with an array of posts.
+ * This should be called once when the application loads.
+ * @param {Array<Object>} posts - The posts to add to the index.
+ */
+export function populateIndex(posts) {
+	posts.forEach((post) => {
+		index.add(post);
+	});
+}
+
+/**
+ * Performs a search on the index.
+ * @param {string} query - The search query.
+ * @param {object} filters - The filters to apply.
+ * @returns {Promise<Array<Object>>} - The search results.
+ */
 async function searchPosts(query, filters = {}) {
 	const searchOptions = {
-		limit: 1000, // Set a sensible limit
+		limit: 100,
 		suggest: true,
-		...filters
+		// FlexSearch document search uses a `where` clause for filtering
+		where: (item) => {
+			let isMatch = true;
+			if (filters.category && !item.categories?.includes(filters.category)) {
+				isMatch = false;
+			}
+			if (filters.tag && !item.tags?.includes(filters.tag)) {
+				isMatch = false;
+			}
+			if (filters.author && item.author !== filters.author) {
+				isMatch = false;
+			}
+			return isMatch;
+		}
 	};
 
-	try {
-		const results = await index.search(query, searchOptions);
-		return results.flatMap((result) => result.result);
-	} catch (error) {
-		console.error('Error during search:', error);
-		throw error;
-	}
+	const results = await index.search(query, searchOptions);
+	// Flatten results from different fields
+	return results.flatMap((result) => result.result);
 }
+
+// --- Debounced Search Logic ---
 
 function debounce(func, wait) {
 	let timeout;
@@ -54,9 +87,9 @@ const debouncedSearch = debounce(async (query, filters) => {
 		const results = await searchPosts(query, filters);
 		searchResults.set(results);
 		totalResults.set(results.length);
-		noResults.set(results.length === 0);
+		noResults.set(results.length === 0 && query.length > 0);
 	} catch (error) {
-		console.error('Error during search:', error);
+		console.error('Search error:', error);
 		searchResults.set([]);
 		totalResults.set(0);
 		noResults.set(true);
@@ -65,6 +98,8 @@ const debouncedSearch = debounce(async (query, filters) => {
 	}
 }, 300);
 
+// --- Derived Store for Automatic Searching ---
+
 export const combinedSearch = derived(
 	[searchQuery, searchFilters],
 	([$searchQuery, $searchFilters]) => {
@@ -72,6 +107,7 @@ export const combinedSearch = derived(
 	}
 );
 
+// Subscribe to changes in query or filters to trigger a search
 combinedSearch.subscribe(({ query, filters }) => {
 	if (query.trim()) {
 		debouncedSearch(query, filters);
@@ -82,6 +118,12 @@ combinedSearch.subscribe(({ query, filters }) => {
 	}
 });
 
+// --- Public API ---
+
+/**
+ * Updates the search filters.
+ * @param {Partial<typeof searchFilters>} newFilters - The new filter values.
+ */
 export function updateSearchFilters(newFilters) {
 	searchFilters.update((currentFilters) => ({
 		...currentFilters,
@@ -89,6 +131,9 @@ export function updateSearchFilters(newFilters) {
 	}));
 }
 
+/**
+ * Clears all active search filters.
+ */
 export function clearSearchFilters() {
 	searchFilters.set({
 		category: '',
@@ -97,7 +142,14 @@ export function clearSearchFilters() {
 	});
 }
 
+/**
+ * A convenience function to manually trigger a search.
+ * @param {string} query - The search query.
+ * @param {object} [filters] - Optional filters.
+ */
 export function search(query, filters = {}) {
 	searchQuery.set(query);
-	updateSearchFilters(filters);
+	if (Object.keys(filters).length > 0) {
+		updateSearchFilters(filters);
+	}
 }
