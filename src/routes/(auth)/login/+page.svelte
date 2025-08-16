@@ -6,11 +6,11 @@
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 
-	export let data;
+	let { data } = $props();
 
 	const schema = z.object({
-		email: z.string().email("Email không hợp lệ"),
-		password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+		email: z.string().email('Email không hợp lệ'),
+		password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
 	});
 
 	const { form, errors, tainted, submitting, allErrors, message } = superForm(data.form, {
@@ -25,7 +25,7 @@
 					console.error('Login error:', result.errors);
 				}
 			};
-		},
+		}
 	});
 </script>
 
@@ -95,5 +95,3 @@
 		</form>
 	</div>
 </div>
-
-

@@ -1,29 +1,6 @@
 import { postsPerPage } from '$lib/data/config';
 import { parse } from 'node-html-parser';
-import { render } from 'svelte/server';
 import readingTime from 'reading-time';
-
-/**
- * @typedef {Object} Post
- * @property {string} slug
- * @property {string} title
- * @property {string} author
- * @property {string} date
- * @property {string[]} categories
- * @property {string[]} tags
- * @property {string} [updated]
- * @property {boolean} [published]
- * @property {boolean} [hidden]
- * @property {{html: string, text: string}} preview
- * @property {string} content
- * @property {Object} readingTime
- */
-
-/**
- * @typedef {Object} PostModule
- * @property {Post} metadata
- * @property {any} default
- */
 
 const generateSlug = (filepath) => {
 	return filepath
@@ -44,12 +21,17 @@ const formatDate = (date) => {
 	return `${year}-${month}-${day}`;
 };
 
+const addTimezoneOffset = (date) => {
+	const offsetInMilliseconds = new Date().getTimezoneOffset() * 60 * 1000;
+	return new Date(date.getTime() + offsetInMilliseconds);
+};
+
 export const fetchPosts = async ({
 	offset = 0,
 	limit = postsPerPage,
 	category = '',
-	tag = '',
-	author = ''
+	author = '',
+	tag = ''
 } = {}) => {
 	try {
 		const postFiles = import.meta.glob('/src/lib/posts/**/*.md', { eager: true });
@@ -60,61 +42,44 @@ export const fetchPosts = async ({
 		}
 
 		const posts = await Promise.all(
-			Object.entries(postFiles).map(async ([filepath, postModule]) => {
-				const post = /** @type {PostModule} */ (postModule);
-				if (!post.metadata || !post.default) {
+			Object.entries(postFiles).map(async ([filepath, post]) => {
+				if (!post.default || typeof post.default.render !== 'function') {
 					console.error(`Invalid post rendering for ${filepath}`);
 					return null;
 				}
 
-				const html = parse(render(post.default).html);
+				const html = parse(post.default.render().html);
 				const previewElement = post.metadata.preview
-					? parse(post.metadata.preview.html)
-					: html.querySelector('p') || null;
+					? parse(post.metadata.preview)
+					: html.querySelector('p');
 				const previewText = previewElement ? previewElement.toString() : '';
 				const structuredText = html.structuredText || '';
 
 				const slug = generateSlug(filepath);
-				const finalSlug = slug || `untitled-post-${Math.random().toString(36).substring(2, 9)}`;
 
 				return {
 					...post.metadata,
-					tags: post.metadata.tags || [],
-					slug: finalSlug,
+					slug,
 					content: structuredText,
 					preview: {
 						html: previewText,
 						text: previewElement ? previewElement.structuredText || previewText : previewText
 					},
 					readingTime: readingTime(structuredText).text,
-					date: post.metadata.date ? formatDate(new Date(post.metadata.date)) : undefined
+					date: post.metadata.date
+						? formatDate(addTimezoneOffset(new Date(post.metadata.date)))
+						: undefined
 				};
 			})
 		);
 
-		let validPosts = posts.filter((post) => {
-			if (!post || !post.date) return false;
-			const isPublished = new Date() >= new Date(post.date);
-			const isHidden = !!post.hidden;
-			return post.slug !== undefined && isPublished && !isHidden;
-		});
-
-		let sortedPosts = validPosts.sort(
-			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-		);
+		const validPosts = posts.filter((post) => post !== null);
+		let sortedPosts = validPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 		if (category) {
 			sortedPosts = sortedPosts.filter(
 				(post) => post.categories && post.categories.includes(category)
 			);
-		}
-
-		if (tag) {
-			sortedPosts = sortedPosts.filter((post) => post.tags && post.tags.includes(tag));
-		}
-
-		if (author) {
-			sortedPosts = sortedPosts.filter((post) => post.author && post.author.includes(author));
 		}
 
 		if (offset > 0) {
@@ -125,10 +90,20 @@ export const fetchPosts = async ({
 			sortedPosts = sortedPosts.slice(0, limit);
 		}
 
-		const postsWithLinks = sortedPosts.map((post) => ({ ...post }));
+		const postsWithLinks = sortedPosts.map((post, index, allPosts) => ({
+			...post,
+			next: allPosts[index - 1] ?? null,
+			previous: allPosts[index + 1] ?? null
+		}));
+
+		const filteredPosts = postsWithLinks.filter((post) => {
+			const isPublished = new Date() >= new Date(post.date);
+			const isHidden = !!post.hidden;
+			return isPublished && !isHidden;
+		});
 
 		return {
-			posts: postsWithLinks,
+			posts: filteredPosts,
 			total: validPosts.length
 		};
 	} catch (error) {
@@ -136,3 +111,5 @@ export const fetchPosts = async ({
 		throw new Error('Error fetching posts');
 	}
 };
+
+export default fetchPosts;

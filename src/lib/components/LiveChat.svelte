@@ -42,7 +42,7 @@
 		socket?.disconnect();
 	});
 </script>
-<Enter the name, email, phone number and the first message to verify the person who is chatting with the admin>
+
 <!-- Chat toggle button -->
 <button
 	class="fixed bottom-4 right-4 bg-primary text-primary-foreground p-4 rounded-full shadow-lg z-50 hover:bg-primary/90 transition-colors"

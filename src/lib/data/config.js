@@ -22,7 +22,7 @@ export const navItems = [
 	},
 	{
 		title: 'About',
-		route: '/about'
+		route: '/About'
 	},
 	{
 		title: 'Contact',
@@ -30,14 +30,9 @@ export const navItems = [
 	}
 ];
 export const config = {
-	title: 'Coding Nguyễn',
-	logo: { logo }, // Path to your logo
-	navLinks: [
-		{ title: 'Trang chủ', href: '/' },
-		{ title: 'Giới thiệu', href: '/about' },
-		{ title: 'Blog', href: '/blog' },
-		{ title: 'Liên hệ', href: '/contact' }
-	],
+	title: siteTitle,
+	logo: logo, // Path to your logo
+	navLinks: navItems,
 	socialLinks: {
 		twitter: 'your_twitter_handle',
 		instagram: 'your_instagram_handle',

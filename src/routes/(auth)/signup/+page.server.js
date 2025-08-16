@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import nodemailer from 'nodemailer';
-import crypto from 'crypto';
+
 import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';

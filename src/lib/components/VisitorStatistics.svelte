@@ -1,6 +1,6 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
-	import { io } from 'socket.io-client';
+	import io from 'socket.io-client'; // Import socket.io-client
 
 	let visitsToday = $state(0);
 	let totalVisits = $state(0);
@@ -10,10 +10,13 @@
 	let error = $state(null);
 	let socket;
 
+	// Function to initialize socket connection
 	function initializeSocket() {
+		// Connect to the socket.io server
 		socket = io();
 
-		socket.on('stats-update', (data) => {
+		// Listen for 'stats' event from server
+		socket.on('stats', (data) => {
 			visitsToday = data.visitsToday;
 			totalVisits = data.totalVisits;
 			totalVisitors = data.totalVisitors;
@@ -21,23 +24,26 @@
 			loading = false;
 		});
 
+		// Handle connection errors
 		socket.on('connect_error', (err) => {
-			error = 'Không thể kết nối đến server';
-			console.error('Lỗi kết nối socket:', err);
+			error = 'Failed to connect to the server';
+			console.error('Socket connection error:', err);
 			loading = false;
 		});
 
+		// Handle disconnection
 		socket.on('disconnect', () => {
-			error = 'Mất kết nối với server';
+			error = 'Disconnected from the server';
 			loading = false;
 		});
 	}
 
+	// Load stats from API on mount
 	async function loadStats() {
 		try {
 			const response = await fetch('/api/stats.json');
 			if (!response.ok) {
-				throw new Error('Không thể tải thống kê');
+				throw new Error('Failed to load statistics');
 			}
 			const data = await response.json();
 			visitsToday = data.visitsToday;
@@ -47,7 +53,7 @@
 			loading = false;
 		} catch (err) {
 			error = err.message;
-			console.error('Lỗi khi tải thống kê:', err);
+			console.error('Error loading statistics:', err);
 			loading = false;
 		}
 	}
@@ -58,25 +64,36 @@
 	});
 
 	onDestroy(() => {
+		// Clean up the socket connection when the component is destroyed
 		if (socket) {
 			socket.disconnect();
 		}
 	});
 </script>
 
-<div class="bg-card p-6 rounded-lg shadow-md">
-	<h2 class="text-xl font-bold mb-4">Thống kê khách truy cập</h2>
+<h2 class="text-2xl font-bold mb-4 text-gray-800">Visitor Statistics</h2>
 
-	{#if loading}
-		<p class="text-muted-foreground">Đang tải thống kê...</p>
-	{:else if error}
-		<p class="text-destructive">Lỗi: {error}</p>
-	{:else}
-		<ul class="space-y-2">
-			<li class="text-foreground">Lượt truy cập hôm nay: {visitsToday}</li>
-			<li class="text-foreground">Tổng lượt truy cập: {totalVisits}</li>
-			<li class="text-foreground">Tổng số khách truy cập: {totalVisitors}</li>
-			<li class="text-foreground">Tổng số quốc gia: {totalCountries}</li>
-		</ul>
-	{/if}
-</div>
+{#if loading}
+	<p class="text-gray-600 italic">Loading statistics...</p>
+{:else if error}
+	<p class="text-red-500">{error}</p>
+{:else}
+	<ul class="space-y-3">
+		<li class="flex items-center bg-white p-3 rounded-lg shadow-sm">
+			<span class="font-semibold text-gray-700 mr-2">Visits Today:</span>
+			<span class="text-blue-600">{visitsToday}</span>
+		</li>
+		<li class="flex items-center bg-white p-3 rounded-lg shadow-sm">
+			<span class="font-semibold text-gray-700 mr-2">Total Visits:</span>
+			<span class="text-blue-600">{totalVisits}</span>
+		</li>
+		<li class="flex items-center bg-white p-3 rounded-lg shadow-sm">
+			<span class="font-semibold text-gray-700 mr-2">Total Visitors:</span>
+			<span class="text-blue-600">{totalVisitors}</span>
+		</li>
+		<li class="flex items-center bg-white p-3 rounded-lg shadow-sm">
+			<span class="font-semibold text-gray-700 mr-2">Total Countries:</span>
+			<span class="text-blue-600">{totalCountries}</span>
+		</li>
+	</ul>
+{/if}

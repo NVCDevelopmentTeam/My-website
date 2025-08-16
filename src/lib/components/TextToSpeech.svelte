@@ -3,44 +3,42 @@
 	import { browser } from '$app/environment';
 
 	/**
-	 * @typedef {Window & typeof globalThis & {
-	 *   responsiveVoice: any;
-	 * }}
+	 * @typedef {Object} Props
+	 * @property {string} [title] - Initialize variables - Title of the article
+	 * @property {string} [postContent] - Main content of the article
 	 */
 
-	const { title, postContent } = $props();
+	/** @type {Props} */
+	let { title = '', postContent = '' } = $props();
 
-	let isSpeaking = $state(false);
-	let responsiveVoiceReady = $state(false);
-	let speechRate = $state(1);
-	let volume = $state(1);
-	let isMuted = $state(false);
-	let selectedVoice = $state('');
-	let voices = $state([]);
-	let isVoiceSelectDisabled = $derived(!responsiveVoiceReady || voices.length === 0);
-	let progress = $state(0);
-	let speechDuration = 0;
-	let intervalId;
-	let isRateMenuOpen = $state(false);
-	let rateMenuRef = $state(null); // Reference to the rate menu div
+	let isSpeaking = $state(false); // Track if content is being spoken
+	let responsiveVoiceReady = $state(false); // Flag to check if ResponsiveVoice is ready
+	let speechRate = $state(1); // Speech rate (default is 1)
+	let isMuted = $state(false); // Mute state
+	let selectedVoice = $state(''); // Currently selected voice
+	let voices = $state([]); // List of available voices
+	let progress = $state(0); // Progress of the speech
+	let speechDuration = 0; // Estimated duration of speech
+	let intervalId; // ID for progress interval
+	let isRateMenuOpen = $state(false); // State for showing/hiding speech rate dropdown
 
-	let speechText = $derived(`${title}. ${postContent}`);
+	let speechText = $derived(`${title}. ${postContent}`); // Combine title and content
 
 	// On component mount
 	onMount(() => {
-		if (browser) {
-			// Check if responsiveVoice is already loaded
-			if (window.responsiveVoice) {
-				initializeResponsiveVoice();
+		if (browser && window.responsiveVoice) {
+			responsiveVoiceReady = true;
+			voices = window.responsiveVoice
+				.getVoices()
+				.filter((voice) => voice.name === 'Vietnamese Female' || voice.name === 'Vietnamese Male');
+			if (voices.length > 0) {
+				selectedVoice =
+					voices.find((voice) => voice.name === 'Vietnamese Male')?.name || voices[0].name;
 			} else {
-				// Wait for responsiveVoice to be loaded
-				const checkResponsiveVoice = setInterval(() => {
-					if (window.responsiveVoice) {
-						clearInterval(checkResponsiveVoice);
-						initializeResponsiveVoice();
-					}
-				}, 100);
+				console.error('No Vietnamese voices available.');
 			}
+		} else if (browser) {
+			console.error('ResponsiveVoice is not available.');
 		}
 
 		// Cleanup on component unmount
@@ -51,31 +49,16 @@
 		};
 	});
 
-	function initializeResponsiveVoice() {
-		responsiveVoiceReady = true;
-		voices = window.responsiveVoice
-			.getVoices()
-			.filter((voice) => voice.name.includes('Vietnamese')); // More general filter
-		if (voices.length > 0) {
-			selectedVoice =
-				voices.find((voice) => voice.name === 'Vietnamese Male')?.name || voices[0].name;
-		} else {
-			console.warn('No Vietnamese voices available. Using default responsiveVoice behavior.');
-		}
-	}
-
 	// Start or resume speech
 	function startSpeech() {
 		if (responsiveVoiceReady && speechText && !isSpeaking && selectedVoice) {
 			const textToRead = speechText.substring(Math.floor(progress * speechText.length));
-			// Estimate speech duration more accurately based on characters and rate
-			speechDuration = textToRead.length / (speechRate * 15); // Adjust multiplier as needed for better accuracy
-
 			window.responsiveVoice.speak(textToRead, selectedVoice, {
 				rate: speechRate,
-				volume: isMuted ? 0 : volume,
+				volume: isMuted ? 0 : 1,
 				onstart: () => {
 					isSpeaking = true;
+					speechDuration = textToRead.length / (speechRate * 5); // Estimate based on rate
 					updateProgress();
 				},
 				onend: () => {
@@ -84,7 +67,7 @@
 				}
 			});
 		} else if (!selectedVoice) {
-			console.warn('No voice selected. Speech will not start.');
+			console.error('No voice selected.');
 		}
 	}
 
@@ -111,7 +94,7 @@
 		isMuted = !isMuted;
 		if (isSpeaking) {
 			stopSpeech();
-			startSpeech();
+			startSpeech(); // Restart speech to apply mute/unmute
 		}
 	}
 
@@ -120,7 +103,7 @@
 		speechRate = rate;
 		if (isSpeaking) {
 			stopSpeech();
-			startSpeech();
+			startSpeech(); // Restart speech to apply new rate
 		}
 		isRateMenuOpen = false;
 	}
@@ -130,7 +113,7 @@
 		selectedVoice = event.target.value;
 		if (isSpeaking) {
 			stopSpeech();
-			startSpeech();
+			startSpeech(); // Restart speech to apply new voice
 		}
 	}
 
@@ -138,12 +121,12 @@
 	function updateProgress() {
 		clearInterval(intervalId);
 		intervalId = setInterval(() => {
-			progress += 1 / ((speechDuration * 1000) / 100); // Update progress more smoothly
+			progress += 1 / speechDuration;
 			if (progress >= 1) {
 				progress = 1;
 				clearInterval(intervalId);
 			}
-		}, 100); // Update every 100ms
+		}, 1000);
 	}
 
 	// Reset progress and clear interval
@@ -159,7 +142,21 @@
 			progress += seconds / speechDuration;
 			if (progress < 0) progress = 0;
 			if (progress > 1) progress = 1;
-			startSpeech();
+			const newPosition = Math.floor(progress * speechText.length);
+			const newSpeechText = speechText.substring(newPosition);
+			window.responsiveVoice.speak(newSpeechText, selectedVoice, {
+				rate: speechRate,
+				volume: isMuted ? 0 : 1,
+				onstart: () => {
+					isSpeaking = true;
+					speechDuration = newSpeechText.length / (speechRate * 5); // Recalculate duration
+					updateProgress();
+				},
+				onend: () => {
+					isSpeaking = false;
+					resetProgress();
+				}
+			});
 		}
 	}
 
@@ -169,39 +166,35 @@
 		if (isSpeaking) {
 			stopSpeech();
 			progress = newProgress;
-			startSpeech();
+			const newPosition = Math.floor(progress * speechText.length);
+			const newSpeechText = speechText.substring(newPosition);
+			window.responsiveVoice.speak(newSpeechText, selectedVoice, {
+				rate: speechRate,
+				volume: isMuted ? 0 : 1,
+				onstart: () => {
+					isSpeaking = true;
+					speechDuration = newSpeechText.length / (speechRate * 5);
+					updateProgress();
+				},
+				onend: () => {
+					isSpeaking = false;
+					resetProgress();
+				}
+			});
 		} else {
 			progress = newProgress;
 		}
 	}
-
-	// Handle volume change
-	function handleVolumeChange(event) {
-		volume = parseFloat(event.target.value);
-		if (isSpeaking) {
-			stopSpeech();
-			startSpeech();
-		}
-	}
-
-	// Click outside handler for rate menu
-	function handleClickOutsideRateMenu(event) {
-		if (rateMenuRef && !rateMenuRef.contains(event.target)) {
-			isRateMenuOpen = false;
-		}
-	}
 </script>
 
-<svelte:window onclick={handleClickOutsideRateMenu} />
-
 <!-- UI Components -->
-<div class="p-4 bg-card rounded-lg shadow-md space-y-4">
-	<div class="flex flex-wrap gap-2">
+<div class="text-to-speech p-4 bg-white rounded-lg shadow-md">
+	<div class="controls flex flex-wrap gap-2 mb-4">
 		<!-- Play/Pause Button -->
 		<button
 			onclick={toggleSpeech}
-			disabled={isVoiceSelectDisabled}
-			class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+			disabled={!responsiveVoiceReady || voices.length === 0}
+			class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
 		>
 			{isSpeaking ? 'Pause' : 'Play'}
 		</button>
@@ -209,7 +202,7 @@
 		<!-- Mute/Unmute Button -->
 		<button
 			onclick={toggleMute}
-			class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80"
+			class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
 		>
 			{isMuted ? 'Unmute' : 'Mute'}
 		</button>
@@ -217,80 +210,66 @@
 		<!-- Rewind and Fast Forward Buttons -->
 		<button
 			onclick={() => seek(-10)}
-			disabled={isVoiceSelectDisabled}
-			class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 disabled:opacity-50"
+			disabled={!responsiveVoiceReady || voices.length === 0}
+			class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
 		>
 			Rewind 10s
 		</button>
 		<button
 			onclick={() => seek(10)}
-			disabled={isVoiceSelectDisabled}
-			class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 disabled:opacity-50"
+			disabled={!responsiveVoiceReady || voices.length === 0}
+			class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
 		>
 			Forward 10s
 		</button>
 	</div>
 
 	<!-- Speech Rate Dropdown -->
-	<div class="rate-control flex items-center space-x-2">
-		<label for="speechRate" class="font-medium">Speech Rate:</label>
-		<div class="relative inline-block text-left" bind:this={rateMenuRef}>
+	<div class="rate-control flex items-center gap-2 mb-4">
+		<label for="speechRate" class="text-gray-700 font-medium">Speech Rate:</label>
+		<div class="dropdown relative">
 			<button
 				onclick={() => (isRateMenuOpen = !isRateMenuOpen)}
-				class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+				class="px-3 py-1 bg-gray-100 rounded border border-gray-300 hover:bg-gray-200 transition-colors"
 			>
 				{speechRate}x
 			</button>
 			{#if isRateMenuOpen}
 				<div
-					class="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+					class="dropdown-menu absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10"
 				>
-					{#each [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] as rate (rate)}
+					{#each [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] as rate}
 						<button
 							onclick={() => handleRateChange(rate)}
-							class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-							>{rate}x</button
+							class="block w-full px-4 py-2 text-left hover:bg-gray-100 transition-colors"
 						>
+							{rate}x
+						</button>
 					{/each}
 				</div>
 			{/if}
 		</div>
 	</div>
 
-	<!-- Volume Control -->
-	<div class="volume-control flex items-center space-x-2">
-		<label for="volumeRange" class="font-medium">Volume:</label>
-		<input
-			id="volumeRange"
-			type="range"
-			min="0"
-			max="1"
-			step="0.01"
-			bind:value={volume}
-			oninput={handleVolumeChange}
-			class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-		/>
-	</div>
-
 	<!-- Voice Selection -->
-	<div class="voice-select flex items-center space-x-2">
-		<label for="voiceSelect" class="font-medium">Voice:</label>
+	<div class="voice-select flex items-center gap-2 mb-4">
+		<label for="voiceSelect" class="text-gray-700 font-medium">Voice:</label>
 		<select
 			id="voiceSelect"
 			onchange={handleVoiceChange}
 			bind:value={selectedVoice}
-			disabled={isVoiceSelectDisabled}
-			class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+			disabled={!responsiveVoiceReady || voices.length === 0}
+			class="px-3 py-1 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
 		>
-			{#each voices as voice (voice.name)}
+			{#each voices as voice}
 				<option value={voice.name}>{voice.name}</option>
 			{/each}
 		</select>
 	</div>
 
 	<!-- Progress Slider -->
-	<div class="progress-control flex items-center space-x-2">
-		<label for="progressRange" class="font-medium">Progress:</label>
+	<div class="progress-control">
+		<label for="progressRange" class="text-gray-700 font-medium block mb-2">Progress:</label>
 		<input
 			id="progressRange"
 			type="range"
@@ -299,16 +278,7 @@
 			step="0.01"
 			bind:value={progress}
 			oninput={handleProgressChange}
-			class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+			class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
 		/>
 	</div>
 </div>
-
-<style>
-	.rate-control,
-	.volume-control,
-	.voice-select,
-	.progress-control {
-		margin-top: 10px;
-	}
-</style>

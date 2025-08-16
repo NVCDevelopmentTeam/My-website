@@ -11,7 +11,7 @@ class LiveChatManager {
 		this.isVideoCall = false;
 		this.audioContext = null;
 		this.soundEffects = {};
-		
+
 		this.initializeSoundEffects();
 	}
 
@@ -19,7 +19,7 @@ class LiveChatManager {
 	async initializeSoundEffects() {
 		try {
 			this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-			
+
 			// Load sound effects
 			this.soundEffects = {
 				incomingCall: await this.loadSound('/src/lib/sounds/incoming-call.mp3'),
@@ -46,7 +46,7 @@ class LiveChatManager {
 
 	playSound(soundName) {
 		if (!this.audioContext || !this.soundEffects[soundName]) return;
-		
+
 		try {
 			const source = this.audioContext.createBufferSource();
 			source.buffer = this.soundEffects[soundName];
@@ -60,7 +60,7 @@ class LiveChatManager {
 	// Announce to screen reader
 	announceToScreenReader(message) {
 		if (typeof window === 'undefined') return;
-		
+
 		let liveRegion = document.getElementById('chat-live-region');
 		if (!liveRegion) {
 			liveRegion = document.createElement('div');
@@ -70,30 +70,30 @@ class LiveChatManager {
 			liveRegion.className = 'sr-only';
 			document.body.appendChild(liveRegion);
 		}
-		
+
 		liveRegion.textContent = message;
 	}
 
 	// Validate user information form
 	validateUserInfo(userInfo) {
 		const errors = {};
-		
+
 		if (!userInfo.name || userInfo.name.trim().length < 2) {
 			errors.name = 'Tên phải có ít nhất 2 ký tự';
 		}
-		
+
 		if (!userInfo.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userInfo.email)) {
 			errors.email = 'Email không hợp lệ';
 		}
-		
+
 		if (!userInfo.phone || !/^[0-9+\-\s()]{10,15}$/.test(userInfo.phone.replace(/\s/g, ''))) {
 			errors.phone = 'Số điện thoại không hợp lệ';
 		}
-		
+
 		if (!userInfo.initialMessage || userInfo.initialMessage.trim().length < 5) {
 			errors.initialMessage = 'Tin nhắn đầu tiên phải có ít nhất 5 ký tự';
 		}
-		
+
 		return {
 			isValid: Object.keys(errors).length === 0,
 			errors
@@ -108,7 +108,7 @@ class LiveChatManager {
 		}
 
 		this.userInfo = userInfo;
-		
+
 		try {
 			this.socket = io('http://localhost:3000', {
 				reconnectionAttempts: 5,
@@ -119,7 +119,7 @@ class LiveChatManager {
 			});
 
 			this.setupSocketListeners();
-			
+
 			return new Promise((resolve, reject) => {
 				this.socket.on('connect', () => {
 					this.isConnected = true;
@@ -152,7 +152,9 @@ class LiveChatManager {
 		// Call handling
 		this.socket.on('incoming call', (data) => {
 			this.playSound('incomingCall');
-			this.announceToScreenReader(`Cuộc gọi ${data.type === 'video' ? 'video' : 'thoại'} đến từ admin`);
+			this.announceToScreenReader(
+				`Cuộc gọi ${data.type === 'video' ? 'video' : 'thoại'} đến từ admin`
+			);
 		});
 
 		this.socket.on('call answered', () => {
@@ -213,13 +215,15 @@ class LiveChatManager {
 
 			// Request microphone and camera permissions
 			this.mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-			
+
 			// Request speaker/audio output permission (if supported)
 			if (navigator.mediaDevices.selectAudioOutput) {
 				await navigator.mediaDevices.selectAudioOutput();
 			}
 
-			this.announceToScreenReader(`Đã cấp quyền truy cập ${includeVideo ? 'camera, micro và loa' : 'micro và loa'}`);
+			this.announceToScreenReader(
+				`Đã cấp quyền truy cập ${includeVideo ? 'camera, micro và loa' : 'micro và loa'}`
+			);
 			return this.mediaStream;
 		} catch (error) {
 			const errorMessage = `Không thể truy cập ${includeVideo ? 'camera/micro' : 'micro'}: ${error.message}`;
@@ -241,10 +245,10 @@ class LiveChatManager {
 		try {
 			// Request media permissions
 			await this.requestMediaPermissions(isVideo);
-			
+
 			this.isVideoCall = isVideo;
 			this.playSound('outgoingCall');
-			
+
 			// Emit call request to server
 			this.socket.emit('call request', {
 				type: isVideo ? 'video' : 'voice',
@@ -252,7 +256,6 @@ class LiveChatManager {
 			});
 
 			this.announceToScreenReader(`Đang gọi ${isVideo ? 'video' : 'thoại'} cho admin...`);
-			
 		} catch (error) {
 			this.announceToScreenReader(`Lỗi khi bắt đầu cuộc gọi: ${error.message}`);
 			throw error;
@@ -262,7 +265,7 @@ class LiveChatManager {
 	// End call
 	endCall() {
 		if (this.mediaStream) {
-			this.mediaStream.getTracks().forEach(track => track.stop());
+			this.mediaStream.getTracks().forEach((track) => track.stop());
 			this.mediaStream = null;
 		}
 

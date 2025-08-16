@@ -113,7 +113,7 @@
 				autocomplete="name"
 				required
 				bind:value={name}
-				class="auth-input"
+				class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
 				placeholder="Nhập họ và tên của bạn"
 				aria-describedby={form?.error ? 'name-error' : undefined}
 			/>
@@ -129,7 +129,7 @@
 				autocomplete="email"
 				required
 				bind:value={email}
-				class="auth-input"
+				class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
 				placeholder="Nhập địa chỉ email của bạn"
 				aria-describedby={form?.error ? 'email-error' : undefined}
 			/>
@@ -146,7 +146,7 @@
 					autocomplete="new-password"
 					required
 					bind:value={password}
-					class="auth-input pr-10"
+					class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm pr-10"
 					placeholder="Tạo mật khẩu mạnh"
 					aria-describedby="password-strength password-error"
 				/>
@@ -234,7 +234,7 @@
 					autocomplete="new-password"
 					required
 					bind:value={confirmPassword}
-					class="auth-input pr-10"
+					class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm pr-10"
 					placeholder="Nhập lại mật khẩu"
 					aria-describedby="confirm-password-match"
 				/>
@@ -317,7 +317,7 @@
 			<button
 				type="submit"
 				disabled={loading || !passwordsMatch || /** @type {any} */ (passwordStrength).score < 3}
-				class="auth-button"
+				class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				{#if loading}
 					<svg
@@ -389,7 +389,7 @@
 				maxlength="6"
 				required
 				bind:value={otp}
-				class="auth-input text-center text-2xl tracking-widest"
+				class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm text-center text-2xl tracking-widest"
 				placeholder="000000"
 				aria-describedby={form?.error ? 'otp-error' : undefined}
 			/>
@@ -397,7 +397,11 @@
 
 		<!-- Submit button -->
 		<div class="mb-4">
-			<button type="submit" disabled={loading || otp.length !== 6} class="auth-button">
+			<button
+				type="submit"
+				disabled={loading || otp.length !== 6}
+				class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+			>
 				{#if loading}
 					<svg
 						class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"

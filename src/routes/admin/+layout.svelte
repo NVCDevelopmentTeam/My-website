@@ -74,7 +74,9 @@
 			<h1 class="text-white text-xl font-bold">Admin Panel</h1>
 		</div>
 
-		<nav class="mt-8">
+		<nav
+			class="mt-8 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-500"
+		>
 			<ul class="space-y-2 px-4">
 				{#each menuItems as item}
 					<li>
@@ -261,28 +263,3 @@
 		tabindex="0"
 	></div>
 {/if}
-
-<style>
-	/* Custom scrollbar for sidebar */
-	nav {
-		scrollbar-width: thin;
-		scrollbar-color: #cbd5e0 #f7fafc;
-	}
-
-	nav::-webkit-scrollbar {
-		width: 6px;
-	}
-
-	nav::-webkit-scrollbar-track {
-		background: #f7fafc;
-	}
-
-	nav::-webkit-scrollbar-thumb {
-		background: #cbd5e0;
-		border-radius: 3px;
-	}
-
-	nav::-webkit-scrollbar-thumb:hover {
-		background: #a0aec0;
-	}
-</style>
