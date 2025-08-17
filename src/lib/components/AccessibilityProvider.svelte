@@ -6,6 +6,13 @@
 		createLiveRegion
 	} from '$lib/utils/accessibility.js';
 	import { browser } from '$app/environment';
+	/**
+	 * @typedef {Object} Props
+	 * @property {import('svelte').Snippet} [children]
+	 */
+
+	/** @type {Props} */
+	let { children } = $props();
 
 	onMount(() => {
 		if (browser) {
@@ -25,19 +32,23 @@
 	function handleGlobalKeydown(event) {
 		if (event.altKey) {
 			switch (event.key) {
-				case '1': // Alt + 1: Focus main content
-					event.preventDefault();
-					focusElement('main');
-					break;
-				case '2': // Alt + 2: Focus navigation
-					event.preventDefault();
-					focusElement('nav', true);
-					break;
-				case '3': // Alt + 3: Focus search
+				case '1': // Alt + 1: Focus search
 					event.preventDefault();
 					focusElement('search');
 					break;
-				case '0': // Alt + 0: Show accessibility help
+				case '2': // Alt + 2: Focus main Navigation
+					event.preventDefault();
+					focusElement('nav', true);
+					break;
+				case '3': // Alt + 3: Focus main Content
+					event.preventDefault();
+					focusElement('main');
+					break;
+				case '4': // Alt + 4: Focus footer
+					event.preventDefault();
+					focusElement('footer');
+					break;
+				case '0': // Alt + 0: showAccessibilityHelp
 					event.preventDefault();
 					showAccessibilityHelp();
 					break;
@@ -63,9 +74,10 @@
 	function showAccessibilityHelp() {
 		const helpText = `
 Keyboard Shortcuts:
-- Alt + 1: Jump to main content
-- Alt + 2: Jump to navigation
-- Alt + 3: Jump to search
+- Alt + 1: skip to Search 
+- Alt + 2: Skip to main navigation
+- Alt + 3: Skip to main Content 
+- Alt + 4: Skip to footer
 - Alt + 0: Show this help
 - Tab: Navigate forward
 - Shift + Tab: Navigate backward
@@ -130,7 +142,7 @@ Keyboard Shortcuts:
 <!-- Live region for announcements -->
 <div id="live-region" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
-<slot />
+{@render children?.()}
 
 <!-- Accessibility toolbar (hidden by default, shown on focus-within) -->
 <div
@@ -142,25 +154,31 @@ Keyboard Shortcuts:
 			class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
 			onclick={() => focusElement('main')}
 		>
-			Jump to Main Content (Alt+1)
+			Skip to Search (Alt+1)
 		</button>
 		<button
 			class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
 			onclick={() => focusElement('nav', true)}
 		>
-			Jump to Navigation (Alt+2)
+			Skip to Main Navigation (Alt+2)
 		</button>
 		<button
 			class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
 			onclick={() => focusElement('search')}
 		>
-			Jump to Search (Alt+3)
+			Skip to Main Content (Alt+3)
 		</button>
 		<button
 			class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
 			onclick={showAccessibilityHelp}
 		>
-			Show Help (Alt+0)
+			Skip to footer (Alt+4)
 		</button>
 	</div>
+	<button
+		class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+		onclick={showAccessibilityHelp}
+	>
+		Show Help (Alt+0)
+	</button>
 </div>
