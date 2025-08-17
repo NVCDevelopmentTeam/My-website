@@ -4,9 +4,12 @@
 		darkMode,
 		contrast,
 		colorFilters,
+		fontSize,
 		toggleDarkMode,
 		toggleContrast,
 		toggleColorFilters,
+		increaseFontSize,
+		decreaseFontSize,
 		handleKeydown
 	} from '$lib/utils/accessibility.js';
 </script>
@@ -115,6 +118,30 @@
 							class:translate-x-1={!$colorFilters}
 						></span>
 					</button>
+				</div>
+
+				<!-- Font Size -->
+				<div class="flex items-center justify-between">
+					<label for="font-size-controls" class="text-gray-600 dark:text-gray-300">Font Size</label>
+					<div id="font-size-controls" class="flex items-center space-x-2">
+						<button
+							onclick={decreaseFontSize}
+							onkeydown={(e) => handleKeydown(e, decreaseFontSize)}
+							aria-label="Decrease font size"
+							class="p-2 rounded-md bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+						>
+							<span class="text-lg font-bold">-</span>
+						</button>
+						<span class="text-gray-800 dark:text-white">{$fontSize}px</span>
+						<button
+							onclick={increaseFontSize}
+							onkeydown={(e) => handleKeydown(e, increaseFontSize)}
+							aria-label="Increase font size"
+							class="p-2 rounded-md bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+						>
+							<span class="text-lg font-bold">+</span>
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -18,6 +18,9 @@ export const colorFilters = writable(false);
 /** @type {WritableBoolean} */
 export const menuOpen = writable(false);
 
+/** @type {WritableNumber} */
+export const fontSize = writable(16);
+
 /**
  * Toggles dark mode on and off.
  */
@@ -57,6 +60,34 @@ export function toggleColorFilters() {
 			announceMode('Color filters', hasFilters);
 		}
 		return hasFilters;
+	});
+}
+
+/**
+ * Increases the base font size.
+ */
+export function increaseFontSize() {
+	fontSize.update((value) => {
+		const newSize = value + 2;
+		if (typeof document !== 'undefined') {
+			document.documentElement.style.fontSize = `${newSize}px`;
+			announceMode('Font size', newSize);
+		}
+		return newSize;
+	});
+}
+
+/**
+ * Decreases the base font size.
+ */
+export function decreaseFontSize() {
+	fontSize.update((value) => {
+		const newSize = Math.max(value - 2, 10);
+		if (typeof document !== 'undefined') {
+			document.documentElement.style.fontSize = `${newSize}px`;
+			announceMode('Font size', newSize);
+		}
+		return newSize;
 	});
 }
 

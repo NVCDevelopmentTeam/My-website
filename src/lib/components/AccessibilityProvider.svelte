@@ -152,25 +152,25 @@ Keyboard Shortcuts:
 	<div class="space-y-2">
 		<button
 			class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-			onclick={() => focusElement('main')}
+			onclick={() => focusElement('search')}
 		>
 			Skip to Search (Alt+1)
 		</button>
 		<button
 			class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-			onclick={() => focusElement('nav', true)}
+			onclick={() => focusElement('nav', true)} 
 		>
 			Skip to Main Navigation (Alt+2)
 		</button>
 		<button
 			class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-			onclick={() => focusElement('search')}
+			onclick={() => focusElement('main')}
 		>
 			Skip to Main Content (Alt+3)
 		</button>
 		<button
 			class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-			onclick={showAccessibilityHelp}
+			onclick={() => focusElement('footer')}
 		>
 			Skip to footer (Alt+4)
 		</button>
