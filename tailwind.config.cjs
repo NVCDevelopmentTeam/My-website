@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
 	darkMode: ['class'],
-	content: ['./src/**/*.{html,js,svelte,ts}'],
+	content: ['./src/**/*.{html,js,svelte,md,svx}'],
 	plugins: [require('@tailwindcss/typography')],
 	theme: {
 		extend: {},
