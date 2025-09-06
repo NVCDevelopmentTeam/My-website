@@ -158,7 +158,7 @@ Keyboard Shortcuts:
 		</button>
 		<button
 			class="block w-full text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-			onclick={() => focusElement('nav', true)} 
+			onclick={() => focusElement('nav', true)}
 		>
 			Skip to Main Navigation (Alt+2)
 		</button>

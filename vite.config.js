@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
+import tailwindcss from '@tailwindcss/vite';
 import { attachSockets } from './sockets.js'; // Ensure the correct path
 
 const socketIoPlugin = {
@@ -15,7 +16,7 @@ const socketIoPlugin = {
 };
 
 export default defineConfig({
-	plugins: [sveltekit(), socketIoPlugin],
+	plugins: [sveltekit(), tailwindcss(), socketIoPlugin],
 	server: {
 		fs: {
 			allow: ['.']
